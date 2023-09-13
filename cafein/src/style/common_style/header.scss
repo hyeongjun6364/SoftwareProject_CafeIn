@@ -1,10 +1,16 @@
 // Menu.scss
+/* header.scss */
+
+
 
 .container {
   background-color: black;
   color: white;
   padding: 15px;
+  
+  
 }
+
 
 .logo {
   padding: 20px 0;
@@ -16,8 +22,21 @@
     text-decoration: none; // 밑줄 제거
     color: inherit;
   }
+  
+  
 }
 
+.border-bottom {
+  height: 2px;
+  background-color: white;
+  display: none;
+  transition: all 0.3s ease-in-out; /* 선택 시 애니메이션 효과를 추가합니다. */
+
+  &.selected {
+    display: block;
+    border-radius: 10px; // 원하는 radius 값 입력.
+  }
+}
 nav {
   ul {
     list-style: none;
@@ -33,7 +52,7 @@ nav {
       font-size: 13px;
       cursor: pointer;
       text-decoration: none; // 밑줄 제거
-
+      
       a {
         text-decoration: none; // 밑줄 제거
         color: inherit;
@@ -53,17 +72,9 @@ nav {
       &:active {
         color: #ff6600;
       }
-      .border-bottom {
-        color: var(--main, white);
-        height: 2px;
-        background-color: white;
-        display: none;
-  
-        &.selected {
-          display: block;
-          border-radius: 10px; // 원하는 radius 값 입력.
-        }
-      }
+      
     }
   }
 }
+
+

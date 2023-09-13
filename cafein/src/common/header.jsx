@@ -12,11 +12,12 @@ const Menu = () => {
 
   return (
     <div>
-      <div className="logo" onClick={()=>{
+      <div className="logo" onClick={() => {
         handleItemClick(null)
       }}>
         <Link to="/">Cafe In</Link>
       </div>
+      
       <nav className="container">
         <ul>
           <li
@@ -24,12 +25,13 @@ const Menu = () => {
             onClick={() => handleItemClick('홈')}
           >
             <Link to="/">목록1</Link>
-          </li>
-          <div className={`border-bottom ${
+            {/* <div className={`border-bottom ${
                 selectedItem === "홈" ? "selected" : ""
               }`}>
 
-          </div>
+          </div> */}
+          </li>
+          
           <li
             className={selectedItem === '카페목록' ? 'selected' : ''}
             onClick={() => handleItemClick('카페목록')}
@@ -49,7 +51,7 @@ const Menu = () => {
             <Link to="/accessories">메뉴4</Link>
           </li>
         </ul>
-      </nav>
+      </nav> 
     </div>
   );
 };
