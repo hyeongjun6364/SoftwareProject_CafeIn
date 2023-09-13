@@ -5,12 +5,19 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import Header from './common/header';
 import Footer from './common/footer';
+import Mainpage from './mainpage/mainpage';
 import { BrowserRouter } from 'react-router-dom';
+import './style/common_style/header.scss'
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <BrowserRouter>
-    <Header />
-    <Footer/>
+    
+      
+      <Mainpage/>
+      
+
+   
+
   </BrowserRouter>
 );
 

@@ -4,21 +4,30 @@ import '../style/common_style/header.scss'
 
 const Menu = () => {
   const [selectedItem, setSelectedItem] = useState(null);
+  const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // 항목 클릭 시 상태 업데이트
   const handleItemClick = item => {
     setSelectedItem(item);
+    if (isMobileMenuOpen) {
+      setMobileMenuOpen(false); // Mobile menu close when an item is clicked
+    }
   };
 
   return (
     <div>
-      <div className="logo" onClick={() => {
-        handleItemClick(null)
-      }}>
+      <header className="header">
+      <div className="logo" onClick={() => handleItemClick(null)}>
         <Link to="/">Cafe In</Link>
       </div>
+
+      {/* Mobile menu icon */}
+      <div className="mobile-menu-icon" onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}>
+        ☰
+      </div>
+    </header>
       
-      <nav className="container">
+      <nav className={`container ${isMobileMenuOpen ? 'open' : ''}`}>
         <ul>
           <li
             className={selectedItem === '홈' ? 'selected' : ''}
@@ -52,6 +61,7 @@ const Menu = () => {
           </li>
         </ul>
       </nav> 
+      
     </div>
   );
 };
