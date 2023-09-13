@@ -12,7 +12,7 @@ import "slick-carousel/slick/slick-theme.css";
 const images = [
     coffee1,
     starbucks,
-    // 여기에 더 많은 이미지 URL을 추가할 수 있습니다.
+    
 ];
 
 function ImageSlider() {
