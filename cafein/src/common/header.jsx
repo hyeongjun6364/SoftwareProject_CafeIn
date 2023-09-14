@@ -29,6 +29,12 @@ const Menu = () => {
       
       <nav className={`container ${isMobileMenuOpen ? 'open' : ''}`}>
         <ul>
+        <li
+            className={selectedItem === '로그인' ? 'selected' : ''}
+            onClick={() => handleItemClick('로그인')}
+          >
+            <Link to="/login">로그인하세요</Link>
+          </li>
           <li
             className={selectedItem === '홈' ? 'selected' : ''}
             onClick={() => handleItemClick('홈')}
