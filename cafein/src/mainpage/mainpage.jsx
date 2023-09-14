@@ -28,7 +28,7 @@ function ImageSlider() {
   };
 
   return (
-    <div style={{ width: '100%', height: '530px' }}>
+    <div style={{ width: '100%' }}>
       <Slider {...settings}>
         {images.map((img, idx) => (
           <div key={idx} className="slider-image">
@@ -41,10 +41,21 @@ function ImageSlider() {
 }
 
 function mainpage() {
+
+
   return (
     <div>
       <Header />
       <ImageSlider />
+      <br/>
+      사용자 음료 추천
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      
       <Footer />
     </div>
   )

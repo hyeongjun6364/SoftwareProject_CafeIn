@@ -4,27 +4,27 @@ import React, { useEffect, useState } from 'react';
 import '../style/common_style/footer.scss';
 
 function Footer() {
-  const [isSticky, setIsSticky] = useState(false);
+  const [scrollPosition, setScrollPosition] = useState(0);
+
+  const handleScroll = () => {
+    const position = window.pageYOffset;
+    setScrollPosition(position);
+  };
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-        // 스크롤이 화면 하단에 도달하면 Footer를 고정
-        setIsSticky(true);
-      } else {
-        setIsSticky(false);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
+  // 모바일 환경에서도 플로팅 바가 동작하도록 수정
+  // const isMobile = window.innerWidth <= 768; // 예: 768px 이하로 모바일로 간주
+  // const isFloating = scrollPosition > 0 || isMobile;
+
   return (
-    <div className={`footer-static ${isSticky ? 'sticky' : ''}`}>
+    <div className={`floating-bar ${scrollPosition ? 'floating' : ''}`}>
       <footer className="footer">
         <div className="footer-container">
           <div className="footer-links">
