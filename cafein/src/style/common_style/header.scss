@@ -92,15 +92,49 @@ nav {
 }
 
 @media screen and (max-width: 500px) { /* Adjust as needed */
-  
-.container ul{
-    display: none; /* Hide on mobile */
+  .container {
+    position: fixed;
+    top: 0;
+    right: -90%; /* 초기에는 화면 밖으로 숨김 */
+    width: 80%;
+    height: 100%;
+    background-color: black;
+    color: white;
+    z-index: 999;
+    transition: right 0.3s ease-in-out;
+  }
+
+  .container.open {
+    right: 0; /* 모바일 메뉴 열릴 때 오른쪽으로 슬라이딩 */
+  }
+
+  .mobile-menu-icon {
+    display: block;
+    position: absolute;
+    right: 10px;
+    top: 25px;
+    cursor: pointer;
+  }
+
+  .container ul {
+    list-style: none;
+    display: block;
+    padding: 0;
+    margin: 0;
+  }
+
+  .container ul li {
+    color: white;
+    font-size: 13px;
+    padding: 15px;
+    text-align: center;
+    cursor: pointer;
+  }
 }
 
-.mobile-menu-icon{
-   display:block;
-   position:absolute;
-   right:10px;
-   top:25px;
-}
-}
+
+
+
+
+
+
