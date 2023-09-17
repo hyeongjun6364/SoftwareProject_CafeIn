@@ -52,9 +52,8 @@
 // export default Footer
 
 import React, { useEffect, useState } from "react"
-import { Link, Route, Routes } from "react-router-dom"
+import { Link } from "react-router-dom"
 import "../../style/common_style/footer.scss"
-import MyPage from "../../page/mypage/mypage"
 
 function Footer() {
   const [isVisible, setIsVisible] = useState(true)
