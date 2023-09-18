@@ -1,0 +1,30 @@
+.category {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: start;
+  }
+  
+  .category-tag {
+    padding: .5em .75em;
+    margin: .25em;
+    border-radius: 25px;
+    
+    background-color: #f5f5f5; // 배경색
+    color: #333; // 글자색
+    
+    font-size: .85rem; // 글자 크기
+    line-height: normal; // 줄 간격
+    
+    
+  }
+  
+  .category-tag.selected {
+     background-color:#000; 
+     color:#fff; 
+  }
+
+  .category-title{
+    font-family: inherit;
+    font-weight: 700;
+  }
+  
