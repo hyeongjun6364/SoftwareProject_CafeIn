@@ -1,3 +1,105 @@
+// // Menu.scss
+// /* header.scss */
+
+// .container {
+//   background-color: black;
+//   color: white;
+//   padding: 15px;
+// }
+// .header {
+//   width: 100%;
+//   display: flex;
+//   justify-content: space-between;
+//   align-items: center; // 아이템들을 세로 방향으로 가운데 정렬합니다.
+// }
+
+// .logo {
+//   margin-left: 30px;
+//   padding: 20px 0;
+//   font-size: 24px;
+//   font-weight: bold;
+//   text-align: center;
+
+//   a {
+//     text-decoration: none; // 밑줄 제거
+//     color: inherit;
+//   }
+// }
+
+// .border-bottom {
+//   height: 2px;
+//   background-color: white;
+//   display: none;
+//   transition: all 0.3s ease-in-out; /* 선택 시 애니메이션 효과를 추가합니다. */
+
+//   &.selected {
+//     display: block;
+//     border-radius: 10px; // 원하는 radius 값 입력.
+//   }
+// }
+// nav {
+//   ul {
+//     list-style: none;
+//     display: flex;
+//     gap: 10%;
+//     justify-content: center;
+//     align-items: center;
+//     padding: 0;
+//     margin: 0;
+
+//     li {
+//       color: white;
+//       font-size: 13px;
+//       cursor: pointer;
+//       text-decoration: none; // 밑줄 제거
+
+//       a {
+//         text-decoration: none; // 밑줄 제거
+//         color: inherit;
+//         transition: color 0.3s;
+
+//         &:hover {
+//           color: #ff6600;
+//           text-decoration: none; /* hover 시 밑줄 추가 */
+//         }
+//       }
+
+//       &.selected {
+//         color: #ff6600;
+//         text-decoration: none; /* 클릭 시 밑줄 추가 */
+//       }
+
+//       &:active {
+//         color: #ff6600;
+//       }
+//     }
+//   }
+// }
+
+// //mobile env
+// .mobile-menu-icon {
+//   display: none; // Initially hidden on desktop
+// }
+
+// .container.open ul {
+//   display: block; //ul요소를 블록으로 바꾸고 줄바꿈으로 생성
+// }
+
+// @media screen and (max-width: 500px) {
+//   /* Adjust as needed */
+
+//   .container ul {
+//     display: none; /* Hide on mobile */
+//   }
+
+//   .mobile-menu-icon {
+//     display: block;
+//     position: absolute;
+//     right: 10px;
+//     top: 25px;
+//   }
+// }
+
 // Menu.scss
 /* header.scss */
 
@@ -7,7 +109,6 @@
   padding: 15px;
 }
 .header {
-  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center; // 아이템들을 세로 방향으로 가운데 정렬합니다.
@@ -81,15 +182,26 @@ nav {
   display: none; // Initially hidden on desktop
 }
 
-.container.open ul {
-  display: block; //ul요소를 블록으로 바꾸고 줄바꿈으로 생성
-}
+// .container.open ul {
+//   display: block; //ul요소를 블록으로 바꾸고 줄바꿈으로 생성
+// }
 
 @media screen and (max-width: 500px) {
   /* Adjust as needed */
+  .container {
+    position: fixed;
+    top: 0;
+    right: -90%; /* 초기에는 화면 밖으로 숨김 */
+    width: 80%;
+    height: 100%;
+    background-color: black;
+    color: white;
+    z-index: 999;
+    transition: right 0.3s ease-in-out;
+  }
 
-  .container ul {
-    display: none; /* Hide on mobile */
+  .container.open {
+    right: 0; /* 모바일 메뉴 열릴 때 오른쪽으로 슬라이딩 */
   }
 
   .mobile-menu-icon {
@@ -97,5 +209,19 @@ nav {
     position: absolute;
     right: 10px;
     top: 25px;
+    cursor: pointer;
+  }
+
+  .container ul {
+    list-style: none;
+    display: block;
+  }
+
+  .container ul li {
+    color: white;
+    font-size: 13px;
+    padding: 15px;
+    text-align: center;
+    cursor: pointer;
   }
 }

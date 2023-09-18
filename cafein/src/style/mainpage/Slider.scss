@@ -1,48 +1,91 @@
-.slider {
-    position: relative;
-    width: auto;
-    height: auto;
-  }
-  
-  .slider-image {
-    width: 100%;
-    height: 500px;
-  
-    @media (max-width: 600px) {
-      height: 200px; // 원하는 높이로 변경하세요
-    }
-  }
+// .slider {
+//     position: relative;
+//     width: auto;
+//     height: auto;
+//   }
 
-  
-  .slider-button {
-    position: absolute;
-    bottom: -50px;
-    transform: translate(-50%, 50%);
-    background-color: rgba(0,0,0,0.5);
-    color: #fff;
-    border-radius: 50%;
-    cursor: pointer;
-    /* 아래 두 줄로 버튼 크기를 조정합니다 */
-    width: 40px;
-    height: 40px;
-  
-     /* 텍스트 정렬 및 폰트 크기 조정 */
-     text-align:center;
-     
-     /* 테두리와 마우스 호버 시 색상 변경 */
-     border:none;
+//   .slider-image {
+//     width: 100%;
+//     height: 500px;
+
+//     @media (max-width: 600px) {
+//       height: 200px; // 원하는 높이로 변경하세요
+//     }
+//   }
+
+//   .slider-button {
+//     position: absolute;
+//     bottom: -50px;
+//     transform: translate(-50%, 50%);
+//     background-color: rgba(0,0,0,0.5);
+//     color: #fff;
+//     border-radius: 50%;
+//     cursor: pointer;
+//     /* 아래 두 줄로 버튼 크기를 조정합니다 */
+//     width: 40px;
+//     height: 40px;
+
+//      /* 텍스트 정렬 및 폰트 크기 조정 */
+//      text-align:center;
+
+//      /* 테두리와 마우스 호버 시 색상 변경 */
+//      border:none;
+//   }
+
+//   .slider-button:hover {
+//       background-color:#333;
+//   }
+
+//   .slider-button:first-child {
+//       left: calc(50% - 70px);
+//   }
+
+//   .slider-button:last-child {
+//       right: calc(50% - 70px);
+//   }
+
+.slider {
+  position: relative;
+  width: auto;
+  height: auto;
+}
+
+.slider-image {
+  width: 100%;
+  height: 500px;
+
+  @media (max-width: 600px) {
+    height: 200px; // 원하는 높이로 변경하세요
   }
-  
-  .slider-button:hover {
-      background-color:#333;
-  }
-  
-  .slider-button:first-child {
-      left: calc(50% - 70px); 
-  }
-  
-  .slider-button:last-child {
-      right: calc(50% - 70px); 
-  }
-  
- 
+}
+
+.slider-button {
+  position: absolute;
+  bottom: -50px;
+  transform: translate(-50%, 50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  border-radius: 50%;
+  cursor: pointer;
+  /* 아래 두 줄로 버튼 크기를 조정합니다 */
+  width: 40px;
+  height: 40px;
+
+  /* 텍스트 정렬 및 폰트 크기 조정 */
+  text-align: center;
+
+  /* 테두리와 마우스 호버 시 색상 변경 */
+  border: none;
+}
+
+.slider-button:hover {
+  background-color: #333;
+}
+
+.slider-button:first-child {
+  left: calc(50% - 70px);
+}
+
+.slider-button:last-child {
+  right: calc(50% - 70px);
+}
