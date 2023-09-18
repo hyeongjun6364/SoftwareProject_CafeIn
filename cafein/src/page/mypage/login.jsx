@@ -81,7 +81,7 @@ const Login = () => {
       <div className="login-wrapper">
         <div className="login-container">
           <div className="login-logo">
-            <span className="logo-image">LOGO</span>
+            <span className="logo-image">LOGOIN</span>
           </div>
           <form id="loginForm">
             <div className="input-group">
@@ -153,7 +153,7 @@ const Login = () => {
               <span onClick={() => alert("비밀번호 찾기")}>비밀번호 찾기</span>
             </li>
             <li>
-              <Link to="/signUp">
+              <Link to="/signup">
                 <span className="bold">회원가입</span>
               </Link>
             </li>
