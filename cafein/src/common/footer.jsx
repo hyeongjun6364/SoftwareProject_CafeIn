@@ -19,9 +19,6 @@ function Footer() {
     };
   }, []);
 
-  // 모바일 환경에서도 플로팅 바가 동작하도록 수정
-  // const isMobile = window.innerWidth <= 768; // 예: 768px 이하로 모바일로 간주
-  // const isFloating = scrollPosition > 0 || isMobile;
 
   return (
     <div className={`floating-bar ${scrollPosition ? 'floating' : ''}`}>
