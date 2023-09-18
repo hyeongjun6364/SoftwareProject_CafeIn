@@ -17,24 +17,27 @@ const Menu = () => {
   return (
     <div>
       <header className="header">
-      <div className="logo" onClick={() => handleItemClick(null)}>
-        <Link to="/">Cafe In</Link>
-      </div>
+        <div className="logo" onClick={() => handleItemClick(null)}>
+          <Link to="/">Cafe In</Link>
+        </div>
 
-      {/* Mobile menu icon */}
-      <div className="mobile-menu-icon" onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}>
-        ☰
-      </div>
-    </header>
-      
+        {/* Mobile menu icon */}
+        <div className="mobile-menu-icon" onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}>
+          ☰
+        </div>
+        {/* <div>
+          <button className='searchicon'>검색</button>
+        </div> */}
+      </header>
+
       <nav className={`container ${isMobileMenuOpen ? 'open' : ''}`}>
         <ul>
-        <li
-            className={selectedItem === '로그인' ? 'selected' : ''}
-            onClick={() => handleItemClick('로그인')}
-          >
-            <Link to="/login">로그인하세요</Link>
-          </li>
+          {isMobileMenuOpen ? <li className={selectedItem === '로그인' ? 'selected' : ''}
+          onClick={() => handleItemClick('로그인')}>
+            <Link to="/login" >
+            로그인하세요</Link> 
+          </li> :""}
+          
           <li
             className={selectedItem === '홈' ? 'selected' : ''}
             onClick={() => handleItemClick('홈')}
@@ -46,12 +49,12 @@ const Menu = () => {
 
           </div> */}
           </li>
-          
+
           <li
             className={selectedItem === '카페목록' ? 'selected' : ''}
             onClick={() => handleItemClick('카페목록')}
           >
-            <Link to="/men">목록2</Link>
+            <Link to="/category">카페목록</Link>
           </li>
           <li
             className={selectedItem === '마이페이지' ? 'selected' : ''}
@@ -66,8 +69,8 @@ const Menu = () => {
             <Link to="/accessories">메뉴4</Link>
           </li>
         </ul>
-      </nav> 
-      
+      </nav>
+
     </div>
   );
 };
