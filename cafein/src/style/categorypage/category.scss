@@ -1,8 +1,4 @@
-.category {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: start;
-  }
+
   
   .category-tag {
     padding: .5em .75em;
@@ -15,16 +11,53 @@
     font-size: .85rem; // 글자 크기
     line-height: normal; // 줄 간격
     
-    
+    &.selected{
+      background-color:#000; 
+      color:#fff; 
+    }
   }
   
-  .category-tag.selected {
-     background-color:#000; 
-     color:#fff; 
-  }
 
   .category-title{
+    text-align: center;
+    font-size: 2.187rem;
     font-family: inherit;
     font-weight: 700;
+    color: #071F60;
   }
   
+  
+  
+  .category-search {
+    position: relative;
+    // left: 20px;
+    // margin-left: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    height: 4rem;
+    width: 97%; 
+    margin: 1rem 0px 1.5rem;
+    padding: 0px 2rem;
+    border-radius: 150px;
+    border: 0.1rem solid rgb(120, 170, 254);
+    color: rgb(120, 170, 254);
+    @media (max-width: 760px) {
+      height: 2rem; // 원하는 높이로 변경하세요
+      border: 0.1rem solid rgb(120, 170, 254);
+      width: 300px;
+    }
+}
+.search-results {
+  margin-top: 16px;
+}
+
+.search-results ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.search-results li {
+  margin-bottom: 8px;
+}
+
