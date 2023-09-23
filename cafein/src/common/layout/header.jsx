@@ -13,12 +13,12 @@ const Menu = () => {
       setMobileMenuOpen(false) // Mobile menu close when an item is clicked
     }
   }
-
+  
   return (
     <div>
       <header className="header">
         <div className="logo" onClick={() => handleItemClick(null)}>
-          <Link to="/">Cafe In</Link>
+          <Link to="/">CAFE IN</Link>
         </div>
 
         {/* Mobile menu icon */}
@@ -32,11 +32,18 @@ const Menu = () => {
 
       <nav className={`container ${isMobileMenuOpen ? "open" : ""}`}>
         <ul>
+        {isMobileMenuOpen ? <li className={selectedItem === '로그인' ? 'selected' : ''}
+          onClick={() => handleItemClick('로그인')}>
+            <Link to="/mypage" >
+            로그인하세요</Link> 
+          </li> :""}
+          
+          <hr/>
           <li
             className={selectedItem === "홈" ? "selected" : ""}
             onClick={() => handleItemClick("홈")}
           >
-            <Link to="/">목록1</Link>
+            <Link to="/">홈</Link>
             {/* <div className={`border-bottom ${
                 selectedItem === "홈" ? "selected" : ""
               }`}>
@@ -48,7 +55,7 @@ const Menu = () => {
             className={selectedItem === "카페목록" ? "selected" : ""}
             onClick={() => handleItemClick("카페목록")}
           >
-            <Link to="/men">목록2</Link>
+            <Link to="/category">카페목록</Link>
           </li>
           <li
             className={selectedItem === "마이페이지" ? "selected" : ""}

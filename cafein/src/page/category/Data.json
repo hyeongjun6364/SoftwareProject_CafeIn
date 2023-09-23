@@ -1,0 +1,75 @@
+[
+  {
+    "id": 1,
+    "cafeid":1,
+    "name": "아메리카노",
+    "cafe": "스타벅스",
+    "content": "아메리카노 커피 설명",
+    "image": "https://image.istarbucks.co.kr/upload/store/skuimg/2021/04/[110563]_20210426095937947.jpg"
+  },
+  {
+    "id": 2,
+    "cafeid":1,
+    "name": "카페라떼",
+    "cafe": "스타벅스",
+    "content": "카페라떼 커피 설명",
+    "image": "https://image.istarbucks.co.kr/upload/store/skuimg/2021/04/[41]_20210415133833879.jpg"
+  },
+  {
+    "id": 3,
+    "cafeid":1,
+    "name": "카푸치노",
+    "cafe": "스타벅스",
+    "content": "카푸치노 커피 설명",
+    "image": "https://image.istarbucks.co.kr/upload/store/skuimg/2021/04/[110601]_20210415143400922.jpg"
+  },
+  
+  {
+    "id": 1,
+    "cafeid":2,
+    "name": "아메리카노",
+    "cafe": "이디야",
+    "content": "아메리카노 커피 설명",
+    "image": "https://img.79plus.co.kr/megahp/manager/upload/menu/20230217161339_1676618019665_I5aZyru5q9.jpg"
+  },
+  {
+    "id": 2,
+    "cafeid":2,
+    "name": "카페라떼",
+    "cafe": "이디야",
+    "content": "카페라떼 커피 설명",
+    "image": "https://img.79plus.co.kr/megahp/manager/upload/menu/20230905185615_1693907775304_fenhtXqy4y.jpg"
+  },
+  {
+    "id": 3,
+    "cafeid":2,
+    "name": "카푸치노",
+    "cafe": "이디야",
+    "content": "카푸치노 커피 설명",
+    "image": "https://img.79plus.co.kr/megahp/manager/upload/menu/20230217162028_1676618428061_TbHsToNMcN.jpg"
+  },
+  {
+    "id": 1,
+    "cafeid":3,
+    "name": "아메리카노",
+    "cafe": "빽다방",
+    "content": "아메리카노 커피 설명",
+    "image": "https://paikdabang.com/wp-content/uploads/2018/05/ICED-앗메리카노-450x588.png"
+  },
+  {
+    "id": 2,
+    "cafeid":3,
+    "name": "카페라떼",
+    "cafe": "빽다방",
+    "content": "카페라떼 커피 설명",
+    "image": "https://paikdabang.com/wp-content/uploads/2018/05/빽s-라떼ICED-450x588.png"
+  },
+  {
+    "id": 3,
+    "cafeid":3,
+    "name": "카푸치노",
+    "cafe": "빽다방",
+    "content": "카푸치노 커피 설명",
+    "image": "https://paikdabang.com/wp-content/uploads/2018/05/HOT-카라멜마키아또-450x588.png"
+  }
+]
