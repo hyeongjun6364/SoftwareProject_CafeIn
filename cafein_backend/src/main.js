@@ -5,8 +5,7 @@ const bodyParser = require('koa-bodyparser');
 const mongoose = require('mongoose');
 import api from './api';
 
-const { PORT } = process.env;
-const MONGO_URI = 'mongodb://localhsot:27017/blog';
+const { PORT, MONGO_URI } = process.env;
 
 // 몽고DB 연결
 mongoose
