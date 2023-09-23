@@ -13,12 +13,12 @@ const Menu = () => {
       setMobileMenuOpen(false) // Mobile menu close when an item is clicked
     }
   }
-
+  
   return (
     <div>
       <header className="header">
         <div className="logo" onClick={() => handleItemClick(null)}>
-          <Link to="/">Cafe In</Link>
+          <Link to="/">CAFE IN</Link>
         </div>
 
         {/* Mobile menu icon */}
@@ -38,7 +38,7 @@ const Menu = () => {
             로그인하세요</Link> 
           </li> :""}
           
-
+          <hr/>
           <li
             className={selectedItem === "홈" ? "selected" : ""}
             onClick={() => handleItemClick("홈")}
