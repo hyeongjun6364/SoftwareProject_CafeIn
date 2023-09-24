@@ -31,12 +31,13 @@ const Menu = () => {
       </header>
 
       <nav className={`container ${isMobileMenuOpen ? "open" : ""}`}>
-        <ul>
-        {isMobileMenuOpen ? <li className={selectedItem === '로그인' ? 'selected' : ''}
+        <ul >
+        {isMobileMenuOpen ? 
+        <li className={selectedItem === '로그인' ? 'selected' : ''}
           onClick={() => handleItemClick('로그인')}>
             <Link to="/mypage" >
             로그인하세요</Link> 
-          </li> :""}
+          </li> : ""}
           
           <hr/>
           <li

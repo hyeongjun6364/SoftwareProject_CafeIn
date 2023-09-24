@@ -7,8 +7,11 @@ import Slider from "react-slick"
 import "slick-carousel/slick/slick.css"
 import "slick-carousel/slick/slick-theme.css"
 import { useState } from "react"
-import getChatGPTResponse from "../API/api.jsx"
+import Chatbot from "../API/api"
+//import getChatGPTResponse from "../API/api.jsx"
 const images = [coffee1, starbucks]
+
+
 
 function ImageSlider() {
   const settings = {
@@ -46,28 +49,11 @@ function Mainpage() {
     setQuestion(e.target.value);
   };
 
-  const handleAskQuestion = async () => {
-    if (question.trim() === "") return;
-
-    // ChatGPT API를 호출하여 질문에 대한 답변을 가져옵니다.
-    const response = await getChatGPTResponse(question);
-    setAnswer(response);
-  };
+  
   return (
     <div>
       <ImageSlider />
-      <div>
-        <input
-          type="text"
-          placeholder="질문을 입력하세요."
-          value={question}
-          onChange={handleQuestionChange}
-        />
-        <button onClick={handleAskQuestion}>질문하기</button>
-      </div>
-      <div>
-        {answer && <p>답변: {answer}</p>}
-      </div>
+      {/* <Chatbot/> */}
     </div>
   )
 }

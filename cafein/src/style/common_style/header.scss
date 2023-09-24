@@ -145,8 +145,8 @@ nav {
     list-style: none;
     display: flex;
     gap: 10%;
-    justify-content: center;
-    align-items: center;
+    //justify-content: center;
+    //align-items: center;
     padding: 0;
     margin: 0;
 
@@ -155,7 +155,7 @@ nav {
       font-size: 13px;
       cursor: pointer;
       text-decoration: none; // 밑줄 제거
-
+      flex-grow: 1;
       a {
         text-decoration: none; // 밑줄 제거
         color: inherit;

@@ -1,21 +1,84 @@
-const openai = require('openai');
+// import React, { useState } from 'react';
+// import axios from 'axios';
 
-// API 토큰을 설정합니다. 'YOUR_API_KEY'를 실제 API 키로 대체합니다.
-const apiKey = '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';
+// function Chatbot() {
+//   const [inputText, setInputText] = useState('');
+//   const [responseText, setResponseText] = useState('');
 
-const getChatGPTResponse = async (question) => {
-  try {
-    const response = await openai.completions.create({
-      engine: 'text-davinci-002', // 엔진 선택 (다른 엔진을 선택할 수도 있습니다.)
-      prompt: question,
-      max_tokens: 1000, // 원하는 최대 답변 길이를 설정합니다.
-    }, { headers: { 'Authorization': `Bearer ${apiKey}` } });
+//   const handleInputChange = (event) => {
+//     setInputText(event.target.value);
+//   };
 
-    return response.choices[0].text.trim();
-  } catch (error) {
-    console.error('Error fetching ChatGPT response:', error);
-    return '죄송합니다. 답변을 가져오지 못했습니다.';
-  }
-};
+//   const handleSubmit = async (event) => {
+//     event.preventDefault();
 
-export default getChatGPTResponse
+//     try {
+//       const response = await axios.post('/', { input: inputText });
+//       setResponseText(response.data.output);
+//     } catch (error) {
+//       console.error(error);
+//     }
+//   };
+
+//   return (
+//     <div>
+//       <form onSubmit={handleSubmit}>
+//         <input type="text" value={inputText} onChange={handleInputChange} />
+//         <button type="submit">전송</button>
+//       </form>
+//       <p>{responseText}</p>
+//     </div>
+//   );
+// }
+
+// export default Chatbot;
+
+
+import { useState } from 'react';
+
+export default function Chatbot() {
+  const [question, setQuestion] = useState('');
+  const [answer, setAnswer] = useState();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch('./api/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ question: question }),
+      });
+
+      const data = await response.json();
+      if (response.status !== 200) {
+        throw (
+          data.error ||
+          new Error(`request failed with status ${response.status}`)
+        );
+      }
+
+      setAnswer(data.result);
+      setQuestion('');
+    } catch (error) {
+      console.error(error);
+      alert(error.message);
+    }
+  };
+
+  return (
+    <>
+      <form onSubmit={handleSubmit}>
+        <input
+          type='text'
+          value={question}
+          onChange={(e) => setQuestion(e.target.value)}
+        />
+        <button type='submit'>질문하기</button>
+      </form>
+      <div>{answer}</div>
+    </>
+  );
+}
