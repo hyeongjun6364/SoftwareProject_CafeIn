@@ -13,17 +13,15 @@ import Category from "./page/category/category"
 import Chatbot from "./page/API/api"
 import { RecoilRoot } from "recoil"
 import SignUp from "./page/mypage/signup"
-import App from "./App"
+// import App from "./App"
 //import { Chat } from "openai/resources"
 
 const root = ReactDOM.createRoot(document.getElementById("root"))
 root.render(
- 
   <RecoilRoot>
     <BrowserRouter>
       <Layout>
         <Routes>
-         
           <Route path="/" Component={MainPage} />
           <Route path="/mypage" Component={MyPage} />
           <Route path="/category" Component={Category} />
@@ -35,9 +33,9 @@ root.render(
     </BrowserRouter>
   </RecoilRoot>,
 
-{/* <App/> */}
-  
- 
+  {
+    /* <App/> */
+  }
 )
 
 reportWebVitals()

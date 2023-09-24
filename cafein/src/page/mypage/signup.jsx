@@ -1,29 +1,37 @@
 import React, { useState } from "react"
 import "../../style/mypage/signup.scss" // 스타일 파일 임포트
+import axios from "axios"
 
 const SignUp = () => {
   const [username, setUsername] = useState("")
-  const [email, setEmail] = useState("")
+  // const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [isRegistered, setIsRegistered] = useState(false)
 
-  const handleSignUp = () => {
-    // 여기에서 입력된 정보로 새로운 계정을 만들고 저장하는 로직을 구현합니다.
-    // 실제로는 서버와 통신하여 계정을 생성해야 합니다.
+  const handleSignUp = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:4000/api/auth/register",
+        {
+          username,
+          password,
+        }
+      )
 
-    // 하드코딩 예시:
-    if (username === "Admin1234@" && password === "Admin1234@") {
-      // 계정 생성 성공
-      setIsRegistered(true)
-    } else {
-      // 계정 생성 실패
-      setIsRegistered(false)
+      // 요청이 성공하면 서버에서 반환한 응답을 확인하고 상태를 업데이트합니다.
+      if (response.status === 200) {
+        setIsRegistered(true) // 계정 생성 성공
+        alert("회원가입에 성공했습니다!")
+      }
+    } catch (error) {
+      alert("회원가입에 실패했습니다.")
+      console.error("회원가입 오류:", error)
+      setIsRegistered(false) // 오류 발생 시 계정 생성 실패
     }
   }
 
   return (
     <div className="signup-form">
-      {" "}
       {/* 클래스명 추가 */}
       <h2>회원가입</h2>
       {isRegistered ? (
@@ -38,14 +46,14 @@ const SignUp = () => {
               onChange={(e) => setUsername(e.target.value)}
             />
           </div>
-          <div>
+          {/* <div>
             <label>이메일:</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-          </div>
+          </div> */}
           <div>
             <label>비밀번호:</label>
             <input
@@ -56,8 +64,7 @@ const SignUp = () => {
           </div>
           <button className="signup-button" onClick={handleSignUp}>
             가입하기
-          </button>{" "}
-          {/* 클래스명 추가 */}
+          </button>
         </div>
       )}
     </div>

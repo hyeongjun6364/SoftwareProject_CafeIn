@@ -14,6 +14,7 @@ export const register = async (ctx) => {
     username: Joi.string().alphanum().min(3).max(20).required(),
     password: Joi.string().required(),
   });
+
   const result = schema.validate(ctx.request.body); // POST 매소드가 유효한지 joi를 통해 확인
   if (result.error) {
     ctx.status = 400;
