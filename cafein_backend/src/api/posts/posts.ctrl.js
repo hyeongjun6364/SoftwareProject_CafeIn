@@ -4,7 +4,7 @@ import Joi from 'joi';
 
 const { ObjectId } = mongoose.Types; // db에서 ObjectId만 추출
 
-export const checkObjectId = (ctx, next) => {
+export const getPostById = async (ctx, next) => {
   // 한번만 구현하고 read, remove, update에 모두 적용하기 위해 미들웨어를 만듬
   const { id } = ctx.params;
   if (!ObjectId.isValid(id)) {
@@ -12,8 +12,30 @@ export const checkObjectId = (ctx, next) => {
     ctx.status = 400;
     return;
   }
+  try {
+    const post = await Post.findById(id);
+    // 포스트가 존재하지 않을 때
+    if (!post) {
+      ctx.status = 404; // Not Found
+      return;
+    }
+    ctx.state.post = post;
+    return next();
+  } catch (e) {
+    ctx.throw(500, e);
+  }
+};
+
+// id로 찾은 포스트가 로그인 중인 사용자가 작성한 포스트인지 확인 아니면 403 에러
+export const checkOwnPost = (ctx, next) => {
+  const { user, post } = ctx.state;
+  if (post.user._id.toString() !== user._id) {
+    ctx.status = 403;
+    return;
+  }
   return next();
 };
+
 // 포스트 작성
 // POST /api/posts
 // {
@@ -45,6 +67,7 @@ export const write = async (ctx) => {
     title,
     body,
     tags,
+    user: ctx.state.user,
   });
 
   try {
@@ -56,7 +79,7 @@ export const write = async (ctx) => {
 };
 
 // 포스트 목록 조회
-// GET /api/posts
+// GET /api/posts?username=&tag&page=
 
 export const list = async (ctx) => {
   // qeury는 문자열이기 때문에 숫자로 변환해 주어야 함
@@ -69,15 +92,22 @@ export const list = async (ctx) => {
     return;
   }
 
+  const { tag, username } = ctx.query;
+  // tag, username 값이 유효하면 객체 안에 넣고, 그렇지 않으면 넣지 않음
+  const query = {
+    ...(username ? { 'user.username': username } : {}),
+    ...(tag ? { tags: tag } : {}),
+  };
+
   try {
-    const posts = await Post.find()
+    const posts = await Post.find(query)
       .sort({ _id: -1 })
       .limit(10)
       .skip((page - 1) * 10)
       .lean()
       .exec(); // 몽고 db Model로 선언했기 때문에 몽고 db method 사용가능,
     // sort -1을 통해 역순으로 구성, limit(10)으로 최대 10개씩 조회 가능, skip()을 통해 페이지네이션 구현
-    const postCount = await Post.countDocuments().exec(); // 마지막페이지를 알려주기 위해 문서 데이터의 갯수를 변수에 저장
+    const postCount = await Post.countDocuments(query).exec(); // 마지막페이지를 알려주기 위해 문서 데이터의 갯수를 변수에 저장
     ctx.set('Last-Page', Math.ceil(postCount / 10)); // 문서의 갯수를 10으로 나눈 몫을 ceil 올림을 하여 마지막페이지를 구함 0.4여도 무조건 1
     ctx.body = posts.map((post) => ({
       ...post,
@@ -93,17 +123,7 @@ export const list = async (ctx) => {
 // GET /api/posts/:id
 
 export const read = async (ctx) => {
-  const { id } = ctx.params;
-  try {
-    const post = await Post.findById(id).exec();
-    if (!post) {
-      ctx.status = 404;
-      return;
-    }
-    ctx.body = post;
-  } catch (e) {
-    ctx.throw(500, e);
-  }
+  ctx.body = ctx.state.post;
 };
 
 // 특정 포스트 제거
@@ -154,4 +174,16 @@ export const update = async (ctx) => {
   } catch (e) {
     ctx.throw(500, e);
   }
+};
+
+// GET /api/auth/check
+
+export const check = async (ctx) => {
+  const { user } = ctx.state;
+  if (!user) {
+    // 로그인 중 아님
+    ctx.status = 401; // Unauthorized
+    return;
+  }
+  ctx.body = user;
 };

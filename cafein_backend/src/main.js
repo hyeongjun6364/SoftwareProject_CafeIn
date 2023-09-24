@@ -3,7 +3,9 @@ const Koa = require('koa');
 const Router = require('koa-router');
 const bodyParser = require('koa-bodyparser');
 const mongoose = require('mongoose');
+
 import api from './api';
+import jwtMiddleware from './lib/jwtMiddleware';
 
 const { PORT, MONGO_URI } = process.env;
 
@@ -25,6 +27,7 @@ router.use('/api', api.routes()); // api 라우트 적용
 
 // 라우터 적용 전에 bodyParser 적용
 app.use(bodyParser());
+app.use(jwtMiddleware);
 
 // app 인스턴스에 라우터 적용
 app.use(router.routes()).use(router.allowedMethods());
