@@ -53,7 +53,7 @@ function Mainpage() {
   return (
     <div>
       <ImageSlider />
-      {/* <Chatbot/> */}
+      <Chatbot/> 
     </div>
   )
 }

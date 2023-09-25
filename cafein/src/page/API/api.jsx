@@ -1,84 +1,85 @@
-// import React, { useState } from 'react';
-// import axios from 'axios';
 
-// function Chatbot() {
-//   const [inputText, setInputText] = useState('');
-//   const [responseText, setResponseText] = useState('');
 
-//   const handleInputChange = (event) => {
-//     setInputText(event.target.value);
-//   };
+// import { useState } from 'react';
 
-//   const handleSubmit = async (event) => {
-//     event.preventDefault();
+// export default function Chatbot() {
+//   const [question, setQuestion] = useState('');
+//   const [answer, setAnswer] = useState();
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
 
 //     try {
-//       const response = await axios.post('/', { input: inputText });
-//       setResponseText(response.data.output);
+//       const response = await fetch('./api/generate', {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify({ question: question }),
+//       });
+        
+//       const data = await response.json();
+//       if (response.status !== 200) {
+//         throw (
+//           data.error ||
+//           new Error(`request failed with status ${response.status}`)
+//         );
+//       }
+
+//       setAnswer(data.result);
+//       setQuestion('');
 //     } catch (error) {
 //       console.error(error);
+//       alert(error.message);
 //     }
 //   };
 
 //   return (
-//     <div>
+//     <>
 //       <form onSubmit={handleSubmit}>
-//         <input type="text" value={inputText} onChange={handleInputChange} />
-//         <button type="submit">전송</button>
+//         <input
+//           type='text'
+//           value={question}
+//           onChange={(e) => setQuestion(e.target.value)}
+//         />
+//         <button type='submit'>질문하기</button>
 //       </form>
-//       <p>{responseText}</p>
-//     </div>
+//       <div>{answer}</div>
+//     </>
 //   );
 // }
+import React, { useState } from 'react';
+//import './App.css'
 
-// export default Chatbot;
+function App() {
+  const [message, setMessage] = useState('');
+  const [response, setResponse] = useState('');
 
-
-import { useState } from 'react';
-
-export default function Chatbot() {
-  const [question, setQuestion] = useState('');
-  const [answer, setAnswer] = useState();
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      const response = await fetch('./api/generate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ question: question }),
-      });
-
-      const data = await response.json();
-      if (response.status !== 200) {
-        throw (
-          data.error ||
-          new Error(`request failed with status ${response.status}`)
-        );
-      }
-
-      setAnswer(data.result);
-      setQuestion('');
-    } catch (error) {
-      console.error(error);
-      alert(error.message);
-    }
-  };
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    fetch('http://localhost:3001/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({message})
+    })
+    .then((res) => res.json())
+    .then((data) => setResponse(data.message))
+  }
 
   return (
-    <>
+    <div className='App'>
       <form onSubmit={handleSubmit}>
-        <input
-          type='text'
-          value={question}
-          onChange={(e) => setQuestion(e.target.value)}
-        />
-        <button type='submit'>질문하기</button>
+        <textarea
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+        ></textarea>
+        <button type='submit'>Submit</button>
       </form>
-      <div>{answer}</div>
-    </>
-  );
+      <div>{response}</div>
+    </div>
+  )
 }
+
+export default App
