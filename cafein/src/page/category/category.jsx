@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import '../../style/categorypage/category.scss'; // 스타일 파일 경로를 수정하세요.
 import { coffee, cafename } from './coffeedata.js'; // JSON 파일 경로를 수정하세요.
 import coffeeData from './Data.json'
+import { Link } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 const TagList = ({ tags, onTagClick, selectedTagId }) => {
   return (
@@ -26,7 +28,8 @@ function Category() {
   const [selectedTagCoffeeId, setSelectedTagCoffee] = useState(null);
 
   const [searchQuery, setSearchQuery] = useState("");
-
+  const { coffeeId } = useParams();
+  const navigate = useNavigate();
   useEffect(() => {
     setSelectedCafeTag(null);
     setSelectedTagCoffee(null);
@@ -56,8 +59,12 @@ function Category() {
       setSearchQuery("");
     }
   };
-  
-  
+
+  const handleCoffeeDetail = (coffeeId, cafename) => {
+    navigate(`/category/${cafename}/${coffeeId}`);
+  }
+
+
 
 
 
@@ -87,7 +94,7 @@ function Category() {
           onChange={(e) => setSearchQuery(e.target.value)}
         />
 
-        
+
 
 
         <div>
@@ -125,7 +132,7 @@ function Category() {
                 tag.cafeid === selectedTagCafeId && (
                   <React.Fragment key={tag.id}>
                     <div className="coffee-item">
-                      <img src={tag.image} alt={tag.name} className="category-image" />
+                      <img src={tag.image} alt={tag.name} className="category-image" onClick={() => handleCoffeeDetail(tag.id, tag.cafe)} />
                       <p>{tag.name}</p>
                     </div>
                   </React.Fragment>
@@ -145,18 +152,18 @@ function Category() {
         {searchQuery && (
           <div className="search-results">
             <div className="coffee-grid">
-              {filteredCafe.map((tag)=>(
-                searchQuery===tag.name &&
+              {filteredCafe.map((tag) => (
+                searchQuery === tag.name &&
                 (
                   <React.Fragment key={tag.id}>
                     <div className="coffee-item">
-                      <img src={tag.image} alt={tag.name} className="category-image" />
+                      <img src={tag.image} alt={tag.name} className="category-image" onClick={() => handleCoffeeDetail(tag.id,tag.cafe)} />
                       <p>{tag.name}</p>
                     </div>
                   </React.Fragment>
                 )
-                
-                
+
+
               ))}
             </div>
           </div>

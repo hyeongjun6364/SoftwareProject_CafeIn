@@ -14,6 +14,7 @@ import Chatbot from "./page/API/api"
 import { RecoilRoot } from "recoil"
 import SignUp from "./page/mypage/signup"
 import App from "./App"
+import CoffeeDatail from "./page/category/coffeeDatail"
 //import { Chat } from "openai/resources"
 
 const root = ReactDOM.createRoot(document.getElementById("root"))
@@ -23,7 +24,7 @@ root.render(
     <BrowserRouter>
       <Layout>
         <Routes>
-         
+          <Route path="/category/:cafename/:coffeeId" Component={CoffeeDatail}/>
           <Route path="/" Component={MainPage} />
           <Route path="/mypage" Component={MyPage} />
           <Route path="/category" Component={Category} />

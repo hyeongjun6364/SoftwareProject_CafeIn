@@ -11,8 +11,6 @@ import Chatbot from "../API/api"
 //import getChatGPTResponse from "../API/api.jsx"
 const images = [coffee1, starbucks]
 
-
-
 function ImageSlider() {
   const settings = {
     dots: true, //동그란 버튼의미

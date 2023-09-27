@@ -14,7 +14,7 @@ function CommunityApp() {
         text:newPostText,
         createdate:new Date(timeStamp).toLocaleString(),
       };
-      setPosts([NewPost,...posts]);
+      setPosts([NewPost,...posts]);//post앞에 newpost추가
       setNewPostText("")
     }
   }
@@ -22,7 +22,7 @@ function CommunityApp() {
     setNewPostText(e.target.value)
   }
   return (
-    <div>
+    <div className='community-app'>
       <h2>커뮤니티</h2>
       <div>
         <textarea
@@ -35,6 +35,18 @@ function CommunityApp() {
 
       </div>
       <button onClick={handleSubmit}>제출</button>
+      <div>
+        <h2>게시물 목록</h2>
+        <ul>
+        {posts.map((post=>(
+          <li key={post.id}>
+            <p>{post.text}</p>
+            <small>작성일: {post.createdate}</small>
+          </li>
+        )))}
+        </ul>
+        
+      </div>
     </div>
 
   )
