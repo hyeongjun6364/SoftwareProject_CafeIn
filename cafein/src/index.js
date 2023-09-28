@@ -10,9 +10,10 @@ import MainPage from "./page/mainpage/mainpage"
 import MyPage from "./page/mypage/mypage" // MyPage 컴포넌트 추가
 import Community from "./page/community/community"
 import Category from "./page/category/category"
-import Chatbot from "./page/API/api"
+import Chatbot from "./page/API/chatbot"
 import { RecoilRoot } from "recoil"
 import SignUp from "./page/mypage/signup"
+import ExApi from "../src/page/API/ex"
 import App from "./App"
 import CoffeeDatail from "./page/category/coffeeDatail"
 //import { Chat } from "openai/resources"
@@ -31,6 +32,7 @@ root.render(
           <Route path="/community" Component={Community} />
           <Route path="/signup" Component={SignUp} />
           <Route path="/chatbot" Component={Chatbot} />
+          <Route path='/ex' Component={ExApi}/>
         </Routes>
       </Layout>
     </BrowserRouter>
