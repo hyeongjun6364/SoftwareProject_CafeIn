@@ -37,17 +37,7 @@ function Footer() {
           <Link to="/community">커뮤니티</Link>
           <Link to="/mypage">마이페이지</Link>
         </div>
-        <div className="footer-social">
-          <a href="#">
-            <i className="fab fa-instagram"></i>
-          </a>
-          <a href="#">
-            <i className="fab fa-facebook"></i>
-          </a>
-          <a href="#">
-            <i className="fab fa-twitter"></i>
-          </a>
-        </div>
+        
       </div>
     </footer>
   )

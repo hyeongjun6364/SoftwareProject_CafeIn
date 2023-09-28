@@ -7,11 +7,9 @@ import Slider from "react-slick"
 import "slick-carousel/slick/slick.css"
 import "slick-carousel/slick/slick-theme.css"
 import { useState } from "react"
-import Chatbot from "../API/api"
+import Chatbot from "../API/chatbot"
 //import getChatGPTResponse from "../API/api.jsx"
 const images = [coffee1, starbucks]
-
-
 
 function ImageSlider() {
   const settings = {
@@ -53,7 +51,7 @@ function Mainpage() {
   return (
     <div>
       <ImageSlider />
-      {/* <Chatbot/> */}
+      <Chatbot/> 
     </div>
   )
 }

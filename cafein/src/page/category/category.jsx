@@ -2,7 +2,9 @@ import React, { useState, useEffect } from "react";
 import '../../style/categorypage/category.scss'; // 스타일 파일 경로를 수정하세요.
 import { coffee, cafename } from './coffeedata.js'; // JSON 파일 경로를 수정하세요.
 import coffeeData from './Data.json'
-
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 const TagList = ({ tags, onTagClick, selectedTagId }) => {
   return (
     <div className="category">
@@ -24,13 +26,35 @@ const TagList = ({ tags, onTagClick, selectedTagId }) => {
 function Category() {
   const [selectedTagCafeId, setSelectedCafeTag] = useState(null);
   const [selectedTagCoffeeId, setSelectedTagCoffee] = useState(null);
-
   const [searchQuery, setSearchQuery] = useState("");
-
+  const [posts, setPosts] = useState([]);
+  const navigate = useNavigate();
   useEffect(() => {
     setSelectedCafeTag(null);
     setSelectedTagCoffee(null);
   }, [searchQuery]);
+
+
+  // API완성되면 쓰일 임시 코드
+  // 비동기통신을 하기위해 async, await를 useEffect 함수내에서 직접 썻지만
+  //  경고 메시지가 나와서 함수를 정의하고 이 함수를 반환하는 식으로 바꿈 
+
+  // useEffect(() => {
+  //   async function fetchData(){
+  //       try {
+  //           await axios.get('https://jsonplaceholder.typicode.com/posts')
+  //           .then((response) => {
+  //             setPosts(response.data);
+  //           })
+  //         } catch (error) {
+  //           console.log(error)
+  //         }
+  //   }
+  //   fetchData()
+    
+  // },[])
+  
+
 
   const handleTagClick = (tag) => {
     if (selectedTagCafeId === tag) {
@@ -56,22 +80,24 @@ function Category() {
       setSearchQuery("");
     }
   };
-  
-  
+
+  const handleCoffeeDetail = (coffeeId, cafename) => {
+    navigate(`/category/${cafename}/${coffeeId}`);
+  }
+
+
 
 
 
   const CafeName = coffeeData.find((tag) => tag.id === selectedTagCafeId)?.cafe
   const CafeContent = coffee.find((tag) => tag.id === selectedTagCoffeeId)?.content
-  const CafeImg = coffeeData.find((tag) => tag.id === selectedTagCafeId)?.image
+  
 
   //검색어 결과 업데이트
   const filteredCafe = coffeeData.filter((tag) =>
     tag.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
-  const filteredImg = coffeeData.filter((tag) =>
-    tag.image.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  
 
   return (
     <div style={{ margin: "0 5%" }}>
@@ -87,7 +113,7 @@ function Category() {
           onChange={(e) => setSearchQuery(e.target.value)}
         />
 
-        
+
 
 
         <div>
@@ -125,7 +151,7 @@ function Category() {
                 tag.cafeid === selectedTagCafeId && (
                   <React.Fragment key={tag.id}>
                     <div className="coffee-item">
-                      <img src={tag.image} alt={tag.name} className="category-image" />
+                      <img src={tag.image} alt={tag.name} className="category-image" onClick={() => handleCoffeeDetail(tag.id, tag.cafe)} />
                       <p>{tag.name}</p>
                     </div>
                   </React.Fragment>
@@ -145,18 +171,18 @@ function Category() {
         {searchQuery && (
           <div className="search-results">
             <div className="coffee-grid">
-              {filteredCafe.map((tag)=>(
-                searchQuery===tag.name &&
+              {filteredCafe.map((tag) => (
+                searchQuery === tag.name &&
                 (
                   <React.Fragment key={tag.id}>
                     <div className="coffee-item">
-                      <img src={tag.image} alt={tag.name} className="category-image" />
+                      <img src={tag.image} alt={tag.name} className="category-image" onClick={() => handleCoffeeDetail(tag.id, tag.cafe)} />
                       <p>{tag.name}</p>
                     </div>
                   </React.Fragment>
                 )
-                
-                
+
+
               ))}
             </div>
           </div>
