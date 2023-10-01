@@ -1,3 +1,4 @@
+// src/models/user.js
 import mongoose, { Schema } from 'mongoose';
 import bcypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
@@ -6,6 +7,13 @@ const UserSchema = new Schema({
   username: String,
   hashedPassword: String,
 });
+
+// const UserSchema = new Schema({
+//   username: String,
+//   hashedPassword: String,
+//   question: String, // 질문 필드 추가
+//   answer: String, // 답변 필드 추가
+// });
 
 // 커스텀 메소드들을 정의
 UserSchema.methods.setPassword = async function (password) {

@@ -1,8 +1,8 @@
 // src/models/questions.js
-
 import mongoose, { Schema } from 'mongoose';
 
 const QuestionSchema = new Schema({
+  username: String, // 사용자 이름
   question: String, // 질문
   answer: String, // 답변
 });
