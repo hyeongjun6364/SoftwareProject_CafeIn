@@ -20,9 +20,6 @@
 //   }
 // };
 
-// // 기타 질문과 관련된 API 컨트롤러 작성
-// // 필요한 API에 따라 함수를 추가할 수 있습니다.
-
 // src/api/questions/questions.ctrl.js
 import Question from '../../models/questions';
 

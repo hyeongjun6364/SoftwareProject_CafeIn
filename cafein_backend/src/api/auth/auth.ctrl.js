@@ -8,66 +8,22 @@ import User from '../../models/user';
 //     password: 'mypass123'
 // }
 
-// export const register = async (ctx) => {
-//   // 회원가입
-//   // Request Body 검증
-//   const schema = Joi.object().keys({
-//     username: Joi.string().alphanum().min(3).max(20).required(),
-//     password: Joi.string().required(),
-//   });
-
-//   const result = schema.validate(ctx.request.body); // POST 매소드가 유효한지 joi를 통해 확인
-//   if (result.error) {
-//     ctx.status = 400;
-//     ctx.body = result.error;
-//     return;
-//   }
-
-//   const { username, password } = ctx.request.body;
-//   try {
-//     const exists = await User.findByUsername(username);
-//     if (exists) {
-//       ctx.status = 409; // Conflict
-//       return;
-//     }
-
-//     const user = new User({
-//       username,
-//     });
-
-//     await user.setPassword(password); // 비밀번호 설정
-//     await user.save(); // 데이터베이스에 저장
-
-//     ctx.body = user.serialize();
-
-//     const token = user.generateToken();
-//     ctx.cookies.set('access_token', token, {
-//       maxAge: 1000 * 60 * 60 * 24 * 7, // 7일(1초 * 1분 * 1시간 * 24시간 * 7일)
-//       httpOnly: true,
-//     });
-//   } catch (e) {
-//     ctx.throw(500, e);
-//   }
-// };
-
 export const register = async (ctx) => {
+  // 회원가입
+  // Request Body 검증
   const schema = Joi.object().keys({
     username: Joi.string().alphanum().min(3).max(20).required(),
     password: Joi.string().required(),
-    question: Joi.string(), // 질문은 선택사항
-    answer: Joi.string(), // 답변은 선택사항
   });
 
-  const result = schema.validate(ctx.request.body);
-
+  const result = schema.validate(ctx.request.body); // POST 매소드가 유효한지 joi를 통해 확인
   if (result.error) {
     ctx.status = 400;
     ctx.body = result.error;
     return;
   }
 
-  const { username, password, question, answer } = ctx.request.body;
-
+  const { username, password } = ctx.request.body;
   try {
     const exists = await User.findByUsername(username);
     if (exists) {
@@ -77,24 +33,68 @@ export const register = async (ctx) => {
 
     const user = new User({
       username,
-      question, // 질문 추가
-      answer, // 답변 추가
     });
 
-    await user.setPassword(password);
-    await user.save();
+    await user.setPassword(password); // 비밀번호 설정
+    await user.save(); // 데이터베이스에 저장
 
     ctx.body = user.serialize();
 
     const token = user.generateToken();
     ctx.cookies.set('access_token', token, {
-      maxAge: 1000 * 60 * 60 * 24 * 7,
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 7일(1초 * 1분 * 1시간 * 24시간 * 7일)
       httpOnly: true,
     });
   } catch (e) {
     ctx.throw(500, e);
   }
 };
+
+// export const register = async (ctx) => {
+//   const schema = Joi.object().keys({
+//     username: Joi.string().alphanum().min(3).max(20).required(),
+//     password: Joi.string().required(),
+//     question: Joi.string(), // 질문은 선택사항
+//     answer: Joi.string(), // 답변은 선택사항
+//   });
+
+//   const result = schema.validate(ctx.request.body);
+
+//   if (result.error) {
+//     ctx.status = 400;
+//     ctx.body = result.error;
+//     return;
+//   }
+
+//   const { username, password, question, answer } = ctx.request.body;
+
+//   try {
+//     const exists = await User.findByUsername(username);
+//     if (exists) {
+//       ctx.status = 409; // Conflict
+//       return;
+//     }
+
+//     const user = new User({
+//       username,
+//       question, // 질문 추가
+//       answer, // 답변 추가
+//     });
+
+//     await user.setPassword(password);
+//     await user.save();
+
+//     ctx.body = user.serialize();
+
+//     const token = user.generateToken();
+//     ctx.cookies.set('access_token', token, {
+//       maxAge: 1000 * 60 * 60 * 24 * 7,
+//       httpOnly: true,
+//     });
+//   } catch (e) {
+//     ctx.throw(500, e);
+//   }
+// };
 
 // POST /api/auth/login
 // {

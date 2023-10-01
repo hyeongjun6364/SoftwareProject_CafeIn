@@ -55,13 +55,6 @@ const checkUserExists = async (ctx, next) => {
         existingQuestion.question = question;
         existingQuestion.answer = answer;
         await existingQuestion.save();
-      } else {
-        const newQuestion = new Question({
-          username,
-          question,
-          answer,
-        });
-        await newQuestion.save();
       }
     }
   } catch (e) {
