@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import '../../style/categorypage/category.scss'; // 스타일 파일 경로를 수정하세요.
 import { coffee, cafename } from './coffeedata.js'; // JSON 파일 경로를 수정하세요.
 import coffeeData from './Data.json'
-import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 const TagList = ({ tags, onTagClick, selectedTagId }) => {

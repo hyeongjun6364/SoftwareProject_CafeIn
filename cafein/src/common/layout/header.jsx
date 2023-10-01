@@ -39,7 +39,7 @@ const Menu = () => {
             로그인하세요</Link> 
           </li> : ""}
           
-          <hr/>
+          
           <li
             className={selectedItem === "홈" ? "selected" : ""}
             onClick={() => handleItemClick("홈")}
