@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import "../../style/mypage/signup.scss" // 스타일 파일 임포트
 import axios from "axios"
+import Question from "./question"
 
 const SignUp = () => {
   const [username, setUsername] = useState("")
@@ -33,7 +34,7 @@ const SignUp = () => {
   return (
     <div className="signup-container">
       {isRegistered ? (
-        <p>회원가입이 완료되었습니다.</p>
+        <Question />
       ) : (
         <div className="signup-form-container">
           <h2 className="signup-ok-text">회원가입</h2>

@@ -1,3 +1,4 @@
+// src/api/auth/auth.ctrl.js
 import Joi from 'joi';
 import User from '../../models/user';
 

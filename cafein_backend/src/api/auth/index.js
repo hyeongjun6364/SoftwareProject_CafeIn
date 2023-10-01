@@ -1,3 +1,4 @@
+// src/api/auth/index.js
 import Router from 'koa-router';
 import * as authCtrl from './auth.ctrl';
 

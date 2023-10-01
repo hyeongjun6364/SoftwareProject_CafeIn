@@ -13,6 +13,7 @@ import Category from "./page/category/category"
 import Chatbot from "./page/API/api"
 import { RecoilRoot } from "recoil"
 import SignUp from "./page/mypage/signup"
+import Question from "./page/mypage/question"
 // import App from "./App"
 //import { Chat } from "openai/resources"
 
@@ -28,14 +29,11 @@ root.render(
           <Route path="/community" Component={Community} />
           <Route path="/signup" Component={SignUp} />
           <Route path="/chatbot" Component={Chatbot} />
+          <Route path="/qeustion" Component={Question} />
         </Routes>
       </Layout>
     </BrowserRouter>
-  </RecoilRoot>,
-
-  {
-    /* <App/> */
-  }
+  </RecoilRoot>
 )
 
 reportWebVitals()
