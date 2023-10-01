@@ -59,9 +59,9 @@ function CoffeeDetail() {
       <ul className='review-ul'>
           {posts.map((post => (
             <li key={post.id} >
+              <h3>{post.title}</h3>
               <p>{post.body}</p>
               <small>작성자: {post.userId}</small>
-              
             </li>
 
           )))}

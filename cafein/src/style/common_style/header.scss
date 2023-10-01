@@ -128,6 +128,12 @@
     color: inherit;
   }
 }
+// .header-container{
+//   display: flex;
+//   align-items: center;
+//   justify-content: space-between;
+//   cursor: pointer;
+// }
 
 .border-bottom {
   height: 2px;
@@ -183,10 +189,6 @@ nav {
 .mobile-menu-icon {
   display: none; // Initially hidden on desktop
 }
-
-// .container.open ul {
-//   display: block; //ul요소를 블록으로 바꾸고 줄바꿈으로 생성
-// }
 
 @media screen and (max-width: 768px) {
   /* Adjust as needed */

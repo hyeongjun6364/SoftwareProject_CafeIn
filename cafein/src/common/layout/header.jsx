@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { Link } from "react-router-dom"
 import "../../style/common_style/header.scss"
-
+import searchimg from '../../asset/common/reading_glasses.png'
 const Menu = () => {
   const [selectedItem, setSelectedItem] = useState(null)
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -10,16 +10,21 @@ const Menu = () => {
   const handleItemClick = (item) => {
     setSelectedItem(item)
     if (isMobileMenuOpen) {
-      setMobileMenuOpen(false) // Mobile menu close when an item is clicked
+      setMobileMenuOpen(false) 
     }
   }
-  
+
   return (
     <div>
       <header className="header">
-        <div className="logo" onClick={() => handleItemClick(null)}>
-          <Link to="/">CAFE IN</Link>
-        </div>
+        
+          <div className="logo" onClick={() => handleItemClick(null)}>
+            <Link to="/">CAFE IN</Link>
+          </div>
+          {/* {isMobileMenuOpen ? "" :<img src={searchimg} className="" alt="reading_glasses" style={{width:"30px"}} />} */}
+          
+        
+        
 
         {/* Mobile menu icon */}
         <div
@@ -28,18 +33,19 @@ const Menu = () => {
         >
           ☰
         </div>
-      </header>
+        </header>
+      
 
       <nav className={`container ${isMobileMenuOpen ? "open" : ""}`}>
         <ul >
-        {isMobileMenuOpen ? 
-        <li className={selectedItem === '로그인' ? 'selected' : ''}
-          onClick={() => handleItemClick('로그인')}>
-            <Link to="/mypage" >
-            로그인하세요</Link> 
-          </li> : ""}
-          
-          
+          {isMobileMenuOpen ?
+            <li className={selectedItem === '로그인' ? 'selected' : ''}
+              onClick={() => handleItemClick('로그인')}>
+              <Link to="/mypage" >
+                로그인하세요</Link>
+            </li> : ""}
+
+
           <li
             className={selectedItem === "홈" ? "selected" : ""}
             onClick={() => handleItemClick("홈")}
