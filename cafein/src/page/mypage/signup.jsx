@@ -31,16 +31,16 @@ const SignUp = () => {
   }
 
   return (
-    <div className="signup-form">
-      {/* 클래스명 추가 */}
-      <h2>회원가입</h2>
+    <div className="signup-container">
       {isRegistered ? (
         <p>회원가입이 완료되었습니다.</p>
       ) : (
-        <div>
+        <div className="signup-form-container">
+          <h2 className="signup-ok-text">회원가입</h2>
           <div>
-            <label>사용자 이름:</label>
+            <label className="signup-content-text">아이디:</label>
             <input
+              className="signup-input"
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
@@ -55,8 +55,9 @@ const SignUp = () => {
             />
           </div> */}
           <div>
-            <label>비밀번호:</label>
+            <label className="signup-content-text">비밀번호:</label>
             <input
+              className="signup-input"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
