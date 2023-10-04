@@ -1,21 +1,21 @@
 /* SignUp.css */
 
-.signup-form {
+.signup-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #f4f4f4;
+    // background: #f4f4f4;
     font-family: Arial, sans-serif;
 }
 
-.signup-form h2 {
+.signup-ok-text {
     font-size: 24px;
     font-weight: bold;
     color: #333;
     margin-bottom: 20px;
 }
 
-.signup-form div {
+.signup-form-container {
     background: #fff;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -24,15 +24,14 @@
     margin: 20px;
 }
 
-.signup-form label {
+.signup-content-text {
     font-size: 16px;
     margin-bottom: 10px;
     color: #333;
 }
 
-.signup-form input[type="text"],
-.signup-form input[type="email"],
-.signup-form input[type="password"] {
+.signup-input[type="text"],
+.signup-input[type="password"] {
     width: 100%;
     padding: 10px;
     margin-bottom: 10px;
@@ -43,7 +42,7 @@
 }
 
 .signup-button {
-    background-color: #007bff;
+    background-color: #555;
     color: #fff;
     border: none;
     padding: 12px;
