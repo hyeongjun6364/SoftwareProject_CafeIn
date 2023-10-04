@@ -99,6 +99,7 @@ function CommunityApp() {
         <ul>
           {currentPosts.map((post => (
             <li key={post.id}>
+              <h3>{post.title}</h3>
               <p>{post.body}</p>
               <small>작성자: {post.userId}</small>
               <button onClick={() => handleDeletePost(post.id)}>삭제</button>

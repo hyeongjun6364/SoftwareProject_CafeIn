@@ -1,85 +1,88 @@
+/*
+import React from 'react'
 
+const Chatbot = async () => {
+  const apiKey = process.env.REACT_APP_GPT_API_KEY;
+  console.log(apiKey)
+  
+  //await new Promise((resolve) => setTimeout(resolve, 3000));
+  
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`
+    },
+    body: JSON.stringify({
+      model: "gpt-3.5-turbo",
+      messages: [{ role: "user", content: "Say this is a test!" }],
+      temperature: 0.7,
+      max_tokens: 1_000,
 
-// import { useState } from 'react';
-
-// export default function Chatbot() {
-//   const [question, setQuestion] = useState('');
-//   const [answer, setAnswer] = useState();
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-
-//     try {
-//       const response = await fetch('./api/generate', {
-//         method: 'POST',
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify({ question: question }),
-//       });
-        
-//       const data = await response.json();
-//       if (response.status !== 200) {
-//         throw (
-//           data.error ||
-//           new Error(`request failed with status ${response.status}`)
-//         );
-//       }
-
-//       setAnswer(data.result);
-//       setQuestion('');
-//     } catch (error) {
-//       console.error(error);
-//       alert(error.message);
-//     }
-//   };
-
-//   return (
-//     <>
-//       <form onSubmit={handleSubmit}>
-//         <input
-//           type='text'
-//           value={question}
-//           onChange={(e) => setQuestion(e.target.value)}
-//         />
-//         <button type='submit'>질문하기</button>
-//       </form>
-//       <div>{answer}</div>
-//     </>
-//   );
-// }
-import React, { useState } from 'react';
-//import './App.css'
-
-function App() {
-  const [message, setMessage] = useState('');
-  const [response, setResponse] = useState('');
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    fetch('http://localhost:3001/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({message})
     })
-    .then((res) => res.json())
-    .then((data) => setResponse(data.message))
-  }
+  });
+  const responseData = await response.json();
+  console.log("gpt data:", responseData);
+  return responseData;
+};
+
+export default Chatbot
+
+*/
+import React, { useState } from 'react';
+import axios from 'axios';
+
+const Chatbot = () => {
+  const [input, setInput] = useState('');
+  const [messages, setMessages] = useState([]);
+
+  const handleInputChange = (e) => {
+    setInput(e.target.value);
+  };
+
+  const handleSendMessage = async () => {
+    if (input.trim() === '') return;
+
+    // GPT-3 API 호출
+    try {
+      const response = await axios.post('https://api.openai.com/v1/engines/davinci/completions', {
+        prompt: input,
+        max_tokens: 50,
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer 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`, // 여기에 GPT-3 API 키를 추가하세요.
+        },
+      });
+
+      const reply = response.data.choices[0].text;
+      setMessages([...messages, { text: input, type: 'user' }, { text: reply, type: 'bot' }]);
+      setInput('');
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
 
   return (
-    <div className='App'>
-      <form onSubmit={handleSubmit}>
-        <textarea
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-        ></textarea>
-        <button type='submit'>Submit</button>
-      </form>
-      <div>{response}</div>
+    <div>
+      <div className="chat-container">
+        {messages.map((message, index) => (
+          <div key={index} className={`message ${message.type}`}>
+            {message.text}
+          </div>
+        ))}
+      </div>
+      <div className="input-container">
+        <input
+          type="text"
+          placeholder="Type a message..."
+          value={input}
+          onChange={handleInputChange}
+        />
+        <button onClick={handleSendMessage}>Send</button>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default Chatbot;
