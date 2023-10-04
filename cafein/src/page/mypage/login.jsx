@@ -3,6 +3,7 @@ import { useRecoilState } from "recoil"
 import { loggedInState } from "./auth"
 import { Link } from "react-router-dom"
 import "../../style/mypage/loginform.scss"
+import axios from "axios"
 
 const Login = () => {
   const [isLogged, setIsLogged] = useRecoilState(loggedInState)
@@ -65,14 +66,20 @@ const Login = () => {
     })
   }
 
-  const login = () => {
-    console.log({ loginID, loginPassword })
+  const login = async () => {
+    try {
+      const response = await axios.post("/api/auth/login", {
+        username: loginID,
+        password: loginPassword,
+      })
 
-    if (loginID === "Admin1234@" && loginPassword === "Admin1234@") {
-      localStorage.setItem("login", "true") // 로그인 성공 시 Recoil 상태 변경
-      setIsLogged(true)
-    } else {
+      if (response.status === 200) {
+        localStorage.setItem("login", "true")
+        setIsLogged(true)
+      }
+    } catch (error) {
       alert("아이디 또는 비밀번호가 올바르지 않습니다.")
+      console.error("로그인 오류:", error)
     }
   }
 
@@ -112,7 +119,7 @@ const Login = () => {
                   name="showPassward"
                   id="showPassword"
                   checked={showPassword}
-                  onClick={togglePasswordVisibility}
+                  onChange={togglePasswordVisibility}
                 />
                 <label>
                   <span>

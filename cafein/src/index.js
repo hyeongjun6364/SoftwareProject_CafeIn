@@ -17,10 +17,12 @@ import SignUp from "./page/mypage/signup"
 import App from "./App"
 import CoffeeDatail from "./page/category/coffeeDatail"
 
+import Question from "./page/mypage/question"
+// import App from "./App"
+//import { Chat } from "openai/resources"
 
 const root = ReactDOM.createRoot(document.getElementById("root"))
 root.render(
- 
   <RecoilRoot>
     <BrowserRouter>
       <Layout>
@@ -33,14 +35,11 @@ root.render(
           <Route path="/signup" Component={SignUp} />
           <Route path="/chatbot" Component={Chatbot} />
           
+          <Route path="/qeustion" Component={Question} />
         </Routes>
       </Layout>
     </BrowserRouter>
-  </RecoilRoot>,
-
-{/* <App/> */}
-  
- 
+  </RecoilRoot>
 )
 
 reportWebVitals()
