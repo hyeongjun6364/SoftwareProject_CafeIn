@@ -1,3 +1,4 @@
+// src/api/auth/posts.ctrl.js
 import Post from '../../models/post';
 import mongoose from 'mongoose';
 import Joi from 'joi';

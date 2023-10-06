@@ -6,7 +6,10 @@ import starbucks from "./starbucks.jpg"
 import Slider from "react-slick"
 import "slick-carousel/slick/slick.css"
 import "slick-carousel/slick/slick-theme.css"
+import { useState } from "react"
+import Chatbot from "../API/chatbot.jsx"
 
+//import getChatGPTResponse from "../API/api.jsx"
 const images = [coffee1, starbucks]
 
 function ImageSlider() {
@@ -20,7 +23,10 @@ function ImageSlider() {
     autoplaySpeed: 5000, // 자동으로 넘어가는 속도 조정 가능
     cssEase: "linear", // 애니메이션 효과 설정
   }
+  
+  
 
+  
   return (
     <div style={{ width: "100%", height: "530px" }}>
       <Slider {...settings}>
@@ -34,12 +40,26 @@ function ImageSlider() {
   )
 }
 
-function mainpage() {
+function Mainpage() {
+  const [question, setQuestion] = useState("");
+  const [answer, setAnswer] = useState("");
+
+  const handleQuestionChange = (e) => {
+    setQuestion(e.target.value);
+  };
+  const handleClickApiCall = async () => {
+    await Chatbot();
+  }
+  
+  
   return (
     <div>
       <ImageSlider />
+      
+      {/*<button onClick={handleClickApiCall}>GPT API CALL</button>*/}
+      <Chatbot/>
     </div>
   )
 }
 
-export default mainpage
+export default Mainpage

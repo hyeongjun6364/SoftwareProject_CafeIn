@@ -107,9 +107,11 @@
   background-color: black;
   color: white;
   padding: 15px;
+  
 }
 .header {
   display: flex;
+  //justify-items: center;
   justify-content: space-between;
   align-items: center; // 아이템들을 세로 방향으로 가운데 정렬합니다.
 }
@@ -126,6 +128,12 @@
     color: inherit;
   }
 }
+// .header-container{
+//   display: flex;
+//   align-items: center;
+//   justify-content: space-between;
+//   cursor: pointer;
+// }
 
 .border-bottom {
   height: 2px;
@@ -143,8 +151,8 @@ nav {
     list-style: none;
     display: flex;
     gap: 10%;
-    justify-content: center;
-    align-items: center;
+    //justify-content: center;
+    //align-items: center;
     padding: 0;
     margin: 0;
 
@@ -153,7 +161,7 @@ nav {
       font-size: 13px;
       cursor: pointer;
       text-decoration: none; // 밑줄 제거
-
+      flex-grow: 1;
       a {
         text-decoration: none; // 밑줄 제거
         color: inherit;
@@ -182,11 +190,7 @@ nav {
   display: none; // Initially hidden on desktop
 }
 
-// .container.open ul {
-//   display: block; //ul요소를 블록으로 바꾸고 줄바꿈으로 생성
-// }
-
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 768px) {
   /* Adjust as needed */
   .container {
     position: fixed;
@@ -196,7 +200,7 @@ nav {
     height: 100%;
     background-color: black;
     color: white;
-    z-index: 999;
+    z-index: 1000;
     transition: right 0.3s ease-in-out;
   }
 
@@ -216,9 +220,15 @@ nav {
     list-style: none;
     display: block;
   }
-
+  .container ul.login{
+    font-weight: 600;
+    padding: 0.8rem 1rem;
+    border-radius: 0.5rem;
+    color: rgb(66, 133, 244)
+  }
   .container ul li {
-    color: white;
+    color: rgb(174, 175, 185);
+    font-weight: 600;
     font-size: 13px;
     padding: 15px;
     text-align: center;

@@ -3,6 +3,7 @@ const Koa = require('koa');
 const Router = require('koa-router');
 const bodyParser = require('koa-bodyparser');
 const mongoose = require('mongoose');
+const cors = require('@koa/cors');
 
 import api from './api';
 import jwtMiddleware from './lib/jwtMiddleware';
@@ -21,6 +22,13 @@ mongoose
 
 const app = new Koa();
 const router = new Router();
+
+const corsOptions = {
+  origin: 'http://localhost:3000', // 클라이언트 애플리케이션의 도메인
+  credentials: true, // 필요한 경우 사용자 인증 정보 허용
+};
+
+app.use(cors(corsOptions));
 
 // 라우터 설정
 router.use('/api', api.routes()); // api 라우트 적용

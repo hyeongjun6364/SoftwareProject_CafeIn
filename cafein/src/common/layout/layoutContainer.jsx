@@ -26,7 +26,7 @@ export default function Layout(props) {
   return (
     <div className="wrapper">
       {!isHiddenHeader && <Header />}
-      {props.children}
+      <div className="body">{props.children}</div>
       {!isHiddenFooter && <Footer />}
     </div>
   )

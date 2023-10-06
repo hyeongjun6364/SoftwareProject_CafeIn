@@ -1,3 +1,4 @@
+// src/api/post/index.js
 import Router from 'koa-router';
 import * as postsCtrl from './posts.ctrl';
 import checkLoggedIn from '../../lib/checkLoggedIn';
