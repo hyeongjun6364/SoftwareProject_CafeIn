@@ -11,6 +11,7 @@ function CommunityApp() {
   const [activePage, setActivePage] = useState(1); // 현재 페이지
   const postsPerPage = 10; // 페이지당 표시할 게시물 수
   const navigate = useNavigate();
+  
 
   const handlePageChange = (pageNumber) => {
     setActivePage(pageNumber);
@@ -40,16 +41,16 @@ function CommunityApp() {
         title: newPostText,
         body: newPostText,
         tags: ["태그1", "태그2"],
-        
+
       }
-      
+
       try {
-        axios.post('http://localhost:4000/api/posts', newPost,  {
+        axios.post('http://localhost:4000/api/posts', newPost, {
           withCredentials: true, // 모든 쿠키 허용
         }
 
         )
-        
+
         setPosts([newPost, ...posts])
         setNewPostText('')
 
@@ -61,7 +62,7 @@ function CommunityApp() {
 
 
   //delete post
-  
+
 
   const handleDeletePost = (id) => {
     const token = Cookies.get('access_token');
@@ -84,18 +85,17 @@ function CommunityApp() {
 
   }
 
-  // update post
+  
 
-  const handleUpdatepost = async(id) => {
-    await axios.patch(`http://localhost:4000/api/posts/${id}`)
-  }
+  
+ 
   const indexOfLastPost = activePage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
 
 
   // 글쓰기
-  const handlewrite =() => {
+  const handlewrite = () => {
     navigate('/write')
   }
   return (
@@ -113,21 +113,21 @@ function CommunityApp() {
       </div>
       <button onClick={handleNewPost}>제출</button>
       <div>
-        <div style={{display:'flex',alignContent:'center',}}>
-        <h2>게시물 목록</h2>
-        <button onClick={handlewrite}>글쓰기</button>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h2>게시물 목록</h2>
+          <button onClick={handlewrite}>글쓰기</button>
         </div>
-        
+
         <ul>
           {currentPosts.map((post => (
             <li key={post._id}>
               <h3>{post.title}</h3>
               <p>{post.body}</p>
-              <small>작성자: {post.user?post.user.username :"none"}</small>
+              <small>작성자: {post.user ? post.user.username : "none"}</small>
               <button onClick={() => handleDeletePost(post._id)}>삭제</button>
-              <button onClick={() => handleUpdatepost(post._id)}>수정</button>
+              <button onClick={() => handlewrite(post._id)}>수정</button>
             </li>
-            
+
 
           )))}
 
