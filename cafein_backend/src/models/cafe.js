@@ -12,6 +12,14 @@ const cafeSchema = new Schema(
     content: String,
     image: String,
     tag: [String], // tag 필드
+    detail: {
+      volume: { type: String, default: '' }, // 빈 문자열로 초기화
+      kcal: { type: Number, default: null }, // 기본값을 null로 설정
+      sat_FAT: { type: Number, default: null },
+      sodium: { type: Number, default: null },
+      sugars: { type: Number, default: null },
+      caffeine: { type: Number, default: null },
+    },
   },
   {
     collection: 'cafe', // 컬렉션 이름을 "cafe"로 명시적으로 설정
