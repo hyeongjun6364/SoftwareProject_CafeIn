@@ -1,21 +1,60 @@
-/* App.css */
-.footer-static {
-    min-height: 100vh;
-    /* 최소 화면 높이를 100vh로 설정하여 페이지가 적어도 화면 크기만큼 높아지도록 합니다. */
-    position: relative;
-}
-// .sticky {
-//     position: fixed;
-//     bottom: 0;
-//     left: 0;
-//     right: 0;
-//    // z-index: 999;
-//   }
-  
-  
-  
-  
-  
+// /* App.css */
+// .footer-static {
+//     min-height: 100vh;
+//     /* 최소 화면 높이를 100vh로 설정하여 페이지가 적어도 화면 크기만큼 높아지도록 합니다. */
+//     position: relative;
+// }
+
+// // .sticky {
+// //     position: fixed;
+// //     bottom: 0;
+// //     left: 0;
+// //     right: 0;
+// //    // z-index: 999;
+// //   }
+
+// .footer {
+//     background-color: #333;
+//     color: white;
+//     padding: 20px 0;
+//     text-align: center;
+//     justify-content: center;
+//     position: absolute; /* footer를 절대 위치로 설정합니다. */
+//     bottom: 0; /* 하단에 고정시킵니다. */
+//     width: 100%;
+// }
+
+// .footer-container {
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+//     max-width: 1200px;
+//     margin: 0 auto;
+//     padding: 0 20px;
+// }
+
+// .footer-logo {
+//     font-size: 24px;
+//     font-weight: bold;
+// }
+
+// .footer-links a {
+//     color: white;
+//     text-decoration: none;
+
+//     margin: 0 15px;
+// }
+
+// .footer-social a {
+//     color: white;
+//     text-decoration: none;
+//     font-size: 18px;
+// }
+
+// /* Font Awesome 아이콘 스타일링 */
+// .footer-social a i {
+//     font-size: inherit;
+// }
 
 .footer {
     background-color: #333;
@@ -23,9 +62,16 @@
     padding: 20px 0;
     text-align: center;
     justify-content: center;
-    position: absolute; /* footer를 절대 위치로 설정합니다. */
-    bottom: 0; /* 하단에 고정시킵니다. */
-    width: 100%; 
+    position: fixed; /* 푸터를 고정 위치로 설정 */
+    bottom: 0; /* 화면 하단에 고정 */
+    width: 100%;
+    transition: opacity 0.2s ease-in-out;
+    opacity: 1; /* 초기에 보이도록 설정 */
+    z-index: 999; /* 다른 요소 위에 표시 */
+}
+
+.footer.hidden {
+    opacity: 0; /* 숨길 때 투명하게 설정 */
 }
 
 .footer-container {
@@ -35,18 +81,11 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
-    
-}
-
-.footer-logo {
-    font-size: 24px;
-    font-weight: bold;
 }
 
 .footer-links a {
     color: white;
     text-decoration: none;
-    
     margin: 0 15px;
 }
 
@@ -54,7 +93,6 @@
     color: white;
     text-decoration: none;
     font-size: 18px;
-    
 }
 
 /* Font Awesome 아이콘 스타일링 */
