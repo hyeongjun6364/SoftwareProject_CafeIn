@@ -15,7 +15,10 @@ function CoffeeDetail() {
   const coffeeItem = coffeeData.find(
     (item) => item.cafe === cafename && item.id === parseInt(coffeeId)
   );
-
+// 실제 우리 db서버
+//http://localhost:4000/api/posts?username=&tag&page=1
+// 무료 api 서버
+//https://jsonplaceholder.typicode.com/posts
   useEffect(()=>{
     async function fetchdata(){
       try{
