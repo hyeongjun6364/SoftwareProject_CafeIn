@@ -13,13 +13,12 @@ import Category from "./page/category/category"
 import Chatbot from "./page/API/chatbot"
 import { RecoilRoot } from "recoil"
 import SignUp from "./page/mypage/signup"
+import CommuntyWrite from "./page/community/communityWrite"
 
-import App from "./App"
 import CoffeeDatail from "./page/category/coffeeDatail"
 
 import Question from "./page/mypage/question"
-// import App from "./App"
-//import { Chat } from "openai/resources"
+
 
 const root = ReactDOM.createRoot(document.getElementById("root"))
 root.render(
@@ -34,7 +33,7 @@ root.render(
           <Route path="/community" Component={Community} />
           <Route path="/signup" Component={SignUp} />
           <Route path="/chatbot" Component={Chatbot} />
-          
+          <Route path="/write" Component={CommuntyWrite}/>
           <Route path="/qeustion" Component={Question} />
         </Routes>
       </Layout>
