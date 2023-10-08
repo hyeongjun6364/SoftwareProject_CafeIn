@@ -41,12 +41,7 @@ function ImageSlider() {
 }
 
 function Mainpage() {
-  const [question, setQuestion] = useState("");
-  const [answer, setAnswer] = useState("");
-
-  const handleQuestionChange = (e) => {
-    setQuestion(e.target.value);
-  };
+  
   const handleClickApiCall = async () => {
     await Chatbot();
   }
@@ -56,8 +51,8 @@ function Mainpage() {
     <div>
       <ImageSlider />
       
-      {/*<button onClick={handleClickApiCall}>GPT API CALL</button>*/}
-      <Chatbot/>
+      <button onClick={handleClickApiCall}>GPT API CALL</button>
+      
     </div>
   )
 }

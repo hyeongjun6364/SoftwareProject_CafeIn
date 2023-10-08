@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import '../../style/communitypage/community.scss';
 import axios from 'axios';
-import Pagination from'react-js-pagination';
+import Pagination from 'react-js-pagination';
 import '../../style/categorypage/pagination.scss'
 function CommunityApp() {
   const [posts, setPosts] = useState([]); // 게시물 목록
   const [newPostText, setNewPostText] = useState(''); // 새 게시물 텍스트
   const [activePage, setActivePage] = useState(1); // 현재 페이지
   const postsPerPage = 10; // 페이지당 표시할 게시물 수
-  
+
   // const handleSubmit = () => {
   //   const timeStamp = new Date().getTime();
   //   console.log(timeStamp)
@@ -32,15 +32,16 @@ function CommunityApp() {
   useEffect(() => {
     async function CommunityFetch() {
       try {
-        const response = await axios.get('https://jsonplaceholder.typicode.com/posts')
+        const response = await axios.get('http://localhost:4000/api/posts?username=&tag&page=1')
         setPosts(response.data)
       } catch (error) {
         console.log(error)
       }
-
     }
     CommunityFetch()
   }, [])
+
+
 
   // write post
   const handleNewPost = () => {
@@ -48,12 +49,16 @@ function CommunityApp() {
       const newPost = {
         title: newPostText,
         body: newPostText,
-        userId: 1,
-        id: posts.length + 1,
+        tags: ["태그1", "태그2"],
+        
+        //userId: 1,
+        //id: posts.length + 1,
       }
-
+      //console.log(newPost.user._id)
       try {
-        axios.post('https://jsonplaceholder.typicode.com/posts', newPost)
+        axios.post('http://localhost:4000/api/posts', newPost
+        )
+        
         setPosts([newPost, ...posts])
         setNewPostText('')
 
@@ -62,6 +67,24 @@ function CommunityApp() {
       }
     }
   }
+
+
+  // function getCookie(cookieName) {
+  //   cookieName = `${cookieName}=`;
+  //   let cookieData = document.cookie;
+  
+  //   let cookieValue = "";
+  //   let start = cookieData.indexOf(cookieName);
+  
+  //   if (start !== -1) {
+  //     start += cookieName.length;
+  //     let end = cookieData.indexOf(";", start);
+  //     if (end === -1) end = cookieData.length;
+  //     cookieValue = cookieData.substring(start, end);
+  //   }
+    
+  //   return unescape(cookieValue);
+  // }
 
   //delete post
   const handleDeletePost = (id) => {
@@ -98,11 +121,11 @@ function CommunityApp() {
         <h2>게시물 목록</h2>
         <ul>
           {currentPosts.map((post => (
-            <li key={post.id}>
+            <li key={post._id}>
               <h3>{post.title}</h3>
               <p>{post.body}</p>
-              <small>작성자: {post.userId}</small>
-              <button onClick={() => handleDeletePost(post.id)}>삭제</button>
+              <small>작성자: {post.user?post.user.username :"none"}</small>
+              <button onClick={() => handleDeletePost(post._id)}>삭제</button>
             </li>
 
           )))}
@@ -117,8 +140,8 @@ function CommunityApp() {
           itemClass="page-item"
           linkClass="page-link"
         />
-        <br/>
-        <br/>
+        <br />
+        <br />
       </div>
     </div>
 
