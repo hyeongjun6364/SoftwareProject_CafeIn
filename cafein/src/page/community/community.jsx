@@ -5,6 +5,7 @@ import Pagination from 'react-js-pagination';
 import '../../style/categorypage/pagination.scss';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
+import WritePage from './writePage';
 function CommunityApp() {
   const [posts, setPosts] = useState([]); // 게시물 목록
   const [newPostText, setNewPostText] = useState(''); // 새 게시물 텍스트
@@ -53,11 +54,15 @@ function CommunityApp() {
 
         setPosts([newPost, ...posts])
         setNewPostText('')
-
+        alert('글이 작성되었습니다')
       } catch (e) {
         console.log(e)
       }
     }
+  }
+  //글쓰기
+  const handlewrite = () =>{
+    navigate('/communitywrite')
   }
 
 
@@ -94,10 +99,21 @@ function CommunityApp() {
   const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
 
 
-  // 글쓰기
-  const handlewrite = () => {
-    navigate('/write')
+  // update 
+  const handleupdate = (id,userid) => {
+    const token = Cookies.get('access_token');
+    // console.log("token:",id)
+    // console.log("게시물유저id:",userid)
+    navigate(`/write/${id}`)
+    // if(token==userid){
+    //   navigate(`/write/${id}`)
+    // }
+    // else{
+    //   alert('해당글 작성자가 아닙니다.')
+    // }
+    
   }
+  
   return (
     <div className='community-app'>
       <h2>커뮤니티</h2>
@@ -115,7 +131,7 @@ function CommunityApp() {
       <div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h2>게시물 목록</h2>
-          <button onClick={handlewrite}>글쓰기</button>
+          {/* <button onClick={handlewrite}>글쓰기</button> */}
         </div>
 
         <ul>
@@ -125,7 +141,7 @@ function CommunityApp() {
               <p>{post.body}</p>
               <small>작성자: {post.user ? post.user.username : "none"}</small>
               <button onClick={() => handleDeletePost(post._id)}>삭제</button>
-              <button onClick={() => handlewrite(post._id)}>수정</button>
+              <button onClick={() => handleupdate(post._id,post.user?._id)}>수정</button>
             </li>
 
 
