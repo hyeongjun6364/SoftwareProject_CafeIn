@@ -4,6 +4,9 @@ import { coffee, cafename } from './coffeedata.js'; // JSON 파일 경로를 수
 import coffeeData from './Data.json'
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Pagination from 'react-js-pagination';
+import '../../style/categorypage/pagination.scss';
+
 const TagList = ({ tags, onTagClick, selectedTagId }) => {
   return (
     <div className="category">
@@ -28,33 +31,38 @@ function Category() {
   const [searchQuery, setSearchQuery] = useState("");
   const [posts, setPosts] = useState([]);
   const navigate = useNavigate();
+  const [activePage, setActivePage] = useState(1); // 현재 페이지
+  const postsPerPage = 10; // 페이지당 표시할 게시물 수
   useEffect(() => {
     setSelectedCafeTag(null);
     setSelectedTagCoffee(null);
   }, [searchQuery]);
 
 
-  // API완성되면 쓰일 임시 코드
+  
   // 비동기통신을 하기위해 async, await를 useEffect 함수내에서 직접 썻지만
   //  경고 메시지가 나와서 함수를 정의하고 이 함수를 반환하는 식으로 바꿈 
 
-  // useEffect(() => {
-  //   async function fetchData(){
-  //       try {
-  //           await axios.get('https://jsonplaceholder.typicode.com/posts')
-  //           .then((response) => {
-  //             setPosts(response.data);
-  //           })
-  //         } catch (error) {
-  //           console.log(error)
-  //         }
-  //   }
-  //   fetchData()
-    
-  // },[])
-  
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        await axios.get(`http://localhost:4000/api/cafe/db_get_starbucks_menu`)
+          .then((response) => {
+            setPosts(response.data);
+            console.log(response.data)
+          })
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    fetchData()
+
+  }, [selectedTagCafeId])
 
 
+  const handlePageChange = (pageNumber) => {
+    setActivePage(pageNumber);
+  };
   const handleTagClick = (tag) => {
     if (selectedTagCafeId === tag) {
       setSelectedCafeTag(null);
@@ -84,19 +92,17 @@ function Category() {
     navigate(`/category/${cafename}/${coffeeId}`);
   }
 
-
-
-
-
-  const CafeName = coffeeData.find((tag) => tag.id === selectedTagCafeId)?.cafe
+  const CafeName = posts.find((tag) => tag === tag.id === selectedTagCafeId)?.cafe
   const CafeContent = coffee.find((tag) => tag.id === selectedTagCoffeeId)?.content
-  
+
 
   //검색어 결과 업데이트
-  const filteredCafe = coffeeData.filter((tag) =>
+  const filteredCafe = posts.filter((tag) =>
     tag.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
-  
+  const indexOfLastPost = activePage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
 
   return (
     <div style={{ margin: "0 5%" }}>
@@ -111,9 +117,6 @@ function Category() {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
-
-
-
 
         <div>
           <div className="category-cafe">
@@ -146,7 +149,7 @@ function Category() {
         {selectedTagCafeId && (
           <div className="tag-info">
             <div className="coffee-grid">
-              {coffeeData.map((tag) => (
+              {currentPosts.map((tag) => (
                 tag.cafeid === selectedTagCafeId && (
                   <React.Fragment key={tag.id}>
                     <div className="coffee-item">
@@ -192,7 +195,21 @@ function Category() {
 
         </div>
       </div>
+      <br/>
+      <br/>
+      <br/>
 
+      <Pagination
+          activePage={activePage}
+          itemsCountPerPage={postsPerPage}
+          totalItemsCount={posts.length}
+          pageRangeDisplayed={5}
+          onChange={handlePageChange}
+          itemClass="page-item"
+          linkClass="page-link"
+        />
+        <br />
+        <br />
     </div>
   );
 }
