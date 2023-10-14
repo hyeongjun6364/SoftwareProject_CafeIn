@@ -13,7 +13,9 @@ const TagList = ({ tags, onTagClick, selectedTagId }) => {
       {tags.map((tag) => (
         <button
           key={tag.id}
-          className={`category-tag ${selectedTagId === tag.id ? 'selected' : ''}`}
+          className={`category-tag ${
+            selectedTagId === tag.id ? "selected" : ""
+          }`}
           onClick={() => onTagClick(tag.id)}
         >
           {tag.name}
@@ -22,8 +24,6 @@ const TagList = ({ tags, onTagClick, selectedTagId }) => {
     </div>
   )
 }
-
-
 
 function Category() {
   const [selectedTagCafeId, setSelectedCafeTag] = useState(null);
@@ -36,14 +36,13 @@ function Category() {
   const [activePage, setActivePage] = useState(1); // 현재 페이지
   const postsPerPage = 10; // 페이지당 표시할 게시물 수
   useEffect(() => {
-    setSelectedCafeTag(null);
-    setSelectedTagCoffee(null);
-  }, [searchQuery]);
-
+    setSelectedCafeTag(null)
+    setSelectedTagCoffee(null)
+  }, [searchQuery])
 
 
   // 비동기통신을 하기위해 async, await를 useEffect 함수내에서 직접 썻지만
-  //  경고 메시지가 나와서 함수를 정의하고 이 함수를 반환하는 식으로 바꿈 
+  //  경고 메시지가 나와서 함수를 정의하고 이 함수를 반환하는 식으로 바꿈
 
   useEffect(() => {
     const fetchData = async () => {
@@ -72,6 +71,7 @@ function Category() {
 
     fetchData();
 
+  // },[])
 
   }, [])
   const handlePageChange = (pageNumber) => {
@@ -79,33 +79,29 @@ function Category() {
   };
   const handleTagClick = (tag) => {
     if (selectedTagCafeId === tag) {
-      setSelectedCafeTag(null);
-      setSelectedTagCoffee(null);
-      setSearchQuery("");
+      setSelectedCafeTag(null)
+      setSelectedTagCoffee(null)
+      setSearchQuery("")
+    } else {
+      setSelectedCafeTag(tag)
+      setSelectedTagCoffee(null)
+      setSearchQuery("")
     }
-    else {
-      setSelectedCafeTag(tag);
-      setSelectedTagCoffee(null);
-      setSearchQuery("");
-    }
-  };
+  }
   const handleCoffeeTagClick = (tag) => {
     if (selectedTagCoffeeId === tag) {
-      setSelectedTagCoffee(null);
-      setSelectedCafeTag(null);
-      setSearchQuery("");
+      setSelectedTagCoffee(null)
+      setSelectedCafeTag(null)
+      setSearchQuery("")
+    } else {
+      setSelectedTagCoffee(tag)
+      setSelectedCafeTag(null)
+      setSearchQuery("")
     }
-    else {
-      setSelectedTagCoffee(tag);
-      setSelectedCafeTag(null);
-      setSearchQuery("");
-    }
-  };
-
-  const handleCoffeeDetail = (coffeeId, cafename) => {
-    navigate(`/category/${cafename}/${coffeeId}`);
   }
-
+  const handleCoffeeDetail = (coffeeId, cafename) => {
+    navigate(`/category/${cafename}/${coffeeId}`)
+  }
   const CafeName = posts.find((tag) => tag.cafeid === selectedTagCafeId)?.cafe
 
   const CafeContent = coffee.find((tag) => tag.id === selectedTagCoffeeId)?.content
@@ -122,10 +118,8 @@ function Category() {
   const currentHollys = hollys.slice(indexOfFirstPost, indexOfLastPost);
   return (
     <div style={{ margin: "0 5%" }}>
-
       <div className="category-title">메뉴</div>
-      <div >
-
+      <div>
         <input
           className="category-search"
           type="text"
@@ -135,9 +129,7 @@ function Category() {
         />
 
         <div>
-          <div className="category-cafe">
-            카페이름
-          </div>
+          <div className="category-cafe">카페이름</div>
 
           <TagList
             tags={cafename}
@@ -147,9 +139,7 @@ function Category() {
         </div>
         <br />
         <div>
-          <div className="category-cafe">
-            커피이름
-          </div>
+          <div className="category-cafe">커피이름</div>
 
           <TagList
             tags={coffee}
@@ -224,27 +214,27 @@ function Category() {
         {searchQuery && (
           <div className="search-results">
             <div className="coffee-grid">
-              {filteredCafe.map((tag) => (
-                searchQuery === tag.name &&
-                (
-                  <React.Fragment key={tag.id}>
-                    <div className="coffee-item">
-                      <img src={tag.image} alt={tag.name} className="category-image" onClick={() => handleCoffeeDetail(tag.id, tag.cafe)} />
-                      <p>{tag.name}</p>
-                    </div>
-                  </React.Fragment>
-                )
-
-
-              ))}
+              {filteredCafe.map(
+                (tag) =>
+                  searchQuery === tag.name && (
+                    <React.Fragment key={tag.id}>
+                      <div className="coffee-item">
+                        <img
+                          src={tag.image}
+                          alt={tag.name}
+                          className="category-image"
+                          onClick={() => handleCoffeeDetail(tag.id, tag.cafe)}
+                        />
+                        <p>{tag.name}</p>
+                      </div>
+                    </React.Fragment>
+                  )
+              )}
             </div>
           </div>
         )}
 
-
-        <div >
-
-        </div>
+        <div></div>
       </div>
       <br />
       <br />
@@ -262,8 +252,7 @@ function Category() {
       <br />
       <br />
     </div>
-  );
+  )
 }
 
-export default Category;
-
+export default Category

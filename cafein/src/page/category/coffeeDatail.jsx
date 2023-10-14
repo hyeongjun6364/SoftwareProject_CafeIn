@@ -114,7 +114,6 @@ function CoffeeDetail() {
             <img src={heart ? EmptyHeart : FilledHeart} alt='Empty' />
           </div>
         </div>
-
       </div>
       <br />
       <hr style={{ borderTop: "1px solid gray", margin: "0 5%" }} />
@@ -131,9 +130,7 @@ function CoffeeDetail() {
 
       </ul>
     </div>
-
-
-  );
+  )
 }
 
-export default CoffeeDetail;
+export default CoffeeDetail
