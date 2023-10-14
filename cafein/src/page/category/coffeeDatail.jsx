@@ -7,69 +7,129 @@ import Review from './Review';
 import axios from 'axios';
 import EmptyHeart from '../../asset/coffeeDetail/Heart.png';
 import FilledHeart from '../../asset/coffeeDetail/FilledHeart.png';
+import Starbucks_back from '../../asset/coffeeDetail/starbucks_detail.PNG'
+import Ediya_back from '../../asset/coffeeDetail/Ediya_detail.PNG';
+import Hollys_back from '../../asset/coffeeDetail/hollys_detail.PNG'
 function CoffeeDetail() {
   const { cafename, coffeeId } = useParams();
-  const [posts,setPosts] = useState([]);
-  const [newPost,setNewposts] = useState();
-  const [heart,setHeart] = useState(false);
+  const [posts, setPosts] = useState([]);
+  const [newPost, setNewposts] = useState();
+  const [heart, setHeart] = useState(false);
+  const [detail, setDetail] = useState([]);
+
   const coffeeItem = coffeeData.find(
     (item) => item.cafe === cafename && item.id === parseInt(coffeeId)
   );
-// 실제 우리 db서버
-//http://localhost:4000/api/posts?username=&tag&page=1
-// 무료 api 서버
-//https://jsonplaceholder.typicode.com/posts
-  useEffect(()=>{
-    async function fetchdata(){
-      try{
+
+  //음료 항목 하나 받아올 api 임시 구현 
+
+  useEffect(() => {
+    async function fetchData_detail() {
+      try {
+        await axios.get(`http://localhost:4000/api/cafe/db_get_${cafename}_menu?beverage=${coffeeId}`)
+          .then((response) => {
+            setDetail(response.data)
+
+          })
+      }
+      catch (error) {
+        console.log(error)
+      }
+
+
+    }
+    fetchData_detail();
+  }, [])
+  console.log(detail)
+  useEffect(() => {
+    async function fetchdata() {
+      try {
         const response = await axios.get('https://jsonplaceholder.typicode.com/posts');
         setPosts(response.data);
-        
+
       }
-      
-      catch(e){
+
+      catch (e) {
         console.error(e)
       }
-      
+
     }
     fetchdata()
-  },[])
+  }, [])
 
-  const handleHeart=()=>{
+  const handleHeart = () => {
     setHeart(!heart);
   }
-  if (!coffeeItem) {
+  if (!detail) {
     return <div>커피를 찾을 수 없습니다.</div>;
   }
   return (
     <div>
+      <div className="image-container">
+        {cafename==='starbucks'? 
+        <>
+         <img src={Starbucks_back} alt="starbucks background image" width={'100%'} height={'600px'} className='starbucks_back' />
+         <div className='image-text'>스타벅스</div>
+        </>
+       :""}
+       <>
+       </>
+        {cafename==='ediya'? 
+        <>
+        <img src={Ediya_back} alt="starbucks background image" width={'100%'} height={'600px'} className='starbucks_back' />
+        <div className='image-text'>이디야</div>
+        </>
+        :""}
+        {cafename==='hollys'? 
+        <>
+        <img src={Hollys_back} alt="starbucks background image" width={'100%'} height={'600px'} className='starbucks_back' />
+        <div className='image-text'>할리스</div>
+        </>
+        :""}
+       
+      </div>
       <div className="coffee-detail-wrapper">
-        <img src={coffeeItem.image} alt={cafename} className="category-image" />
+        <img src={detail.image} alt={cafename} className="category-image" />
         <div className='coffee-detail-info'>
-          <h1 className="coffee-title">{coffeeItem.name}</h1>
-          <p className="coffee-info">가격: {coffeeItem.price}원</p>
-          
-          <p className="coffee-info">설명: {coffeeItem.description}</p>
-          <br/>
-          <br/>
+          <h1 className="coffee-title">{detail.name}</h1>
+          <p className="coffee-info">가격: {detail.price}원</p>
+
+          <p className="coffee-info">설명: {detail.content}</p>
+          <p className="coffee-info">
+            {detail.detail ? (
+              <>
+                용량: {detail.detail.volume}<br />
+                칼로리: {detail.detail.kcal}<br />
+                포화 지방산: {detail.detail.sat_FAT}<br />
+                나트륨: {detail.detail.sodium}<br />
+                당류: {detail.detail.sugars}<br />
+                카페인: {detail.detail.caffeine}
+              </>
+            ) : 'Loading...'}
+
+          </p>
+          <br />
+          <br />
           <div className='coffee-heart' onClick={handleHeart}>찜하기
-            <img src= {heart ? EmptyHeart:FilledHeart} alt='Empty' />
+            <img src={heart ? EmptyHeart : FilledHeart} alt='Empty' />
           </div>
         </div>
 
       </div>
+      <br />
+      <hr style={{ borderTop: "1px solid gray", margin: "0 5%" }} />
       <Review coffeeId={coffeeId}>이용후기</Review>
       <ul className='review-ul'>
-          {posts.map((post => (
-            <li key={post.id} >
-              <h3>{post.title}</h3>
-              <p>{post.body}</p>
-              <small>작성자: {post.userId}</small>
-            </li>
+        {posts.map((post => (
+          <li key={post.id} >
+            <h3>{post.title}</h3>
+            <p>{post.body}</p>
+            <small>작성자: {post.userId}</small>
+          </li>
 
-          )))}
+        )))}
 
-        </ul>
+      </ul>
     </div>
 
 
