@@ -86,7 +86,9 @@ function CoffeeDetail() {
   useEffect(() => {
     async function fetchCoffeeData() {
       try {
-        const response = await axios.get(`/api/cafe/${cafename}/${coffeeId}`)
+        const response = await axios.get(
+          `/api/cafe/${cafename}?beverage=${coffeeId}`
+        )
         setCoffeeItem(response.data)
       } catch (error) {
         console.error(error)
@@ -111,7 +113,7 @@ function CoffeeDetail() {
         <div className="coffee-detail-info">
           <h1 className="coffee-title">{coffeeItem.name}</h1>
           <p className="coffee-info">가격: {coffeeItem.price}원</p>
-          <p className="coffee-info">설명: {coffeeItem.description}</p>
+          <p className="coffee-info">설명: {coffeeItem.content}</p>
           <br />
           <br />
           <div className="coffee-heart" onClick={handleHeart}>
