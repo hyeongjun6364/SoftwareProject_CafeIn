@@ -32,6 +32,8 @@ function Category() {
   const [posts, setPosts] = useState([]);// 모든 음료 관리
   const [edyia, setEdyia] = useState([]);
   const [hollys, setHollys] = useState([]);
+  const [paik,setPaik] = useState([]);
+  const [mega,setMega] = useState([]);
   const navigate = useNavigate();
   const [activePage, setActivePage] = useState(1); // 현재 페이지
   const postsPerPage = 10; // 페이지당 표시할 게시물 수
@@ -50,11 +52,14 @@ function Category() {
         const response1 = axios.get("http://localhost:4000/api/cafe/db_get_starbucks_menu");
         const response2 = axios.get("http://localhost:4000/api/cafe/db_get_ediya_menu");
         const response3 = axios.get("http://localhost:4000/api/cafe/db_get_hollys_menu");
-
+        const response4 = axios.get("http://localhost:4000/api/cafe/db_get_mega_menu")
+        const response5 = axios.get("http://localhost:4000/api/cafe/db_get_paik_menu")
         // 요청이 완료될때 까지 기다리게 하기위해 Promise 사용 -> 효율성을 위해 병렬로 요청
-        const results = await Promise.all([response1, response2, response3]);
+        const results = await Promise.all([response1, response2, response3,response4,response5]);
         setEdyia((await response2).data)
         setHollys((await response3).data)
+        setMega((await response4).data)
+        setPaik((await response5).data)
         let allData = [];
 
         results.forEach(result => {
@@ -70,8 +75,6 @@ function Category() {
     };
 
     fetchData();
-
-  // },[])
 
   }, [])
   const handlePageChange = (pageNumber) => {
@@ -116,6 +119,9 @@ function Category() {
   const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
   const currentEdyia = edyia.slice(indexOfFirstPost, indexOfLastPost);
   const currentHollys = hollys.slice(indexOfFirstPost, indexOfLastPost);
+  const currentMega = mega.slice(indexOfFirstPost, indexOfLastPost);
+  const currentPaik = paik.slice(indexOfFirstPost, indexOfLastPost);
+  
   return (
     <div style={{ margin: "0 5%" }}>
       <div className="category-title">메뉴</div>
@@ -191,6 +197,38 @@ function Category() {
           <div className="tag-info">
             <div className="coffee-grid">
               {currentHollys.map((tag) => (
+                tag.cafeid === selectedTagCafeId && (
+                  <React.Fragment key={tag.id}>
+                    <div className="coffee-item">
+                      <img src={tag.image} alt={tag.name} className="category-image" onClick={() => handleCoffeeDetail(tag.beverage, tag.cafe)} />
+                      <p>{tag.name}</p>
+                    </div>
+                  </React.Fragment>
+                )
+              ))}
+            </div>
+          </div>
+        )}
+         {selectedTagCafeId === 0 && (
+          <div className="tag-info">
+            <div className="coffee-grid">
+              {currentMega.map((tag) => (
+                tag.cafeid === selectedTagCafeId && (
+                  <React.Fragment key={tag.id}>
+                    <div className="coffee-item">
+                      <img src={tag.image} alt={tag.name} className="category-image" onClick={() => handleCoffeeDetail(tag.beverage, tag.cafe)} />
+                      <p>{tag.name}</p>
+                    </div>
+                  </React.Fragment>
+                )
+              ))}
+            </div>
+          </div>
+        )}
+         {selectedTagCafeId === 4 && (
+          <div className="tag-info">
+            <div className="coffee-grid">
+              {currentPaik.map((tag) => (
                 tag.cafeid === selectedTagCafeId && (
                   <React.Fragment key={tag.id}>
                     <div className="coffee-item">

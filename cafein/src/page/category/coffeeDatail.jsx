@@ -9,7 +9,9 @@ import EmptyHeart from '../../asset/coffeeDetail/Heart.png';
 import FilledHeart from '../../asset/coffeeDetail/FilledHeart.png';
 import Starbucks_back from '../../asset/coffeeDetail/starbucks_detail.PNG'
 import Ediya_back from '../../asset/coffeeDetail/Ediya_detail.PNG';
-import Hollys_back from '../../asset/coffeeDetail/hollys_detail.PNG'
+import Hollys_back from '../../asset/coffeeDetail/hollys_detail.PNG';
+import Paik_back from '../../asset/coffeeDetail/paik_detail.PNG';
+import Mega_back from '../../asset/coffeeDetail/mega_detail.PNG';
 function CoffeeDetail() {
   const { cafename, coffeeId } = useParams();
   const [posts, setPosts] = useState([]);
@@ -84,6 +86,18 @@ function CoffeeDetail() {
         <>
         <img src={Hollys_back} alt="starbucks background image" width={'100%'} height={'600px'} className='starbucks_back' />
         <div className='image-text'>할리스</div>
+        </>
+        :""}
+        {cafename==='paik'? 
+        <>
+        <img src={Paik_back} alt="starbucks background image" width={'100%'} height={'600px'} className='starbucks_back' />
+        <div className='image-text'>빽다방</div>
+        </>
+        :""}
+        {cafename==='mega'? 
+        <>
+        <img src={Mega_back} alt="starbucks background image" width={'100%'} height={'600px'} className='starbucks_back' />
+        <div className='image-text'>메가커피</div>
         </>
         :""}
        
