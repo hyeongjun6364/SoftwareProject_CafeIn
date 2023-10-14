@@ -257,7 +257,7 @@ function Category() {
     async function fetchData() {
       try {
         const response = await axios.get(
-          `http://localhost:4000/api/cafe/db_get_starbucks_menu?page=${currentPage}`
+          `http://localhost:4000/api/cafe/db_get_starbucks_menu`
         )
         setPosts(response.data)
       } catch (error) {

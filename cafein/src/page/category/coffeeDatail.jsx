@@ -79,14 +79,14 @@ import EmptyHeart from "../../asset/coffeeDetail/Heart.png"
 import FilledHeart from "../../asset/coffeeDetail/FilledHeart.png"
 
 function CoffeeDetail() {
-  const { cafename, coffeeId } = useParams()
+  const { cafename, coffeeId, cafe_api } = useParams()
   const [coffeeItem, setCoffeeItem] = useState(null)
   const [heart, setHeart] = useState(false)
 
   useEffect(() => {
     async function fetchCoffeeData() {
       try {
-        const response = await axios.get(`/api/cafe/${cafename}/${coffeeId}`) // Modify the API endpoint accordingly
+        const response = await axios.get(`/api/cafe/${cafename}/${coffeeId}`)
         setCoffeeItem(response.data)
       } catch (error) {
         console.error(error)
@@ -120,7 +120,7 @@ function CoffeeDetail() {
           </div>
         </div>
       </div>
-      {/* Add the review section here */}
+      {/* 추가적인 리뷰 섹션을 여기에 추가하세요 */}
     </div>
   )
 }
