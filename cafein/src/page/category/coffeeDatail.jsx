@@ -12,6 +12,7 @@ import Ediya_back from '../../asset/coffeeDetail/Ediya_detail.PNG';
 import Hollys_back from '../../asset/coffeeDetail/hollys_detail.PNG';
 import Paik_back from '../../asset/coffeeDetail/paik_detail.PNG';
 import Mega_back from '../../asset/coffeeDetail/mega_detail.PNG';
+import { useRecoilState } from 'recoil';
 function CoffeeDetail() {
   const { cafename, coffeeId } = useParams();
   const [posts, setPosts] = useState([]);
