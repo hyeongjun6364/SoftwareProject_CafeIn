@@ -6,6 +6,9 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Pagination from 'react-js-pagination';
 import '../../style/categorypage/pagination.scss';
+import { useRecoilState } from "recoil";
+import { starbucksState, ediyaState, hollysState, megaState, paikState, allState } from '../Atom/cafeatom';
+
 
 const TagList = ({ tags, onTagClick, selectedTagId }) => {
   return (
@@ -13,9 +16,8 @@ const TagList = ({ tags, onTagClick, selectedTagId }) => {
       {tags.map((tag) => (
         <button
           key={tag.id}
-          className={`category-tag ${
-            selectedTagId === tag.id ? "selected" : ""
-          }`}
+          className={`category-tag ${selectedTagId === tag.id ? "selected" : ""
+            }`}
           onClick={() => onTagClick(tag.id)}
         >
           {tag.name}
@@ -29,14 +31,20 @@ function Category() {
   const [selectedTagCafeId, setSelectedCafeTag] = useState(null);
   const [selectedTagCoffeeId, setSelectedTagCoffee] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [posts, setPosts] = useState([]);// 모든 음료 관리
-  const [edyia, setEdyia] = useState([]);
-  const [hollys, setHollys] = useState([]);
-  const [paik,setPaik] = useState([]);
-  const [mega,setMega] = useState([]);
+  // 모든 음료 관리
+  const [starbucksData, setStarbucksData] = useRecoilState(starbucksState);
+  const [ediyaData, setEdiyaData] = useRecoilState(ediyaState);
+  const [hollysData, setHollysData] = useRecoilState(hollysState);
+  const [megaData, setMegaData] = useRecoilState(megaState);
+  const [paikData, setPaikData] = useRecoilState(paikState);
+  const [entireData, setEntireData] = useRecoilState(allState);
+
+
   const navigate = useNavigate();
   const [activePage, setActivePage] = useState(1); // 현재 페이지
   const postsPerPage = 10; // 페이지당 표시할 게시물 수
+
+
   useEffect(() => {
     setSelectedCafeTag(null)
     setSelectedTagCoffee(null)
@@ -49,25 +57,28 @@ function Category() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response1 = axios.get("http://localhost:4000/api/cafe/db_get_starbucks_menu");
-        const response2 = axios.get("http://localhost:4000/api/cafe/db_get_ediya_menu");
-        const response3 = axios.get("http://localhost:4000/api/cafe/db_get_hollys_menu");
-        const response4 = axios.get("http://localhost:4000/api/cafe/db_get_mega_menu")
-        const response5 = axios.get("http://localhost:4000/api/cafe/db_get_paik_menu")
+        let response1 = axios.get("http://localhost:4000/api/cafe/db_get_starbucks_menu");
+        let response2 = axios.get("http://localhost:4000/api/cafe/db_get_ediya_menu");
+        let response3 = axios.get("http://localhost:4000/api/cafe/db_get_hollys_menu");
+        let response4 = axios.get("http://localhost:4000/api/cafe/db_get_mega_menu")
+        let response5 = axios.get("http://localhost:4000/api/cafe/db_get_paik_menu")
         // 요청이 완료될때 까지 기다리게 하기위해 Promise 사용 -> 효율성을 위해 병렬로 요청
-        const results = await Promise.all([response1, response2, response3,response4,response5]);
-        setEdyia((await response2).data)
-        setHollys((await response3).data)
-        setMega((await response4).data)
-        setPaik((await response5).data)
+        const results = await Promise.all([response1, response2, response3, response4, response5]);
+        setStarbucksData((await response1).data)
+        setEdiyaData((await response2).data);
+        setHollysData((await response3).data);
+        setMegaData((await response4).data);
+        setPaikData((await response5).data);
+
+
         let allData = [];
 
         results.forEach(result => {
           allData.push(...result.data);
         });
 
-        
-        setPosts(allData);
+
+        setEntireData(allData);
 
       } catch (error) {
         console.log(error);
@@ -105,27 +116,28 @@ function Category() {
   const handleCoffeeDetail = (coffeeId, cafename) => {
     navigate(`/category/${cafename}/${coffeeId}`)
   }
-  const CafeName = posts.find((tag) => tag.cafeid === selectedTagCafeId)?.cafe
+  const CafeName = entireData.find((tag) => tag.cafeid === selectedTagCafeId)?.cafe
 
   const CafeContent = coffee.find((tag) => tag.id === selectedTagCoffeeId)?.content
 
 
   //검색어 결과 업데이트
-  const filteredCafe = posts.filter((tag) =>
+  const filteredCafe = entireData.filter((tag) =>
     tag.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
   const indexOfLastPost = activePage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
-  const currentEdyia = edyia.slice(indexOfFirstPost, indexOfLastPost);
-  const currentHollys = hollys.slice(indexOfFirstPost, indexOfLastPost);
-  const currentMega = mega.slice(indexOfFirstPost, indexOfLastPost);
-  const currentPaik = paik.slice(indexOfFirstPost, indexOfLastPost);
-  
+  const currentPosts = entireData.slice(indexOfFirstPost, indexOfLastPost);
+  const currentEdyia = ediyaData.slice(indexOfFirstPost, indexOfLastPost);
+  const currentHollys = hollysData.slice(indexOfFirstPost, indexOfLastPost);
+  const currentMega = megaData.slice(indexOfFirstPost, indexOfLastPost);
+  const currentPaik = paikData.slice(indexOfFirstPost, indexOfLastPost);
+
   return (
     <div style={{ margin: "0 5%" }}>
       <div className="category-title">메뉴</div>
       <div>
+
         <input
           className="category-search"
           type="text"
@@ -133,6 +145,8 @@ function Category() {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
+
+
 
         <div>
           <div className="category-cafe">카페이름</div>
@@ -158,7 +172,7 @@ function Category() {
         <div className="category-cafe">
           총 메뉴
         </div>
-        
+
         {selectedTagCafeId === 1 && (
           <div className="tag-info">
             <div className="coffee-grid">
@@ -209,7 +223,7 @@ function Category() {
             </div>
           </div>
         )}
-         {selectedTagCafeId === 0 && (
+        {selectedTagCafeId === 0 && (
           <div className="tag-info">
             <div className="coffee-grid">
               {currentMega.map((tag) => (
@@ -225,7 +239,7 @@ function Category() {
             </div>
           </div>
         )}
-         {selectedTagCafeId === 4 && (
+        {selectedTagCafeId === 4 && (
           <div className="tag-info">
             <div className="coffee-grid">
               {currentPaik.map((tag) => (
@@ -281,7 +295,7 @@ function Category() {
       <Pagination
         activePage={activePage}
         itemsCountPerPage={postsPerPage}
-        totalItemsCount={posts.length}
+        totalItemsCount={entireData.length}
         pageRangeDisplayed={5}
         onChange={handlePageChange}
         itemClass="page-item"
