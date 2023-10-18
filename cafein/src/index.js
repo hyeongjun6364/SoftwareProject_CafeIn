@@ -28,6 +28,7 @@ const CommunityUpdate = lazy(() => import("./page/community/communityUpdate"))
 const CommunityWrite = lazy(() => import("./page/community/writePage"))
 const CoffeeDetail = lazy(() => import("./page/category/coffeeDatail"))
 const Question = lazy(() => import("./page/mypage/question"))
+const DetailWrite = lazy(() => import("./page/category/detailReview"))
 
 const root = ReactDOM.createRoot(document.getElementById("root"))
 root.render(
@@ -37,7 +38,7 @@ root.render(
         <Suspense fallback={<div>Loading...</div>}>
           <Routes>
             <Route
-              path="/category/:cafename/:coffeeId"
+              path="/category/:cafename/:cafeId/:coffeeId"
               element={<CoffeeDetail />}
             />
             <Route path="/" element={<MainPage />} />
@@ -49,6 +50,7 @@ root.render(
             <Route path="/write/:id" element={<CommunityUpdate />} />
             <Route pate="/communitywrite" element={<CommunityWrite />} />
             <Route path="/qeustion" element={<Question />} />
+            <Route path="/detail/:cafeId/:coffeeId" element={<DetailWrite />} />
           </Routes>
         </Suspense>
       </Layout>

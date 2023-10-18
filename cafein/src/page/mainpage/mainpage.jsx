@@ -43,14 +43,42 @@ function ImageSlider() {
 
 function Mainpage() {
   const [showChatbot, setShowChatbot] = useState(false);
+  const [starbucksData, setStarbucksData] = useRecoilState(starbucksState);
+  const [ediyaData, setEdiyaData] = useRecoilState(ediyaState);
   const [hollysData, setHollysData] = useRecoilState(hollysState);
-  //const hollysData = useRecoilValue(hollysState);
+  const [megaData, setMegaData] = useRecoilState(megaState);
+  const [paikData, setPaikData] = useRecoilState(paikState);
+  const [entireData, setEntireData] = useRecoilState(allState);
+
   const navigate = useNavigate();
+  
+  // 비동기통신을 하기위해 async, await를 useEffect 함수내에서 직접 썻지만
+  //  경고 메시지가 나와서 함수를 정의하고 이 함수를 반환하는 식으로 바꿈
   useEffect(() => {
     const fetchData = async () => {
       try {
+        let response1 = axios.get("http://localhost:4000/api/cafe/db_get_starbucks_menu");
+        let response2 = axios.get("http://localhost:4000/api/cafe/db_get_ediya_menu");
         let response3 = axios.get("http://localhost:4000/api/cafe/db_get_hollys_menu");
+        let response4 = axios.get("http://localhost:4000/api/cafe/db_get_mega_menu")
+        let response5 = axios.get("http://localhost:4000/api/cafe/db_get_paik_menu")
+        // 요청이 완료될때 까지 기다리게 하기위해 Promise 사용 -> 효율성을 위해 병렬로 요청
+        const results = await Promise.all([response1, response2, response3, response4, response5]);
+        setStarbucksData((await response1).data)
+        setEdiyaData((await response2).data);
         setHollysData((await response3).data);
+        setMegaData((await response4).data);
+        setPaikData((await response5).data);
+
+
+        let allData = [];
+
+        results.forEach(result => {
+          allData.push(...result.data);
+        });
+
+
+        setEntireData(allData);
 
       } catch (error) {
         console.log(error);
@@ -60,14 +88,15 @@ function Mainpage() {
     fetchData();
 
   }, [])
+  console.log(hollysData)
   const handleClickApiCall = async () => {
     await Chatbot()
   }
   const handleClick = () => {
     setShowChatbot(!showChatbot);
   };
-  const handleMonth = (cafename,coffeeId)=>{
-    navigate(`/category/${cafename}/${coffeeId}`)
+  const handleMonth = (cafename,coffeeId,cafeId)=>{
+    navigate(`/category/${cafename}/${cafeId}/${coffeeId}`)
   }
   return (
     <div>
@@ -78,7 +107,7 @@ function Mainpage() {
           {hollysData.map((tag) => {
             return (
               <div className="image-item" key={tag.id}>
-                <img src={tag.image} alt="hollys" onClick={()=>{handleMonth(tag.cafe,tag.beverage)}}/>
+                <img src={tag.image} alt="hollys" onClick={()=>{handleMonth(tag.cafe,tag.beverage,tag.cafeid)}}/>
                 <p>{tag.name}</p>
               </div>
             )

@@ -1,11 +1,21 @@
+
+.category{
+  display: flex;
+  overflow-x: auto;
+  white-space: nowrap;
+  &::-webkit-scrollbar {
+    display: none; // Chrome, Safari 웹 브라우저에서 스크롤바 숨기기
+  }
+}
 .category-tag {
   padding: .5em .75em;
   margin: .25em;
   border-radius: 10px;
+  
   //flex-wrap: wrap;
   background-color: #f5f5f5; // 배경색
   color: rgb(120, 170, 254); // 글자색
-  font-size: .85rem; // 글자 크기
+  font-size: 30px; // 글자 크기
   line-height: normal; // 줄 간격
 
   &.selected {
@@ -16,6 +26,7 @@
   @media (max-width: 768px) {
     padding: 5px 10px;
     //height: 2rem; // 원하는 높이로 변경하세요
+    font-size: .85rem;
     border: 0.1rem solid #f5f5f5;
     background-color: white;
     //width: 300px;
@@ -94,7 +105,21 @@
 
 .coffee-item {
   text-align: center;
+  position: relative;
   /* 커피 아이템의 텍스트를 가운데 정렬합니다. */
+  .item-number {
+    position: absolute;
+    padding: 5px;
+    top:0;
+    left: 0;
+    font-size: 30px;
+    background-color: rgba(255,255,255,0.7);
+    color: black;
+    font-weight: bold;
+    @media (max-width:768px){
+      font-size: 15px;
+    }
+  }
 }
 
 /* 나머지 스타일을 여기에 추가할 수 있습니다. */
