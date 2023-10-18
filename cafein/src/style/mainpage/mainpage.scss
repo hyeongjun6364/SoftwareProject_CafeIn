@@ -1,7 +1,9 @@
 .image-container {
     display: flex;
     overflow-x: auto;
-    
+    &::-webkit-scrollbar {
+      display: none; // Chrome, Safari 웹 브라우저에서 스크롤바 숨기기
+    }
     .image-item {
       flex: none; // 이미지의 크기가 줄어들지 않도록 설정
       margin-right: .5em; // 이미지 사이의 간격 조정

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { cafename, coffee } from './coffeedata';
 import coffeeData from './Data.json'
 import '../../style/categorypage/coffeeDetail.scss'
@@ -14,11 +14,13 @@ import Paik_back from '../../asset/coffeeDetail/paik_detail.PNG';
 import Mega_back from '../../asset/coffeeDetail/mega_detail.PNG';
 import { useRecoilState } from 'recoil';
 function CoffeeDetail() {
-  const { cafename, coffeeId } = useParams();
+  const { cafename, coffeeId,cafeId } = useParams();
   const [posts, setPosts] = useState([]);
   const [newPost, setNewposts] = useState();
   const [heart, setHeart] = useState(false);
   const [detail, setDetail] = useState([]);
+  const navigate = useNavigate();
+
 
   const coffeeItem = coffeeData.find(
     (item) => item.cafe === cafename && item.id === parseInt(coffeeId)
@@ -29,11 +31,12 @@ function CoffeeDetail() {
   useEffect(() => {
     async function fetchData_detail() {
       try {
-        await axios.get(`http://localhost:4000/api/cafe/db_get_${cafename}_menu?beverage=${coffeeId}`)
-          .then((response) => {
-            setDetail(response.data)
+        const response = await axios.get(`http://localhost:4000/api/cafe/db_get_${cafename}_menu?beverage=${coffeeId}`)
+        setDetail(response.data)
+        const response1 = await axios.get(`http://localhost:4000/api/reviews?beverageId=${cafeId}_${coffeeId}`);
+        setPosts(response1.data);
 
-          })
+
       }
       catch (error) {
         console.log(error)
@@ -43,22 +46,9 @@ function CoffeeDetail() {
     }
     fetchData_detail();
   }, [])
-  console.log(detail)
-  useEffect(() => {
-    async function fetchdata() {
-      try {
-        const response = await axios.get('https://jsonplaceholder.typicode.com/posts');
-        setPosts(response.data);
-
-      }
-
-      catch (e) {
-        console.error(e)
-      }
-
-    }
-    fetchdata()
-  }, [])
+  const detailReview = ()=>{
+   navigate(`/detail/${cafeId}/${coffeeId}`)
+  }
 
   const handleHeart = () => {
     setHeart(!heart);
@@ -69,39 +59,39 @@ function CoffeeDetail() {
   return (
     <div>
       <div className="image-container">
-        {cafename==='starbucks'? 
+        {cafename === 'starbucks' ?
+          <>
+            <img src={Starbucks_back} alt="starbucks background image" width={'100%'} height={'600px'} className='starbucks_back' />
+            <div className='image-text'>스타벅스</div>
+          </>
+          : ""}
         <>
-         <img src={Starbucks_back} alt="starbucks background image" width={'100%'} height={'600px'} className='starbucks_back' />
-         <div className='image-text'>스타벅스</div>
         </>
-       :""}
-       <>
-       </>
-        {cafename==='ediya'? 
-        <>
-        <img src={Ediya_back} alt="starbucks background image" width={'100%'} height={'600px'} className='starbucks_back' />
-        <div className='image-text'>이디야</div>
-        </>
-        :""}
-        {cafename==='hollys'? 
-        <>
-        <img src={Hollys_back} alt="starbucks background image" width={'100%'} height={'600px'} className='starbucks_back' />
-        <div className='image-text'>할리스</div>
-        </>
-        :""}
-        {cafename==='paik'? 
-        <>
-        <img src={Paik_back} alt="starbucks background image" width={'100%'} height={'600px'} className='starbucks_back' />
-        <div className='image-text'>빽다방</div>
-        </>
-        :""}
-        {cafename==='mega'? 
-        <>
-        <img src={Mega_back} alt="starbucks background image" width={'100%'} height={'600px'} className='starbucks_back' />
-        <div className='image-text'>메가커피</div>
-        </>
-        :""}
-       
+        {cafename === 'ediya' ?
+          <>
+            <img src={Ediya_back} alt="starbucks background image" width={'100%'} height={'600px'} className='starbucks_back' />
+            <div className='image-text'>이디야</div>
+          </>
+          : ""}
+        {cafename === 'hollys' ?
+          <>
+            <img src={Hollys_back} alt="starbucks background image" width={'100%'} height={'600px'} className='starbucks_back' />
+            <div className='image-text'>할리스</div>
+          </>
+          : ""}
+        {cafename === 'paik' ?
+          <>
+            <img src={Paik_back} alt="starbucks background image" width={'100%'} height={'600px'} className='starbucks_back' />
+            <div className='image-text'>빽다방</div>
+          </>
+          : ""}
+        {cafename === 'mega' ?
+          <>
+            <img src={Mega_back} alt="starbucks background image" width={'100%'} height={'600px'} className='starbucks_back' />
+            <div className='image-text'>메가커피</div>
+          </>
+          : ""}
+
       </div>
       <div className="coffee-detail-wrapper">
         <img src={detail.image} alt={cafename} className="category-image" />
@@ -133,12 +123,13 @@ function CoffeeDetail() {
       <br />
       <hr style={{ borderTop: "1px solid gray", margin: "0 5%" }} />
       <Review coffeeId={coffeeId}>이용후기</Review>
+      <button onClick={detailReview}>글쓰기</button>
       <ul className='review-ul'>
         {posts.map((post => (
           <li key={post.id} >
             <h3>{post.title}</h3>
-            <p>{post.body}</p>
-            <small>작성자: {post.userId}</small>
+            <p>내용:{post.content}</p>
+            <small>작성자: {post.username}</small>
           </li>
 
         )))}

@@ -8,11 +8,11 @@ const cafename= [
 ]
 
 const coffee= [
-    { id: 7, name: "아메리카노", content: "아메리카노" },
-    { id: 2, name: "아메리카노", content: "아메리카노"},
-    { id: 3, name: "카라멜마키야또",  content: "카라멜마키야또"},
-    { id: 4, name: "카라멜마키야또", content: "카라멜마키야또" },
-    { id: 5, name: "카페라떼",  content: "카페라떼"},
+    { id: 1, name: "커피", content: "아메리카노" },
+    { id: 2, name: "에이드", content: "아메리카노"},
+    { id: 3, name: "스무디",  content: "카라멜마키야또"},
+    { id: 4, name: "티", content: "카라멜마키야또" },
+    { id: 5, name: "주스",  content: "카페라떼"},
     
 ]
 export {

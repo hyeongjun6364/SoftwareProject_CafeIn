@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Pagination from 'react-js-pagination';
 import '../../style/categorypage/pagination.scss';
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { starbucksState, ediyaState, hollysState, megaState, paikState, allState } from '../Atom/cafeatom';
 
 
@@ -31,15 +31,20 @@ function Category() {
   const [selectedTagCafeId, setSelectedCafeTag] = useState(null);
   const [selectedTagCoffeeId, setSelectedTagCoffee] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-  // 모든 음료 관리
-  const [starbucksData, setStarbucksData] = useRecoilState(starbucksState);
-  const [ediyaData, setEdiyaData] = useRecoilState(ediyaState);
-  const [hollysData, setHollysData] = useRecoilState(hollysState);
-  const [megaData, setMegaData] = useRecoilState(megaState);
-  const [paikData, setPaikData] = useRecoilState(paikState);
-  const [entireData, setEntireData] = useRecoilState(allState);
 
-
+  const hollysData = useRecoilValue(hollysState);
+  const starbucksData = useRecoilValue(starbucksState);
+  const ediyaData = useRecoilValue(ediyaState);
+  const megaData = useRecoilValue(megaState);
+  const paikData = useRecoilValue(paikState);
+  const entireData = useRecoilValue(allState);
+  const [filterMenu, setFilterMenu] = useState([]);
+  const [tempSearchQuery, setTempSearchQuery] = useState("");
+  const [ade, setAde] = useState([]);
+  const [smoody, setSmoody] = useState([]);
+  const [tea, setTea] = useState([]);
+  const [juice, setJuice] = useState([]);
+  const [coffees, setCoffees] = useState([]);
   const navigate = useNavigate();
   const [activePage, setActivePage] = useState(1); // 현재 페이지
   const postsPerPage = 10; // 페이지당 표시할 게시물 수
@@ -50,44 +55,30 @@ function Category() {
     setSelectedTagCoffee(null)
   }, [searchQuery])
 
-
-  // 비동기통신을 하기위해 async, await를 useEffect 함수내에서 직접 썻지만
-  //  경고 메시지가 나와서 함수를 정의하고 이 함수를 반환하는 식으로 바꿈
-
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        let response1 = axios.get("http://localhost:4000/api/cafe/db_get_starbucks_menu");
-        let response2 = axios.get("http://localhost:4000/api/cafe/db_get_ediya_menu");
-        let response3 = axios.get("http://localhost:4000/api/cafe/db_get_hollys_menu");
-        let response4 = axios.get("http://localhost:4000/api/cafe/db_get_mega_menu")
-        let response5 = axios.get("http://localhost:4000/api/cafe/db_get_paik_menu")
-        // 요청이 완료될때 까지 기다리게 하기위해 Promise 사용 -> 효율성을 위해 병렬로 요청
-        const results = await Promise.all([response1, response2, response3, response4, response5]);
-        setStarbucksData((await response1).data)
-        setEdiyaData((await response2).data);
-        setHollysData((await response3).data);
-        setMegaData((await response4).data);
-        setPaikData((await response5).data);
-
-
-        let allData = [];
-
-        results.forEach(result => {
-          allData.push(...result.data);
-        });
-
-
-        setEntireData(allData);
-
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchData();
-
+    const adeItems = entireData.filter(tag => tag.name.toLowerCase().includes("에이드"));
+    setAde(adeItems)
+    const smoodyItems = entireData.filter(tag => tag.name.toLowerCase().includes("스무디"));
+    setSmoody(smoodyItems)
+    const teaItems = entireData.filter(tag => tag.name.toLowerCase().includes("티"));
+    setTea(teaItems)
+    const juiceItems = entireData.filter(tag => tag.name.toLowerCase().includes("주스"));
+    setJuice(juiceItems)
+    
+    const remainItems = entireData.filter(
+      item => 
+      !item.name.toLowerCase().includes("주스") &&
+      !item.name.toLowerCase().includes("에이드") &&
+      !item.name.toLowerCase().includes("티") &&
+      !item.name.toLowerCase().includes("스무디") 
+    )
+    
+    setCoffees(remainItems);
   }, [])
+
+    
+
+
   const handlePageChange = (pageNumber) => {
     setActivePage(pageNumber);
   };
@@ -113,18 +104,31 @@ function Category() {
       setSearchQuery("")
     }
   }
-  const handleCoffeeDetail = (coffeeId, cafename) => {
-    navigate(`/category/${cafename}/${coffeeId}`)
+  //cofeId 추가해야함
+  const handleCoffeeDetail = (coffeeId, cafename, cafeId) => {
+    navigate(`/category/${cafename}/${cafeId}/${coffeeId}`)
   }
+
+  const handleInputChange = (e) => {
+    setTempSearchQuery(e.target.value);
+  };
+
+  // 검색 폼 제출 핸들러
+  const handleFormSubmit = (e) => {
+    e.preventDefault(); // 페이지 리로드 방지
+    setSearchQuery(tempSearchQuery);
+    const filteredCafe = entireData.filter((tag) =>
+      tag.name.toLowerCase().includes(searchQuery.toLowerCase()));
+    setFilterMenu(filteredCafe);
+
+  };
   const CafeName = entireData.find((tag) => tag.cafeid === selectedTagCafeId)?.cafe
 
   const CafeContent = coffee.find((tag) => tag.id === selectedTagCoffeeId)?.content
 
 
   //검색어 결과 업데이트
-  const filteredCafe = entireData.filter((tag) =>
-    tag.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+
   const indexOfLastPost = activePage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = entireData.slice(indexOfFirstPost, indexOfLastPost);
@@ -132,19 +136,26 @@ function Category() {
   const currentHollys = hollysData.slice(indexOfFirstPost, indexOfLastPost);
   const currentMega = megaData.slice(indexOfFirstPost, indexOfLastPost);
   const currentPaik = paikData.slice(indexOfFirstPost, indexOfLastPost);
-
+  const currentFilter = filterMenu.slice(indexOfFirstPost, indexOfLastPost);
+  const currentAde = ade.slice(indexOfFirstPost,indexOfLastPost);
+  const currentSmoody = smoody.slice(indexOfFirstPost,indexOfLastPost);
+  const currentTea = tea.slice(indexOfFirstPost,indexOfLastPost);
+  const currentJuice = juice.slice(indexOfFirstPost,indexOfLastPost);
+  const currentCoffee = coffees.slice(indexOfFirstPost,indexOfLastPost);
+  
   return (
     <div style={{ margin: "0 5%" }}>
       <div className="category-title">메뉴</div>
       <div>
-
-        <input
-          className="category-search"
-          type="text"
-          placeholder="음료 검색"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
+        <form onSubmit={handleFormSubmit}>
+          <input
+            className="category-search"
+            type="text"
+            placeholder="음료 검색"
+            value={tempSearchQuery}
+            onChange={handleInputChange}
+          />
+        </form>
 
 
 
@@ -176,11 +187,12 @@ function Category() {
         {selectedTagCafeId === 1 && (
           <div className="tag-info">
             <div className="coffee-grid">
-              {currentPosts.map((tag) => (
+              {currentPosts.map((tag,index) => (
                 tag.cafeid === selectedTagCafeId && (
                   <React.Fragment key={tag.id}>
                     <div className="coffee-item">
-                      <img src={tag.image} alt={tag.name} className="category-image" onClick={() => handleCoffeeDetail(tag.id, tag.cafe)} />
+                    <span className="item-number">{index + 1}</span>
+                      <img src={tag.image} alt={tag.name} className="category-image" onClick={() => handleCoffeeDetail(tag.id, tag.cafe,tag.cafeid)} />
                       <p>{tag.name}</p>
                     </div>
                   </React.Fragment>
@@ -193,11 +205,12 @@ function Category() {
         {selectedTagCafeId === 2 && (
           <div className="tag-info">
             <div className="coffee-grid">
-              {currentEdyia.map((tag) => (
+              {currentEdyia.map((tag,index) => (
                 tag.cafeid === selectedTagCafeId && (
                   <React.Fragment key={tag.id}>
                     <div className="coffee-item">
-                      <img src={tag.image} alt={tag.name} className="category-image" onClick={() => handleCoffeeDetail(tag.beverage, tag.cafe)} />
+                    <span className="item-number">{index + 1}</span>
+                      <img src={tag.image} alt={tag.name} className="category-image" onClick={() => handleCoffeeDetail(tag.beverage, tag.cafe,tag.cafeid)} />
                       <p>{tag.name}</p>
                     </div>
                   </React.Fragment>
@@ -210,11 +223,12 @@ function Category() {
         {selectedTagCafeId === 3 && (
           <div className="tag-info">
             <div className="coffee-grid">
-              {currentHollys.map((tag) => (
+              {currentHollys.map((tag,index) => (
                 tag.cafeid === selectedTagCafeId && (
                   <React.Fragment key={tag.id}>
                     <div className="coffee-item">
-                      <img src={tag.image} alt={tag.name} className="category-image" onClick={() => handleCoffeeDetail(tag.beverage, tag.cafe)} />
+                    <span className="item-number">{index + 1}</span>
+                      <img src={tag.image} alt={tag.name} className="category-image" onClick={() => handleCoffeeDetail(tag.beverage, tag.cafe,tag.cafeid)} />
                       <p>{tag.name}</p>
                     </div>
                   </React.Fragment>
@@ -226,11 +240,12 @@ function Category() {
         {selectedTagCafeId === 0 && (
           <div className="tag-info">
             <div className="coffee-grid">
-              {currentMega.map((tag) => (
+              {currentMega.map((tag,index) => (
                 tag.cafeid === selectedTagCafeId && (
                   <React.Fragment key={tag.id}>
                     <div className="coffee-item">
-                      <img src={tag.image} alt={tag.name} className="category-image" onClick={() => handleCoffeeDetail(tag.beverage, tag.cafe)} />
+                    <span className="item-number">{index + 1}</span>
+                      <img src={tag.image} alt={tag.name} className="category-image" onClick={() => handleCoffeeDetail(tag.beverage, tag.cafe,tag.cafeid)} />
                       <p>{tag.name}</p>
                     </div>
                   </React.Fragment>
@@ -242,11 +257,102 @@ function Category() {
         {selectedTagCafeId === 4 && (
           <div className="tag-info">
             <div className="coffee-grid">
-              {currentPaik.map((tag) => (
+              {currentPaik.map((tag,index) => (
                 tag.cafeid === selectedTagCafeId && (
                   <React.Fragment key={tag.id}>
                     <div className="coffee-item">
-                      <img src={tag.image} alt={tag.name} className="category-image" onClick={() => handleCoffeeDetail(tag.beverage, tag.cafe)} />
+                    <span className="item-number">{index + 1}</span>
+                      <img src={tag.image} alt={tag.name} className="category-image" onClick={() => handleCoffeeDetail(tag.beverage, tag.cafe,tag.cafeid)} />
+                      <p>{tag.name}</p>
+                    </div>
+                  </React.Fragment>
+                )
+              ))}
+            </div>
+          </div>
+        )}
+        {/*커피*/}
+        {selectedTagCoffeeId === 1 && (
+          <div className="tag-info">
+            <div className="coffee-grid">
+              {currentCoffee.map((tag,index) => (
+                (
+                  <React.Fragment key={tag.id}>
+                    <div className="coffee-item">
+                    <span className="item-number">{index + 1}</span>
+                      <img src={tag.image} alt={tag.name} className="category-image" onClick={() => handleCoffeeDetail(tag.beverage, tag.cafe,tag.cafeid)} />
+                      <p>{tag.name}</p>
+                    </div>
+                  </React.Fragment>
+                )
+              ))}
+            </div>
+          </div>
+        )}
+        {/*에이드*/}
+        {selectedTagCoffeeId === 2 && (
+          <div className="tag-info">
+            <div className="coffee-grid">
+              {currentAde.map((tag,index) => (
+                (
+                  <React.Fragment key={tag.id}>
+                    <div className="coffee-item">
+                    <span className="item-number">{index + 1}</span>
+                      <img src={tag.image} alt={tag.name} className="category-image" onClick={() => handleCoffeeDetail(tag.beverage, tag.cafe,tag.cafeid)} />
+                      <p>{tag.name}</p>
+                    </div>
+                  </React.Fragment>
+                )
+              ))}
+            </div>
+          </div>
+        )}
+        {/*스무디*/}
+        {selectedTagCoffeeId === 3 && (
+          <div className="tag-info">
+            <div className="coffee-grid">
+              {currentSmoody.map((tag,index) => (
+                (
+                  <React.Fragment key={tag.id}>
+                    <div className="coffee-item">
+                    <span className="item-number">{index + 1}</span>
+                      <img src={tag.image} alt={tag.name} className="category-image" onClick={() => handleCoffeeDetail(tag.beverage, tag.cafe,tag.cafeid)} />
+                      <p>{tag.name}</p>
+                    </div>
+                  </React.Fragment>
+                )
+              ))}
+            </div>
+          </div>
+        )}
+        {/*티*/}
+        {selectedTagCoffeeId === 4 && (
+          <div className="tag-info">
+            <div className="coffee-grid">
+              {currentTea.map((tag,index) => (
+                (
+                  <React.Fragment key={tag.id}>
+                    <div className="coffee-item">
+                    <span className="item-number">{index + 1}</span>
+                      <img src={tag.image} alt={tag.name} className="category-image" onClick={() => handleCoffeeDetail(tag.beverage, tag.cafe,tag.cafeid)} />
+                      <p>{tag.name}</p>
+                    </div>
+                  </React.Fragment>
+                )
+              ))}
+            </div>
+          </div>
+        )}
+        {/*주스*/}
+        {selectedTagCoffeeId === 5 && (
+          <div className="tag-info">
+            <div className="coffee-grid">
+              {currentJuice.map((tag,index) => (
+                (
+                  <React.Fragment key={tag.id}>
+                    <div className="coffee-item">
+                    <span className="item-number">{index + 1}</span>
+                      <img src={tag.image} alt={tag.name} className="category-image" onClick={() => handleCoffeeDetail(tag.beverage, tag.cafe,tag.cafeid)} />
                       <p>{tag.name}</p>
                     </div>
                   </React.Fragment>
@@ -256,32 +362,25 @@ function Category() {
           </div>
         )}
 
-
-        {selectedTagCoffeeId && (
-          <div className="tag-info">
-            <h3>{CafeName} 정보</h3>
-            <p>{CafeContent}</p>
-          </div>
-        )}
         {searchQuery && (
           <div className="search-results">
             <div className="coffee-grid">
-              {filteredCafe.map(
-                (tag) =>
-                  searchQuery === tag.name && (
-                    <React.Fragment key={tag.id}>
-                      <div className="coffee-item">
-                        <img
-                          src={tag.image}
-                          alt={tag.name}
-                          className="category-image"
-                          onClick={() => handleCoffeeDetail(tag.id, tag.cafe)}
-                        />
-                        <p>{tag.name}</p>
-                      </div>
-                    </React.Fragment>
-                  )
-              )}
+              {currentFilter.map((tag,index) => (
+                (
+                  <React.Fragment key={tag.id}>
+                    <div className="coffee-item">
+                    <span className="item-number">{index + 1}</span>
+                      <img
+                        src={tag.image}
+                        alt={tag.name}
+                        className="category-image"
+                        onClick={() => handleCoffeeDetail(tag.id, tag.cafe,tag.cafeid)}
+                      />
+                      <p>{tag.name}</p>
+                    </div>
+                  </React.Fragment>
+                )
+              ))}
             </div>
           </div>
         )}

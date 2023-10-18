@@ -29,3 +29,8 @@ export const allState = atom({
     key:'allstate',
     default:[],
 })
+
+const detailDataState = atom({
+  key: 'detailDataState',
+  default: {},
+});
