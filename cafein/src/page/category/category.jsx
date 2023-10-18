@@ -191,7 +191,7 @@ function Category() {
                 tag.cafeid === selectedTagCafeId && (
                   <React.Fragment key={tag.id}>
                     <div className="coffee-item">
-                    <span className="item-number">{index + 1}</span>
+                    <span className="item-number">{(activePage - 1) * postsPerPage + index + 1}</span>
                       <img src={tag.image} alt={tag.name} className="category-image" onClick={() => handleCoffeeDetail(tag.id, tag.cafe,tag.cafeid)} />
                       <p>{tag.name}</p>
                     </div>
@@ -209,7 +209,7 @@ function Category() {
                 tag.cafeid === selectedTagCafeId && (
                   <React.Fragment key={tag.id}>
                     <div className="coffee-item">
-                    <span className="item-number">{index + 1}</span>
+                    <span className="item-number">{(activePage - 1) * postsPerPage + index + 1}</span>
                       <img src={tag.image} alt={tag.name} className="category-image" onClick={() => handleCoffeeDetail(tag.beverage, tag.cafe,tag.cafeid)} />
                       <p>{tag.name}</p>
                     </div>
@@ -227,7 +227,7 @@ function Category() {
                 tag.cafeid === selectedTagCafeId && (
                   <React.Fragment key={tag.id}>
                     <div className="coffee-item">
-                    <span className="item-number">{index + 1}</span>
+                    <span className="item-number">{(activePage - 1) * postsPerPage + index + 1}</span>
                       <img src={tag.image} alt={tag.name} className="category-image" onClick={() => handleCoffeeDetail(tag.beverage, tag.cafe,tag.cafeid)} />
                       <p>{tag.name}</p>
                     </div>
@@ -244,7 +244,7 @@ function Category() {
                 tag.cafeid === selectedTagCafeId && (
                   <React.Fragment key={tag.id}>
                     <div className="coffee-item">
-                    <span className="item-number">{index + 1}</span>
+                    <span className="item-number">{(activePage - 1) * postsPerPage + index + 1}</span>
                       <img src={tag.image} alt={tag.name} className="category-image" onClick={() => handleCoffeeDetail(tag.beverage, tag.cafe,tag.cafeid)} />
                       <p>{tag.name}</p>
                     </div>
@@ -261,7 +261,7 @@ function Category() {
                 tag.cafeid === selectedTagCafeId && (
                   <React.Fragment key={tag.id}>
                     <div className="coffee-item">
-                    <span className="item-number">{index + 1}</span>
+                    <span className="item-number">{(activePage - 1) * postsPerPage + index + 1}</span>
                       <img src={tag.image} alt={tag.name} className="category-image" onClick={() => handleCoffeeDetail(tag.beverage, tag.cafe,tag.cafeid)} />
                       <p>{tag.name}</p>
                     </div>
@@ -279,7 +279,7 @@ function Category() {
                 (
                   <React.Fragment key={tag.id}>
                     <div className="coffee-item">
-                    <span className="item-number">{index + 1}</span>
+                    <span className="item-number">{(activePage - 1) * postsPerPage + index + 1}</span>
                       <img src={tag.image} alt={tag.name} className="category-image" onClick={() => handleCoffeeDetail(tag.beverage, tag.cafe,tag.cafeid)} />
                       <p>{tag.name}</p>
                     </div>
@@ -297,7 +297,7 @@ function Category() {
                 (
                   <React.Fragment key={tag.id}>
                     <div className="coffee-item">
-                    <span className="item-number">{index + 1}</span>
+                    <span className="item-number">{(activePage - 1) * postsPerPage + index + 1}</span>
                       <img src={tag.image} alt={tag.name} className="category-image" onClick={() => handleCoffeeDetail(tag.beverage, tag.cafe,tag.cafeid)} />
                       <p>{tag.name}</p>
                     </div>
@@ -315,7 +315,7 @@ function Category() {
                 (
                   <React.Fragment key={tag.id}>
                     <div className="coffee-item">
-                    <span className="item-number">{index + 1}</span>
+                    <span className="item-number">{(activePage - 1) * postsPerPage + index + 1}</span>
                       <img src={tag.image} alt={tag.name} className="category-image" onClick={() => handleCoffeeDetail(tag.beverage, tag.cafe,tag.cafeid)} />
                       <p>{tag.name}</p>
                     </div>
@@ -333,7 +333,7 @@ function Category() {
                 (
                   <React.Fragment key={tag.id}>
                     <div className="coffee-item">
-                    <span className="item-number">{index + 1}</span>
+                    <span className="item-number">{(activePage - 1) * postsPerPage + index + 1}</span>
                       <img src={tag.image} alt={tag.name} className="category-image" onClick={() => handleCoffeeDetail(tag.beverage, tag.cafe,tag.cafeid)} />
                       <p>{tag.name}</p>
                     </div>
@@ -351,7 +351,7 @@ function Category() {
                 (
                   <React.Fragment key={tag.id}>
                     <div className="coffee-item">
-                    <span className="item-number">{index + 1}</span>
+                    <span className="item-number">{(activePage - 1) * postsPerPage + index + 1}</span>
                       <img src={tag.image} alt={tag.name} className="category-image" onClick={() => handleCoffeeDetail(tag.beverage, tag.cafe,tag.cafeid)} />
                       <p>{tag.name}</p>
                     </div>
@@ -369,7 +369,7 @@ function Category() {
                 (
                   <React.Fragment key={tag.id}>
                     <div className="coffee-item">
-                    <span className="item-number">{index + 1}</span>
+                    <span className="item-number">{(activePage - 1) * postsPerPage + index + 1}</span>
                       <img
                         src={tag.image}
                         alt={tag.name}

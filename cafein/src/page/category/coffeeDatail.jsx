@@ -12,22 +12,43 @@ import Ediya_back from '../../asset/coffeeDetail/Ediya_detail.PNG';
 import Hollys_back from '../../asset/coffeeDetail/hollys_detail.PNG';
 import Paik_back from '../../asset/coffeeDetail/paik_detail.PNG';
 import Mega_back from '../../asset/coffeeDetail/mega_detail.PNG';
+import FilledStar from '../../asset/coffeeDetail/filled_star.png';
+import EmptyStar from '../../asset/coffeeDetail/empty_star.png';
 import { useRecoilState } from 'recoil';
 function CoffeeDetail() {
   const { cafename, coffeeId,cafeId } = useParams();
   const [posts, setPosts] = useState([]);
-  const [newPost, setNewposts] = useState();
   const [heart, setHeart] = useState(false);
   const [detail, setDetail] = useState([]);
   const navigate = useNavigate();
-
-
+  //total누적값, 
+  const averageRating = posts.length> 0 ? posts.reduce((total,post)=>total+post.rating,0)/posts.length: 0;
+  
+  console.log(averageRating)
   const coffeeItem = coffeeData.find(
     (item) => item.cafe === cafename && item.id === parseInt(coffeeId)
   );
 
   //음료 항목 하나 받아올 api 임시 구현 
 
+  function StarRating({ rating }) {
+  
+    return (
+      <div>
+        {[...Array(5)].map((star, i) => {
+          const starValue = i + 1;
+          return (
+            <img
+              key={i}
+              src={starValue <= rating ? FilledStar : EmptyStar}
+              alt="star"
+              width={30}
+            />
+          );
+        })}
+      </div>
+    );
+  }
   useEffect(() => {
     async function fetchData_detail() {
       try {
@@ -115,6 +136,7 @@ function CoffeeDetail() {
           </p>
           <br />
           <br />
+          <StarRating rating={averageRating} />
           <div className='coffee-heart' onClick={handleHeart}>찜하기
             <img src={heart ? EmptyHeart : FilledHeart} alt='Empty' />
           </div>
