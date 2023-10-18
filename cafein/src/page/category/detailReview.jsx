@@ -7,6 +7,7 @@ function DetailReview() {
     const [newheader,setNewheader] = useState([]);
     const [newcontent,setNewcontent] = useState([]);
     const [newrating,setRating] = useState([]);
+   
     const handleheader = (e) =>{
         setNewheader(e.target.value)
     }
@@ -23,12 +24,17 @@ function DetailReview() {
             content: newcontent,
             rating: newrating,
           }
-        if(newcontent&&newheader&&newrating){
+        if(newcontent||newheader||newrating){
             try{
-                axios.post("http://localhost:4000/api/reviews",newPost)
+                axios.post("http://localhost:4000/api/reviews",newPost,{
+                    withCredentials: true,
+                })
+
+                alert("리뷰가 작성되었습니다.")
             }
             catch(error){
                 console.log(error)
+                alert("에러발생")
             }
             
         }
@@ -54,6 +60,9 @@ function DetailReview() {
         placeholder='내용을 작성해주세요'/>
         <h3>별점 매기기</h3>
         <input value={newrating} onChange={handlereview} placeholder='1~5까지 별점매기기'/>
+        <br/>
+        <br/>
+        <button onClick={detailpost}>제출하기</button>
     </div>
   )
 }
