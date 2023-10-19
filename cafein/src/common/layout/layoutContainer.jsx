@@ -1,6 +1,7 @@
 // src/commons/layout/layoutContainer.jsx
 import Footer from "./footer"
 import Header from "./header"
+import Widget from "./widget"
 import { useLocation } from "react-router-dom"
 import "../../style/common_style/wrapper.scss"
 
@@ -27,7 +28,9 @@ export default function Layout(props) {
     <div className="wrapper">
       {!isHiddenHeader && <Header />}
       <div className="body">{props.children}</div>
+      <Widget/>
       {!isHiddenFooter && <Footer />}
+
     </div>
   )
 }
