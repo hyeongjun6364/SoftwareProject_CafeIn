@@ -7,12 +7,12 @@ import Slider from "react-slick"
 import "slick-carousel/slick/slick.css"
 import "slick-carousel/slick/slick-theme.css"
 import { useState, useEffect } from "react"
-import Chatbot from "../API/chatbot.jsx"
 import { starbucksState, ediyaState, hollysState, megaState, paikState, allState } from '../Atom/cafeatom';
 import { useRecoilState, useRecoilValue } from "recoil"
 import "../../style/mainpage/mainpage.scss";
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
+import Widget from '../../common/layout/widget'
 //import getChatGPTResponse from "../API/api.jsx"
 const images = [coffee1, starbucks]
 
@@ -89,12 +89,7 @@ function Mainpage() {
 
   }, [])
   console.log(hollysData)
-  const handleClickApiCall = async () => {
-    await Chatbot()
-  }
-  const handleClick = () => {
-    setShowChatbot(!showChatbot);
-  };
+  
   const handleMonth = (cafename,coffeeId,cafeId)=>{
     navigate(`/category/${cafename}/${cafeId}/${coffeeId}`)
   }
@@ -103,6 +98,7 @@ function Mainpage() {
       <ImageSlider />
       <div>
         <h1>이달의 사용자 리뷰 순위</h1>
+        
         <div className="image-container">
           {hollysData.map((tag) => {
             return (

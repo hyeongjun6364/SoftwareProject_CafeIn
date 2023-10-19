@@ -13,14 +13,13 @@ const MyPage = lazy(() => import("./page/mypage/mypage"))
 const Category = lazy(() => import("./page/category/category"))
 const Community = lazy(() => import("./page/community/community"))
 const SignUp = lazy(() => import("./page/mypage/signup"))
-const Chatbot = lazy(() => import("./page/API/chatbot"))
 const CommunityUpdate = lazy(() => import("./page/community/communityUpdate"))
 const CommunityWrite = lazy(() => import("./page/community/writePage"))
 const CoffeeDetail = lazy(() => import("./page/category/coffeeDatail"))
 const Question = lazy(() => import("./page/mypage/question"))
 const DetailWrite = lazy(() => import("./page/category/detailReview"))
 const Map = lazy(() => import("./page/kakaoApi/kakaomap"))
-
+const Chatbot = lazy(() => import("./page/chatbot/chatbot"))
 const root = ReactDOM.createRoot(document.getElementById("root"))
 root.render(
   <RecoilRoot>
