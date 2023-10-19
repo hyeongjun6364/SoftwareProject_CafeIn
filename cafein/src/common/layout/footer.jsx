@@ -33,6 +33,7 @@ function Footer() {
       <div className="footer-container">
         <div className="footer-links">
           <Link to="/category">카테고리</Link>
+          <Link to="/map">근처 카페</Link>
           <Link to="/">홈</Link>
           <Link to="/community">커뮤니티</Link>
           <Link to="/mypage">마이페이지</Link>

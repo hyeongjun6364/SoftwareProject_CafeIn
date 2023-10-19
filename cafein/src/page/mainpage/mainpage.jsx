@@ -116,8 +116,7 @@ function Mainpage() {
 
 
       </div>
-      {/* {showChatbot ? <Chatbot /> : <button onClick={handleClick}>Show chatbot</button>} */}
-      {/* <button onClick={handleClickApiCall}>GPT API CALL</button> */}
+      
     </div>
   )
 }
