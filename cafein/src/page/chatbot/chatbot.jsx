@@ -23,7 +23,7 @@ function Chatbot() {
       } else if (input.toLowerCase().includes('weather')) {
         botMessage = "오늘 날씨 좋아";
       } else {
-        botMessage = "I'm sorry, I didn't understand that.";
+        botMessage = "머라는 지 몰랑";
       }
 
       setMessages([...messages, { text: input, sender: 'user' }, { text: botMessage, sender: 'bot' }]);
