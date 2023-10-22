@@ -7,7 +7,8 @@ function DetailReview() {
     const [newheader,setNewheader] = useState([]);
     const [newcontent,setNewcontent] = useState([]);
     const [newrating,setRating] = useState([]);
-   
+   //http://localhost:4000/api/reviews?beverageId=2_71 GET 방식
+   //http://localhost:4000/api/reviews Post 방식
     const handleheader = (e) =>{
         setNewheader(e.target.value)
     }
