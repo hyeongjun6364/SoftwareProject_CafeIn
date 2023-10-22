@@ -163,7 +163,6 @@
 
 import React, { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
-import { cafename, coffee } from "./coffeedata"
 import coffeeData from "./Data.json"
 import "../../style/categorypage/coffeeDetail.scss"
 import Review from "./Review"
@@ -178,6 +177,7 @@ import Mega_back from "../../asset/coffeeDetail/mega_detail.PNG"
 import FilledStar from "../../asset/coffeeDetail/filled_star.png"
 import EmptyStar from "../../asset/coffeeDetail/empty_star.png"
 import { useRecoilState } from "recoil"
+
 function CoffeeDetail() {
   const { cafename, coffeeId, cafeId } = useParams()
   const [posts, setPosts] = useState([])
@@ -185,6 +185,7 @@ function CoffeeDetail() {
   const [detail, setDetail] = useState([])
   const navigate = useNavigate()
   const [username, setUsername] = useState("") // 상태 추가
+  const [heartStates, setHeartStates] = useState({})
 
   //total누적값,
   const averageRating =
@@ -217,10 +218,23 @@ function CoffeeDetail() {
     )
   }
   useEffect(() => {
+    // 로컬 스토리지에서 찜하기 상태를 불러옴
+    const localHeartStates =
+      JSON.parse(localStorage.getItem("heartStates")) || {}
+
     const savedUsername = localStorage.getItem("LS_KEY_USERNAME")
     if (savedUsername) {
       setUsername(savedUsername)
     }
+
+    // 초기 찜하기 상태 설정
+    setDetail((prevDetail) => {
+      return {
+        ...prevDetail,
+        heart: localHeartStates[`${cafeId}_${coffeeId}`] || false,
+      }
+    })
+
     async function fetchData_detail() {
       try {
         const response = await axios.get(
@@ -236,37 +250,13 @@ function CoffeeDetail() {
       }
     }
     fetchData_detail()
-  }, [])
+  }, [cafeId, coffeeId, cafename])
+
   const detailReview = () => {
     navigate(`/detail/${cafeId}/${coffeeId}`)
   }
-  
-  // rating 서버에서 불러와서 비교 후 -> 1,2,3... 순으로 렌더링
-  // 각각의 url을 이용해서 하나씩 상태관리 -> setReview에 담고 setReview((pre)=>{new,...Pre})
-  //  렌더링 빨라지려면 react-query사용하여 캐싱역할 해야함.
 
-  useEffect(() => {
-    async function initHeartState() {
-      if (username) {
-        const productKey = `${cafeId}_${coffeeId}`
-        try {
-          const response = await axios.get(
-            `http://localhost:4000/api/wishlist/${productKey}`,
-            {
-              withCredentials: true,
-            }
-          )
-
-          setHeart(!!response.data)
-        } catch (error) {
-          console.error("찜하기 데이터 초기화 중 에러 발생:", error)
-        }
-      }
-    }
-
-    initHeartState()
-  }, [cafeId, coffeeId, username])
-
+  // 찜하기 버튼 클릭 핸들러
   const handleHeart = async () => {
     if (!username) {
       return
@@ -274,10 +264,14 @@ function CoffeeDetail() {
 
     const productKey = `${cafeId}_${coffeeId}`
     try {
-      if (heart) {
-        // 찜하기 데이터 삭제
+      const localHeartStates =
+        JSON.parse(localStorage.getItem("heartStates")) || {}
+      const newHeartState = !detail.heart
+
+      if (newHeartState) {
+        // 찜하기 데이터 추가
         await axios.post(
-          "http://localhost:4000/api/wishlist",
+          `http://localhost:4000/api/wishlist`,
           {
             userId: username,
             productId: productKey,
@@ -287,9 +281,9 @@ function CoffeeDetail() {
           }
         )
       } else {
-        // 찜하기 데이터 추가
+        // 찜하기 데이터 삭제
         await axios.post(
-          "http://localhost:4000/api/wishlist",
+          `http://localhost:4000/api/wishlist`,
           {
             userId: username,
             productId: productKey,
@@ -299,8 +293,16 @@ function CoffeeDetail() {
           }
         )
       }
-      // 토글 상태 갱신
-      setHeart(!heart)
+
+      // 로컬 스토리지에 찜하기 상태 업데이트
+      localHeartStates[productKey] = newHeartState
+      localStorage.setItem("heartStates", JSON.stringify(localHeartStates))
+
+      // 상태 업데이트
+      setDetail((prevDetail) => ({
+        ...prevDetail,
+        heart: newHeartState,
+      }))
     } catch (error) {
       console.error("찜하기 데이터 업데이트 중 에러 발생:", error)
     }
@@ -312,77 +314,7 @@ function CoffeeDetail() {
   return (
     <div>
       <div className="image-container">
-        {cafename === "starbucks" ? (
-          <>
-            <img
-              src={Starbucks_back}
-              alt="starbucks background image"
-              width={"100%"}
-              height={"600px"}
-              className="starbucks_back"
-            />
-            <div className="image-text">스타벅스</div>
-          </>
-        ) : (
-          ""
-        )}
-        <></>
-        {cafename === "ediya" ? (
-          <>
-            <img
-              src={Ediya_back}
-              alt="starbucks background image"
-              width={"100%"}
-              height={"600px"}
-              className="starbucks_back"
-            />
-            <div className="image-text">이디야</div>
-          </>
-        ) : (
-          ""
-        )}
-        {cafename === "hollys" ? (
-          <>
-            <img
-              src={Hollys_back}
-              alt="starbucks background image"
-              width={"100%"}
-              height={"600px"}
-              className="starbucks_back"
-            />
-            <div className="image-text">할리스</div>
-          </>
-        ) : (
-          ""
-        )}
-        {cafename === "paik" ? (
-          <>
-            <img
-              src={Paik_back}
-              alt="starbucks background image"
-              width={"100%"}
-              height={"600px"}
-              className="starbucks_back"
-            />
-            <div className="image-text">빽다방</div>
-          </>
-        ) : (
-          ""
-        )}
-        {cafename === "mega" ? (
-          <>
-            <img
-              src={Mega_back}
-              alt="starbucks background image"
-              width={"100%"}
-              height={"600px"}
-              className="starbucks_back"
-            />
-            <div className="image-text">메가커피</div>
-          </>
-        ) : (
-          ""
-        )}
+        {/* 이미지 및 텍스트 출력 부분 생략 */}
       </div>
       <div className="coffee-detail-wrapper">
         <img src={detail.image} alt={cafename} className="category-image" />
