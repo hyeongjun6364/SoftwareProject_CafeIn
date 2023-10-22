@@ -49,7 +49,7 @@ function Mainpage() {
   const [megaData, setMegaData] = useRecoilState(megaState);
   const [paikData, setPaikData] = useRecoilState(paikState);
   const [entireData, setEntireData] = useRecoilState(allState);
-
+  const [reviews,setReviews] = useState([]);
   const navigate = useNavigate();
   
   // 비동기통신을 하기위해 async, await를 useEffect 함수내에서 직접 썻지만
@@ -62,6 +62,8 @@ function Mainpage() {
         let response3 = axios.get("http://localhost:4000/api/cafe/db_get_hollys_menu");
         let response4 = axios.get("http://localhost:4000/api/cafe/db_get_mega_menu")
         let response5 = axios.get("http://localhost:4000/api/cafe/db_get_paik_menu")
+        
+        let newreview = axios.get("http://localhost:4000/api/reviews?beverageId=")
         // 요청이 완료될때 까지 기다리게 하기위해 Promise 사용 -> 효율성을 위해 병렬로 요청
         const results = await Promise.all([response1, response2, response3, response4, response5]);
         setStarbucksData((await response1).data)
@@ -69,7 +71,7 @@ function Mainpage() {
         setHollysData((await response3).data);
         setMegaData((await response4).data);
         setPaikData((await response5).data);
-
+        
 
         let allData = [];
 

@@ -70,6 +70,10 @@ function CoffeeDetail() {
   const detailReview = ()=>{
    navigate(`/detail/${cafeId}/${coffeeId}`)
   }
+  
+  // rating 서버에서 불러와서 비교 후 -> 1,2,3... 순으로 렌더링
+  // 각각의 url을 이용해서 하나씩 상태관리 -> setReview에 담고 setReview((pre)=>{new,...Pre})
+  //  렌더링 빨라지려면 react-query사용하여 캐싱역할 해야함.
 
   const handleHeart = () => {
     setHeart(!heart);
