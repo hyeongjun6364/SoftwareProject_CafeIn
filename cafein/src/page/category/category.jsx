@@ -212,7 +212,9 @@ function Category() {
                     <span className="item-number">{(activePage - 1) * postsPerPage + index + 1}</span>
                       <img src={tag.image} alt={tag.name} className="category-image" onClick={() => handleCoffeeDetail(tag.beverage, tag.cafe,tag.cafeid)} />
                       <p>{tag.name}</p>
+                      {console.log(tag.cafe)}
                     </div>
+                    
                   </React.Fragment>
                 )
               ))}
@@ -237,7 +239,7 @@ function Category() {
             </div>
           </div>
         )}
-        {selectedTagCafeId === 0 && (
+        {selectedTagCafeId === 5 && (
           <div className="tag-info">
             <div className="coffee-grid">
               {currentMega.map((tag,index) => (

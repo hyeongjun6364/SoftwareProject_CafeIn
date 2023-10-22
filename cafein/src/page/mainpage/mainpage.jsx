@@ -50,10 +50,12 @@ function Mainpage() {
   const [paikData, setPaikData] = useRecoilState(paikState);
   const [entireData, setEntireData] = useRecoilState(allState);
   const [reviews,setReviews] = useState([]);
+  const [review,setReview] = useState([]);
   const navigate = useNavigate();
-  
+  //http://localhost:4000/api/reviews?beverageId=${cafeId}_${coffeeId}
   // 비동기통신을 하기위해 async, await를 useEffect 함수내에서 직접 썻지만
   //  경고 메시지가 나와서 함수를 정의하고 이 함수를 반환하는 식으로 바꿈
+  const averageRating = review.length> 0 ? review.reduce((total,post)=>total+post.rating,0)/review.length: 0;
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -62,8 +64,7 @@ function Mainpage() {
         let response3 = axios.get("http://localhost:4000/api/cafe/db_get_hollys_menu");
         let response4 = axios.get("http://localhost:4000/api/cafe/db_get_mega_menu")
         let response5 = axios.get("http://localhost:4000/api/cafe/db_get_paik_menu")
-        
-        let newreview = axios.get("http://localhost:4000/api/reviews?beverageId=")
+        //let newreview = axios.get("http://localhost:4000/api/reviews?beverageId=")
         // 요청이 완료될때 까지 기다리게 하기위해 Promise 사용 -> 효율성을 위해 병렬로 요청
         const results = await Promise.all([response1, response2, response3, response4, response5]);
         setStarbucksData((await response1).data)
@@ -72,7 +73,7 @@ function Mainpage() {
         setMegaData((await response4).data);
         setPaikData((await response5).data);
         
-
+        
         let allData = [];
 
         results.forEach(result => {
@@ -90,7 +91,7 @@ function Mainpage() {
     fetchData();
 
   }, [])
-  console.log(hollysData)
+  //console.log(hollysData)
   
   const handleMonth = (cafename,coffeeId,cafeId)=>{
     navigate(`/category/${cafename}/${cafeId}/${coffeeId}`)
