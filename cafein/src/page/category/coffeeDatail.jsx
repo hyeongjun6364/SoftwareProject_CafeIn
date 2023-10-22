@@ -18,8 +18,10 @@ import { useRecoilState } from 'recoil';
 function CoffeeDetail() {
   const { cafename, coffeeId,cafeId } = useParams();
   const [posts, setPosts] = useState([]);
-  const [heart, setHeart] = useState(false);
+  const [heart, setHeart] = useState(true);
   const [detail, setDetail] = useState([]);
+  const [wishlist,setWishlist]= useState([]);
+  const [username,setUsername]=useState([]);
   const navigate = useNavigate();
   //total누적값, 
   const averageRating = posts.length> 0 ? posts.reduce((total,post)=>total+post.rating,0)/posts.length: 0;
@@ -49,6 +51,12 @@ function CoffeeDetail() {
       </div>
     );
   }
+  const savedUsername = localStorage.getItem("LS_KEY_USERNAME")
+  useEffect(() => {
+    if (savedUsername) {
+      setUsername(savedUsername)
+    }
+  }, []);
   useEffect(() => {
     async function fetchData_detail() {
       try {
@@ -56,17 +64,34 @@ function CoffeeDetail() {
         setDetail(response.data)
         const response1 = await axios.get(`http://localhost:4000/api/reviews?beverageId=${cafeId}_${coffeeId}`);
         setPosts(response1.data);
-
-
       }
       catch (error) {
         console.log(error)
       }
-
-
     }
+
+    const fetchWishlist = async () => {
+      try {
+        const response = await axios.get(`http://localhost:4000/api/wishlist/${savedUsername}`);
+        const productIds = response.data.map(item => item.productId);
+        setWishlist(response.data);
+        const currentProductId = `${cafeId}_${coffeeId}`;
+        console.log(productIds)
+        console.log(username)
+        if(productIds.includes(currentProductId)){
+          setHeart(false);
+        }
+        else{
+          setHeart(true);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+  
+    fetchWishlist();
     fetchData_detail();
-  }, [])
+  }, [heart])
   const detailReview = ()=>{
    navigate(`/detail/${cafeId}/${coffeeId}`)
   }
@@ -74,9 +99,13 @@ function CoffeeDetail() {
   // rating 서버에서 불러와서 비교 후 -> 1,2,3... 순으로 렌더링
   // 각각의 url을 이용해서 하나씩 상태관리 -> setReview에 담고 setReview((pre)=>{new,...Pre})
   //  렌더링 빨라지려면 react-query사용하여 캐싱역할 해야함.
+  const handlePostHeart = async() => {
+    const response = await axios.post("http://localhost:4000/api/wishlist",{
+        userId: `${savedUsername}`,
+        productId: `${cafeId}_${coffeeId}`
 
-  const handleHeart = () => {
-    setHeart(!heart);
+    },{withCredentials: true,})
+    setHeart(!heart)
   }
   if (!detail) {
     return <div>커피를 찾을 수 없습니다.</div>;
@@ -141,7 +170,7 @@ function CoffeeDetail() {
           <br />
           <br />
           <StarRating rating={averageRating} />
-          <div className='coffee-heart' onClick={handleHeart}>찜하기
+          <div className='coffee-heart' onClick={handlePostHeart}>찜하기
             <img src={heart ? EmptyHeart : FilledHeart} alt='Empty' />
           </div>
         </div>
@@ -161,6 +190,11 @@ function CoffeeDetail() {
         )))}
 
       </ul>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
     </div>
   )
 }
