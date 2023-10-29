@@ -425,10 +425,8 @@ const Login = () => {
       if (response.status === 200) {
         localStorage.setItem("login", "true")
         setIsLogged(true)
-        localStorage.setItem(
-          "LS_KEY_USERNAME",
-          JSON.stringify(response.data.username)
-        )
+        const storeName = JSON.stringify(response.data.username)
+        localStorage.setItem("LS_KEY_USERNAME", storeName)
       }
     } catch (error) {
       alert("아이디 또는 비밀번호가 올바르지 않습니다.")
