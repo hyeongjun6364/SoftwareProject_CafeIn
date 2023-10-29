@@ -9,7 +9,6 @@ import WritePage from "./writePage"
 import {useQuery,useMutation, useQueryClient, QueryClient } from 'react-query'
 import { getCommunity, postCommunity, deleteCommunity } from "../API/communityApi"
 function CommunityApp() {
-  //const [posts, setPosts] = useState([]) // 게시물 목록
   const [newPostText, setNewPostText] = useState("") // 새 게시물 텍스트
   const [activePage, setActivePage] = useState(1) // 현재 페이지
   const postsPerPage = 10 // 페이지당 표시할 게시물 수
@@ -31,25 +30,7 @@ function CommunityApp() {
       alert("글이 작성되었습니다")
     }
   })
- /*
-  const deletePostMutation = useMutation(deleteCommunity,{
-    onMutate: async (id) => {
-      const previousPosts = queryClient.getQueryData('communityPosts');
-      queryClient.setQueryData('communityPosts', old => old.filter(post => post._id !== id));
-      
-      return { previousPosts };
-    },
-    
-    onError: (err, variables, context) => {
-      queryClient.setQueryData('communityPosts', context.previousPosts);
-      
-    },
-    onSuccess: (id) => {
-      
-      alert("글이 삭제되었습니다.")
-      
-    },
-  });*/
+ 
   const deletePostMutation = useMutation(
     (id,token) =>
     axios
