@@ -7,7 +7,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom"
 import "./style/common_style/header.scss"
 import Layout from "./common/layout/layoutContainer"
 import { RecoilRoot } from "recoil"
-
+import { QueryClient, QueryClientProvider } from "react-query";
 const MainPage = lazy(() => import("./page/mainpage/mainpage"))
 const MyPage = lazy(() => import("./page/mypage/mypage"))
 const Category = lazy(() => import("./page/category/category"))
@@ -20,9 +20,13 @@ const Question = lazy(() => import("./page/mypage/question"))
 const DetailWrite = lazy(() => import("./page/category/detailReview"))
 const Map = lazy(() => import("./page/kakaoApi/kakaomap"))
 const Chatbot = lazy(() => import("./page/chatbot/chatbot"))
+const queryClient = new QueryClient();
+
 const root = ReactDOM.createRoot(document.getElementById("root"))
 root.render(
+
   <RecoilRoot>
+  <QueryClientProvider client={queryClient}>
     <BrowserRouter>
       <Layout>
         <Suspense fallback={<div>Loading...</div>}>
@@ -38,7 +42,7 @@ root.render(
             <Route path="/signup" element={<SignUp />} />
             <Route path="/chatbot" element={<Chatbot />} />
             <Route path="/write/:id" element={<CommunityUpdate />} />
-            <Route pate="/communitywrite" element={<CommunityWrite />} />
+            <Route path="/communitywrite" element={<CommunityWrite />} />
             <Route path="/qeustion" element={<Question />} />
             <Route path="/map" element={<Map />} />
             <Route path="/detail/:cafeId/:coffeeId" element={<DetailWrite />} />
@@ -46,7 +50,8 @@ root.render(
         </Suspense>
       </Layout>
     </BrowserRouter>
-  </RecoilRoot>
+  </QueryClientProvider>
+</RecoilRoot>
 )
 
 reportWebVitals()

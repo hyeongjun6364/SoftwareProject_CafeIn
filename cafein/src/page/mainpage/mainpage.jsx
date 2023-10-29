@@ -72,6 +72,7 @@ function Mainpage() {
         setHollysData((await response3).data);
         setMegaData((await response4).data);
         setPaikData((await response5).data);
+        console.log("mount")
         
         
         let allData = [];

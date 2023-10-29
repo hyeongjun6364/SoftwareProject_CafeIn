@@ -1,12 +1,15 @@
 import React, { useState } from 'react'
 import axios from 'axios';
+import { updateCommunity } from '../API/communityApi';
 import {  useNavigate, useParams } from 'react-router-dom';
+import {useQuery,useMutation, useQueryClient, QueryClient } from 'react-query'
 //update feat
 function CommunityWrite() {
     const [title,setTitle] = useState('');
     const [body,setBody] = useState('');
     const {id} = useParams()
     const navigate=useNavigate()
+    const queryClient = useQueryClient();
     console.log("게시물 id:",id)
     const handleTitle = (e) => {
         setTitle(e.target.value)
@@ -14,26 +17,20 @@ function CommunityWrite() {
     const handleContent = (e) => {
         setBody(e.target.value)
     }
-
+    const updatePost=useMutation((data)=>updateCommunity(id,data.body,data.title),{
+      onSuccess: ()=> {
+        queryClient.invalidateQueries('communityPosts')
+        navigate("/community")
+      }
+    })
     
     const handleUpdate = async() => {
-      try {
-        await axios.patch(`http://localhost:4000/api/posts/${id}`, {title,body},{
-          withCredentials: true,
-        })
-        alert("게시물이 성공적으로 수정되었습니다.")
-        navigate('/community')
+      if(title&&body){
+        updatePost.mutate({body,title})
       }
-      catch(error){
-        if(title=='' || body==''){
-          alert('게시물 작성 바람.')
-        }
-        else{
-          alert('게시물 작성 실패')
-        }
-        console.error(error);
-        
-      }
+      //await updateCommunity(id,title,body)
+      //navigate("/community")
+      
 
     }
     
