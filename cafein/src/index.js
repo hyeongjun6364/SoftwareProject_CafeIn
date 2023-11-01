@@ -18,7 +18,7 @@ const CommunityWrite = lazy(() => import("./page/community/writePage"))
 const CoffeeDetail = lazy(() => import("./page/category/coffeeDatail"))
 const Question = lazy(() => import("./page/mypage/question"))
 const DetailWrite = lazy(() => import("./page/category/detailReview"))
-const Map = lazy(() => import("./page/kakaoApi/kakaomap"))
+const Map = lazy(() => import("./page/API/kakaomap"))
 const Chatbot = lazy(() => import("./page/chatbot/chatbot"))
 const queryClient = new QueryClient();
 
