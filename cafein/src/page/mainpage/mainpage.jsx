@@ -8,6 +8,7 @@ import "slick-carousel/slick/slick.css"
 import "slick-carousel/slick/slick-theme.css"
 import { useState, useEffect } from "react"
 import { starbucksState, ediyaState, hollysState, megaState, paikState, allState } from '../Atom/cafeatom';
+import { getPaik,getEdiya,getMega,getHollys,getStarbucks } from "../API/cafeinfo"
 import { useRecoilState, useRecoilValue } from "recoil"
 import "../../style/mainpage/mainpage.scss";
 import axios from "axios"
@@ -29,7 +30,7 @@ function ImageSlider() {
   }
 
   return (
-    <div style={{ width: "100%", height: "530px" }}>
+    <div style={{ width: "100%" }}>
       <Slider {...settings}>
         {images.map((img, idx) => (
           <div key={idx} className="slider-image">
@@ -59,31 +60,32 @@ function Mainpage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        let response1 = axios.get("http://localhost:4000/api/cafe/db_get_starbucks_menu");
-        let response2 = axios.get("http://localhost:4000/api/cafe/db_get_ediya_menu");
-        let response3 = axios.get("http://localhost:4000/api/cafe/db_get_hollys_menu");
-        let response4 = axios.get("http://localhost:4000/api/cafe/db_get_mega_menu")
-        let response5 = axios.get("http://localhost:4000/api/cafe/db_get_paik_menu")
+        let response1 = await getStarbucks();
+        let response2 = await getEdiya()
+        let response3 = await getHollys()
+        let response4 = await getMega()
+        let response5 = await getPaik()
+        console.log(response1)
         //let newreview = axios.get("http://localhost:4000/api/reviews?beverageId=")
         // 요청이 완료될때 까지 기다리게 하기위해 Promise 사용 -> 효율성을 위해 병렬로 요청
         const results = await Promise.all([response1, response2, response3, response4, response5]);
-        setStarbucksData((await response1).data)
-        setEdiyaData((await response2).data);
-        setHollysData((await response3).data);
-        setMegaData((await response4).data);
-        setPaikData((await response5).data);
-        console.log("mount")
+        setStarbucksData(response1.data)
+        setEdiyaData(response2.data);
+        setHollysData(response3.data);
+        setMegaData(response4.data);
+        setPaikData(response5.data);
+        
         
         
         let allData = [];
-
+        //api호출하고받아올때 if문통해서 검사안하면 error남
         results.forEach(result => {
-          allData.push(...result.data);
+          if (result && result.data){
+            allData.push(...result.data);
+          }
+          
         });
-
-
         setEntireData(allData);
-
       } catch (error) {
         console.log(error);
       }
@@ -101,6 +103,7 @@ function Mainpage() {
     <div>
       <ImageSlider />
       <div>
+        
         <h1>이달의 사용자 리뷰 순위</h1>
         
         <div className="image-container">
