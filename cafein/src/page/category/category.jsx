@@ -7,6 +7,9 @@ import axios from "axios"
 import Pagination from "react-js-pagination"
 import "../../style/categorypage/pagination.scss"
 import { useRecoilState, useRecoilValue } from "recoil"
+import useCoffeeList from "../customHook/useCafe.jsx"
+import UseCoffee from "../customHook/useCoffee.jsx"
+import useSearch from "../customHook/useSearch.jsx"
 import {
   starbucksState,
   ediyaState,
@@ -22,9 +25,8 @@ const TagList = ({ tags, onTagClick, selectedTagId }) => {
       {tags.map((tag) => (
         <button
           key={tag.id}
-          className={`category-tag ${
-            selectedTagId === tag.id ? "selected" : ""
-          }`}
+          className={`category-tag ${selectedTagId === tag.id ? "selected" : ""
+            }`}
           onClick={() => onTagClick(tag.id)}
         >
           {tag.name}
@@ -133,13 +135,7 @@ function Category() {
     )
     setFilterMenu(filteredCafe)
   }
-  const CafeName = entireData.find(
-    (tag) => tag.cafeid === selectedTagCafeId
-  )?.cafe
 
-  const CafeContent = coffee.find(
-    (tag) => tag.id === selectedTagCoffeeId
-  )?.content
 
   //검색어 결과 업데이트
 
@@ -193,313 +189,22 @@ function Category() {
         {/* 선택한 태그에 대한 정보를 출력 */}
         <br />
         <div className="category-cafe">총 메뉴</div>
+        {useCoffeeList(selectedTagCafeId, currentPosts, activePage, postsPerPage, handleCoffeeDetail)}
+        {useCoffeeList(selectedTagCafeId, currentEdyia, activePage, postsPerPage, handleCoffeeDetail)}
+        {useCoffeeList(selectedTagCafeId, currentHollys, activePage, postsPerPage, handleCoffeeDetail)}
+        {useCoffeeList(selectedTagCafeId, currentMega, activePage, postsPerPage, handleCoffeeDetail)}
+        {useCoffeeList(selectedTagCafeId, currentPaik, activePage, postsPerPage, handleCoffeeDetail)}
+        {/*커피, 음료, 티 등 구분 */}
 
-        {selectedTagCafeId === 1 && (
-          <div className="tag-info">
-            <div className="coffee-grid">
-              {currentPosts.map(
-                (tag, index) =>
-                  tag.cafeid === selectedTagCafeId && (
-                    <React.Fragment key={tag.id}>
-                      <div className="coffee-item">
-                        <span className="item-number">
-                          {(activePage - 1) * postsPerPage + index + 1}
-                        </span>
-                        <img
-                          src={tag.image}
-                          alt={tag.name}
-                          className="category-image"
-                          onClick={() =>
-                            handleCoffeeDetail(tag.id, tag.cafe, tag.cafeid)
-                          }
-                        />
-                        <p>{tag.name}</p>
-                      </div>
-                    </React.Fragment>
-                  )
-              )}
-            </div>
-          </div>
-        )}
+        {UseCoffee(selectedTagCoffeeId, currentCoffee, activePage, postsPerPage, handleCoffeeDetail, 1)}
+        {UseCoffee(selectedTagCoffeeId, currentAde, activePage, postsPerPage, handleCoffeeDetail, 2)}
+        {UseCoffee(selectedTagCoffeeId, currentSmoody, activePage, postsPerPage, handleCoffeeDetail, 3)}
+        {UseCoffee(selectedTagCoffeeId, currentTea, activePage, postsPerPage, handleCoffeeDetail, 4)}
+        {UseCoffee(selectedTagCoffeeId, currentJuice, activePage, postsPerPage, handleCoffeeDetail, 5)}
 
-        {selectedTagCafeId === 2 && (
-          <div className="tag-info">
-            <div className="coffee-grid">
-              {currentEdyia.map(
-                (tag, index) =>
-                  tag.cafeid === selectedTagCafeId && (
-                    <React.Fragment key={tag.id}>
-                      <div className="coffee-item">
-                        <span className="item-number">
-                          {(activePage - 1) * postsPerPage + index + 1}
-                        </span>
-                        <img
-                          src={tag.image}
-                          alt={tag.name}
-                          className="category-image"
-                          onClick={() =>
-                            handleCoffeeDetail(
-                              tag.beverage,
-                              tag.cafe,
-                              tag.cafeid
-                            )
-                          }
-                        />
-                        <p>{tag.name}</p>
-                        {console.log(tag.cafe)}
-                      </div>
-                    </React.Fragment>
-                  )
-              )}
-            </div>
-          </div>
-        )}
-
-        {selectedTagCafeId === 3 && (
-          <div className="tag-info">
-            <div className="coffee-grid">
-              {currentHollys.map(
-                (tag, index) =>
-                  tag.cafeid === selectedTagCafeId && (
-                    <React.Fragment key={tag.id}>
-                      <div className="coffee-item">
-                        <span className="item-number">
-                          {(activePage - 1) * postsPerPage + index + 1}
-                        </span>
-                        <img
-                          src={tag.image}
-                          alt={tag.name}
-                          className="category-image"
-                          onClick={() =>
-                            handleCoffeeDetail(
-                              tag.beverage,
-                              tag.cafe,
-                              tag.cafeid
-                            )
-                          }
-                        />
-                        <p>{tag.name}</p>
-                      </div>
-                    </React.Fragment>
-                  )
-              )}
-            </div>
-          </div>
-        )}
-        {selectedTagCafeId === 5 && (
-          <div className="tag-info">
-            <div className="coffee-grid">
-              {currentMega.map(
-                (tag, index) =>
-                  tag.cafeid === selectedTagCafeId && (
-                    <React.Fragment key={tag.id}>
-                      <div className="coffee-item">
-                        <span className="item-number">
-                          {(activePage - 1) * postsPerPage + index + 1}
-                        </span>
-                        <img
-                          src={tag.image}
-                          alt={tag.name}
-                          className="category-image"
-                          onClick={() =>
-                            handleCoffeeDetail(
-                              tag.beverage,
-                              tag.cafe,
-                              tag.cafeid
-                            )
-                          }
-                        />
-                        <p>{tag.name}</p>
-                      </div>
-                    </React.Fragment>
-                  )
-              )}
-            </div>
-          </div>
-        )}
-        {selectedTagCafeId === 4 && (
-          <div className="tag-info">
-            <div className="coffee-grid">
-              {currentPaik.map(
-                (tag, index) =>
-                  tag.cafeid === selectedTagCafeId && (
-                    <React.Fragment key={tag.id}>
-                      <div className="coffee-item">
-                        <span className="item-number">
-                          {(activePage - 1) * postsPerPage + index + 1}
-                        </span>
-                        <img
-                          src={tag.image}
-                          alt={tag.name}
-                          className="category-image"
-                          onClick={() =>
-                            handleCoffeeDetail(
-                              tag.beverage,
-                              tag.cafe,
-                              tag.cafeid
-                            )
-                          }
-                        />
-                        <p>{tag.name}</p>
-                      </div>
-                    </React.Fragment>
-                  )
-              )}
-            </div>
-          </div>
-        )}
-        {/*커피*/}
-        {selectedTagCoffeeId === 1 && (
-          <div className="tag-info">
-            <div className="coffee-grid">
-              {currentCoffee.map((tag, index) => (
-                <React.Fragment key={tag.id}>
-                  <div className="coffee-item">
-                    <span className="item-number">
-                      {(activePage - 1) * postsPerPage + index + 1}
-                    </span>
-                    <img
-                      src={tag.image}
-                      alt={tag.name}
-                      className="category-image"
-                      onClick={() =>
-                        handleCoffeeDetail(tag.beverage, tag.cafe, tag.cafeid)
-                      }
-                    />
-                    <p>{tag.name}</p>
-                  </div>
-                </React.Fragment>
-              ))}
-            </div>
-          </div>
-        )}
-        {/*에이드*/}
-        {selectedTagCoffeeId === 2 && (
-          <div className="tag-info">
-            <div className="coffee-grid">
-              {currentAde.map((tag, index) => (
-                <React.Fragment key={tag.id}>
-                  <div className="coffee-item">
-                    <span className="item-number">
-                      {(activePage - 1) * postsPerPage + index + 1}
-                    </span>
-                    <img
-                      src={tag.image}
-                      alt={tag.name}
-                      className="category-image"
-                      onClick={() =>
-                        handleCoffeeDetail(tag.beverage, tag.cafe, tag.cafeid)
-                      }
-                    />
-                    <p>{tag.name}</p>
-                  </div>
-                </React.Fragment>
-              ))}
-            </div>
-          </div>
-        )}
-        {/*스무디*/}
-        {selectedTagCoffeeId === 3 && (
-          <div className="tag-info">
-            <div className="coffee-grid">
-              {currentSmoody.map((tag, index) => (
-                <React.Fragment key={tag.id}>
-                  <div className="coffee-item">
-                    <span className="item-number">
-                      {(activePage - 1) * postsPerPage + index + 1}
-                    </span>
-                    <img
-                      src={tag.image}
-                      alt={tag.name}
-                      className="category-image"
-                      onClick={() =>
-                        handleCoffeeDetail(tag.beverage, tag.cafe, tag.cafeid)
-                      }
-                    />
-                    <p>{tag.name}</p>
-                  </div>
-                </React.Fragment>
-              ))}
-            </div>
-          </div>
-        )}
-        {/*티*/}
-        {selectedTagCoffeeId === 4 && (
-          <div className="tag-info">
-            <div className="coffee-grid">
-              {currentTea.map((tag, index) => (
-                <React.Fragment key={tag.id}>
-                  <div className="coffee-item">
-                    <span className="item-number">
-                      {(activePage - 1) * postsPerPage + index + 1}
-                    </span>
-                    <img
-                      src={tag.image}
-                      alt={tag.name}
-                      className="category-image"
-                      onClick={() =>
-                        handleCoffeeDetail(tag.beverage, tag.cafe, tag.cafeid)
-                      }
-                    />
-                    <p>{tag.name}</p>
-                  </div>
-                </React.Fragment>
-              ))}
-            </div>
-          </div>
-        )}
-        {/*주스*/}
-        {selectedTagCoffeeId === 5 && (
-          <div className="tag-info">
-            <div className="coffee-grid">
-              {currentJuice.map((tag, index) => (
-                <React.Fragment key={tag.id}>
-                  <div className="coffee-item">
-                    <span className="item-number">
-                      {(activePage - 1) * postsPerPage + index + 1}
-                    </span>
-                    <img
-                      src={tag.image}
-                      alt={tag.name}
-                      className="category-image"
-                      onClick={() =>
-                        handleCoffeeDetail(tag.beverage, tag.cafe, tag.cafeid)
-                      }
-                    />
-                    <p>{tag.name}</p>
-                  </div>
-                </React.Fragment>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {searchQuery && (
-          <div className="search-results">
-            <div className="coffee-grid">
-              {currentFilter.map((tag, index) => (
-                <React.Fragment key={tag.id}>
-                  <div className="coffee-item">
-                    <span className="item-number">
-                      {(activePage - 1) * postsPerPage + index + 1}
-                    </span>
-                    <img
-                      src={tag.image}
-                      alt={tag.name}
-                      className="category-image"
-                      onClick={() =>
-                        handleCoffeeDetail(tag.id, tag.cafe, tag.cafeid)
-                      }
-                    />
-                    <p>{tag.name}</p>
-                  </div>
-                </React.Fragment>
-              ))}
-            </div>
-          </div>
-        )}
-
+        {useSearch(selectedTagCoffeeId, currentFilter, activePage, postsPerPage, handleCoffeeDetail, searchQuery)}
         
+
       </div>
       <br />
       <br />
