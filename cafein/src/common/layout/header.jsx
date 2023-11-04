@@ -1,16 +1,33 @@
 import React, { useState } from "react"
 import { Link } from "react-router-dom"
+import axios from "axios"
+import { useRecoilState } from "recoil"
+import { loggedInState } from "../../page/mypage/auth" 
 import "../../style/common_style/header.scss"
 import searchimg from '../../asset/common/reading_glasses.png'
 const Menu = () => {
   const [selectedItem, setSelectedItem] = useState(null)
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false)
-
+  const [isLogged, setIsLogged] = useRecoilState(loggedInState)
+  const storedLoginStatus = localStorage.getItem("login")
   // 항목 클릭 시 상태 업데이트
   const handleItemClick = (item) => {
     setSelectedItem(item)
     if (isMobileMenuOpen) {
       setMobileMenuOpen(false) 
+    }
+  }
+  const handleLogout = async () => {
+    try {
+      // 로그아웃 요청을 서버로 보냄
+      await axios.post("/api/auth/logout")
+
+      // 로컬 스토리지에서 로그인 상태를 제거하고 클라이언트 상태를 업데이트
+      localStorage.removeItem("login")
+      localStorage.removeItem("LS_KEY_USERNAME")
+      setIsLogged(false)
+    } catch (error) {
+      console.error("로그아웃 오류:", error)
     }
   }
 
@@ -42,6 +59,7 @@ const Menu = () => {
             <li className={selectedItem === '로그인' ? 'selected' : ''}
               onClick={() => handleItemClick('로그인')}>
               <Link to="/mypage" >
+                
                 로그인하세요</Link>
             </li> : ""}
 

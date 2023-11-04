@@ -22,7 +22,7 @@ function useCoffeeList(
                   src={tag.image}
                   alt={tag.name}
                   className="category-image"
-                  onClick={() => handleCoffeeDetail(tag.id, tag.cafe, tag.cafeid)}
+                  onClick={() => handleCoffeeDetail(tag.beverage, tag.cafe, tag.cafeid)}
                 />
                 <p>{tag.name}</p>
               </div>
