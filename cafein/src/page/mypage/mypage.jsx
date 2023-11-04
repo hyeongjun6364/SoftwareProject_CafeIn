@@ -1,49 +1,3 @@
-// import React, { useState, useEffect } from "react"
-// import "../../style/mypage/login.scss"
-// import Login from "./login" // 컴포넌트 이름 수정
-// import { useRecoilState } from "recoil"
-// import { loggedInState } from "./auth"
-// import axios from "axios"
-
-// const MyPage = () => {
-//   const [isLogged, setIsLogged] = useRecoilState(loggedInState)
-
-//   useEffect(() => {
-//     const storedLoginStatus = localStorage.getItem("login")
-//     if (storedLoginStatus === "true") {
-//       setIsLogged(true)
-//     }
-//   }, [isLogged])
-
-//   const handleLogout = async () => {
-//     try {
-//       // 로그아웃 요청을 서버로 보냄
-//       await axios.post("/api/auth/logout")
-
-//       // 로컬 스토리지에서 로그인 상태를 제거하고 클라이언트 상태를 업데이트
-//       localStorage.removeItem("login")
-//       setIsLogged(false)
-//     } catch (error) {
-//       console.error("로그아웃 오류:", error)
-//     }
-//   }
-
-//   return (
-//     <div className="mypage-container">
-//       {isLogged ? (
-//         <div>
-//           <h2>Welcome to My Page!</h2>
-//           <button onClick={handleLogout}>Logout</button>
-//         </div>
-//       ) : (
-//         <Login />
-//       )}
-//     </div>
-//   )
-// }
-
-// export default MyPage
-
 import React, { useState, useEffect } from "react"
 import "../../style/mypage/login.scss"
 import Login from "./login"
@@ -54,6 +8,7 @@ import axios from "axios"
 const MyPage = () => {
   const [isLogged, setIsLogged] = useRecoilState(loggedInState)
   const [taste, setTaste] = useState([]) // 취향 정보를 저장할 상태
+  const [wishCafeInfo, setWishCafeInfo] = useState([]);
   const storedUsername = localStorage.getItem("LS_KEY_USERNAME")
 
   useEffect(() => {
@@ -85,7 +40,77 @@ const MyPage = () => {
       console.error("로그아웃 오류:", error)
     }
   }
+  const savedUsername = localStorage.getItem("LS_KEY_USERNAME")
+  useEffect(()=>{
+    const fetchWish = async () =>{
+      try{
+        const response = await axios.get(`http://localhost:4000/api/wishlist/${savedUsername}`);
+        const wishList = response.data.map((wish)=>wish.productId)
+        console.log(wishList)
+        //정규식을 이용하여 cafeid , beverageid 추출
+        const wishCafe = wishList.map((wish) => {
+          if (typeof wish === 'string') {
+            const matches = wish.match(/^(\d+)_(\d+)$/); 
+            if (matches && matches.length > 2) {
+              const cafeId = matches[1];
+              const beverageId = matches[2];
+              if (cafeId==='1'){
+                const cafename= 'starbucks'
+                return {cafeId, cafename,beverageId};
+              }
+              else if (cafeId==='2'){
+                const cafename= 'ediya'
+                return {cafeId, cafename,beverageId};
+              }
+              else if (cafeId==='3'){
+                const cafename= 'hollys'
+                return {cafeId, cafename,beverageId};
+              }
+              else if (cafeId==='4'){
+                const cafename= 'paik'
+                return {cafeId, cafename,beverageId};
+              }
+              else if (cafeId==='5'){
+                const cafename= 'mega'
+                return {cafeId, cafename,beverageId};
+              }
+               //객체 형식으로 반환
+            }
+          }
+          return null; 
+        }).filter(Boolean);//null이나 undefined요소 제거
+        console.log("cafeid",wishCafe)
+        const wishCafeResponses = await Promise.all(wishCafe.map(async ({cafename, beverageId}) => {
+          if (cafename && beverageId) { // cafename과 beverageId가 존재하는 경우에만 API 호출
+            return fetchCafeWishList(cafename, beverageId);
+          }
+        }));
+  
+        setWishCafeInfo(wishCafeResponses.map(response => response.data));
+      }
+      catch(error){
+        console.log(error)
+      }
+      
+      
+    }
+    fetchWish()
+  },[])
+  
+  const fetchCafeWishList = async(cafename,coffeeId) => {
 
+    try{
+      const response = await axios.get(`http://localhost:4000/api/cafe/db_get_${cafename}_menu?beverage=${coffeeId}`)
+      //console.log(response.data)
+      
+      return response
+    }
+    catch(error){
+      console.log(error)
+    }
+    
+  }
+  console.log("wishCAfeInfo:",wishCafeInfo)
   // if (answer === '피곤한데... 커피!') {
   //   return 'coffee';
   // } else if (answer === '맛있는 음료가 좋아') {
@@ -188,13 +213,17 @@ const MyPage = () => {
       {isLogged ? (
         <div className="mypage-content">
           <h2 className="welcome-text">환영합니다!</h2>
+          <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
           <h2 className="welcome-text">
             {storedUsername
               ? storedUsername.substring(1, storedUsername.length - 1)
               : ""}
             님
           </h2>
-          <p>● 나의 cafein 추천 음료 취향</p>
+          <button onClick={handleLogout}>로그아웃</button>
+          </div>
+          
+          <h3>나의 cafein 추천 음료 취향</h3>
 
           <ul className="custom">
             {taste.map((item, index) => (
@@ -203,7 +232,13 @@ const MyPage = () => {
               </li>
             ))}
           </ul>
-          <button onClick={handleLogout}>로그아웃</button>
+          <h3>찜한음료</h3>
+          {wishCafeInfo.map((info, index) => (
+              <div >
+                <img src={info.image} alt={info.name}/>
+                <p>{info.name}</p>
+              </div>
+            ))}
         </div>
       ) : (
         <Login />

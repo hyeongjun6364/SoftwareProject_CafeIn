@@ -439,7 +439,7 @@ const Login = () => {
       <div className="login-wrapper">
         <div className="login-container">
           <div className="login-logo">
-            <span className="logo-image">LOGOIN</span>
+            <span className="logo-image">LOGIN</span>
           </div>
           <form id="loginForm">
             <div className="input-group">

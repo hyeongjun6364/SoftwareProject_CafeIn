@@ -76,7 +76,7 @@ function CoffeeDetail() {
         const productIds = response.data.map(item => item.productId);
         setWishlist(response.data);
         const currentProductId = `${cafeId}_${coffeeId}`;
-        console.log(productIds)
+        console.log("찜:",productIds)
         console.log(username)
         if(productIds.includes(currentProductId)){
           setHeart(false);
