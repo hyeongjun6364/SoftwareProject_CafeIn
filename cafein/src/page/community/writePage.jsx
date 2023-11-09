@@ -1,59 +1,62 @@
-import React, { useState } from 'react'
-import axios from 'axios'
-const WritePage = (prevpost) => {
+
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { postCommunity } from '../API/communityApi';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css'; // Quill 스타일을 불러옵니다.
+import {useQuery,useMutation, useQueryClient, QueryClient } from 'react-query'
+const WritePage = () => {
     const [title, setTitle] = useState('');
     const [body, setBody] = useState('');
-    const [posts, setPosts] = useState([])
+    const navigate = useNavigate();
+    const queryClient = useQueryClient()
+
     const handleTitle = (e) => {
-        setTitle(e.target.value)
+        setTitle(e.target.value);
     }
-    const handleContent = (e) => {
-        setBody(e.target.value)
+
+    const handleContent = (content) => {
+        setBody(content);
+
     }
-    const handleNewPost = () => {
-        if (title && body) {
-            setPosts(prevpost)
-            const newPost = {
-                title: title,
-                body: body,
-                tags: ["태그1", "태그2"],
-
-            }
-
-            try {
-                axios.post('http://localhost:4000/api/posts', newPost, {
-                    withCredentials: true, // 모든 쿠키 허용
-                }
-
-                )
-
-                setPosts([newPost, ...posts])
-                setTitle('')
-                setBody('')
-
-            } catch (e) {
-                console.log(e)
-            }
+    const createPostMutation = useMutation(postCommunity,{
+        onSuccess: () => {
+          queryClient.invalidateQueries("communityPosts")
+         
+          navigate('/community')
+          alert("글이 작성되었습니다")
         }
+      })
+    const handleNewPost = async () => {
+        
+        if (title && body) {
+            const plainText = body.replace(/<[^>]+>/g, '');
+            createPostMutation.mutate({
+              title: title,
+              body: plainText,
+              tags: ["태그1", "태그2"],
+            });
+          }
     }
+
     return (
         <div className='community-app'>
-            <h2>글 수정하기</h2>
+            <h2>글 쓰기</h2>
             <h3>제목</h3>
-            <textarea
-                cols={50}
-                rows={7}
+            <input 
+                type="text"
                 value={title}
-                onChange={handleTitle} />
+                onChange={handleTitle}
+            />
             <h3>내용</h3>
-            <textarea
-                cols={50}
-                rows={20}
+            <ReactQuill 
                 value={body}
-                onChange={handleContent} />
-            <button onClick={() => handleNewPost()}>제출하기</button>
+                onChange={handleContent}
+                style={{height:'300px'}}
+            />
+            <button onClick={handleNewPost} style={{marginTop:'90px'}}>제출하기</button>
         </div>
     )
 }
 
-export default WritePage
+export default WritePage;
