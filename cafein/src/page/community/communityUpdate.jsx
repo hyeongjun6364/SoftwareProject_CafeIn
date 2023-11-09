@@ -3,6 +3,8 @@ import axios from 'axios';
 import { updateCommunity } from '../API/communityApi';
 import {  useNavigate, useParams } from 'react-router-dom';
 import {useQuery,useMutation, useQueryClient, QueryClient } from 'react-query'
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css'; // Quill 스타일을 불러옵니다.
 //update feat
 function CommunityWrite() {
     const [title,setTitle] = useState('');
@@ -14,42 +16,44 @@ function CommunityWrite() {
     const handleTitle = (e) => {
         setTitle(e.target.value)
     }
-    const handleContent = (e) => {
-        setBody(e.target.value)
+    const handleContent = (content) => {
+      setBody(content)
     }
-    const updatePost=useMutation((data)=>updateCommunity(id,data.body,data.title),{
+    const updatePost=useMutation((data)=>updateCommunity(id,data.title,data.body,),{
       onSuccess: ()=> {
         queryClient.invalidateQueries('communityPosts')
         navigate("/community")
       }
     })
     
-    const handleUpdate = async() => {
+    const handleUpdate = () => {
       if(title&&body){
-        updatePost.mutate({body,title})
+        const plainText = body.replace(/<[^>]+>/g, '');
+        updatePost.mutate({title:title,body:plainText})
       }
-      //await updateCommunity(id,title,body)
-      //navigate("/community")
-      
-
     }
-    
+    console.log(body)
   return (
     <div className='community-app'>
         <h2>글 수정하기</h2>
         <h3>제목</h3>
         <textarea 
-        cols={50}
+        cols={70}
         rows={7}
         value={title}
         onChange={handleTitle}/>
         <h3>내용</h3>
-        <textarea 
+        <ReactQuill
+          value={body}
+          onChange={handleContent}
+          style={{height:"300px"}}
+        />
+        {/* <textarea 
         cols={50}
         rows={20}
         value={body}
-        onChange={handleContent}/>
-        <button onClick={() => handleUpdate()}>제출하기</button>
+        onChange={handleContent}/> */}
+        <button onClick={() => handleUpdate()} style={{marginTop:'70px'}}>제출하기</button>
     </div>
     
   )

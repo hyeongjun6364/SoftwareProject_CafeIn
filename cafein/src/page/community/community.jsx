@@ -23,14 +23,7 @@ function CommunityApp() {
   const {data:posts, isLoading, isError, error}= useQuery("communityPosts",getCommunity)
   const queryClient = useQueryClient()
   //console.log("쿼리확인:",queryClient)
-  const createPostMutation = useMutation(postCommunity,{
-    onSuccess: () => {
-      queryClient.invalidateQueries("communityPosts")
-      setNewPostText("")
-      alert("글이 작성되었습니다")
-    }
-  })
- 
+  
   const deletePostMutation = useMutation(
     (id,token) =>
     axios
@@ -70,17 +63,6 @@ function CommunityApp() {
     deletePostMutation.mutate(id,token);
   }
 
-  const handleNewPost = () => {
-    if (newPostText) {
-      createPostMutation.mutate({
-        title: newPostText,
-        body: newPostText,
-        tags: ["태그1", "태그2"],
-      });
-    }
-  };
-  
-  
    //글쓰기
    const handlewrite = () => {
      navigate("/communitywrite")
@@ -104,16 +86,7 @@ function CommunityApp() {
   return (
     <div className="community-app">
       <h2>커뮤니티</h2>
-      <div>
-        <textarea
-          cols={40}
-          rows={10}
-          value={newPostText}
-          onChange={handleTextChange}
-          placeholder="새로운 게시물 작성"
-        />
-      </div>
-      <button onClick={handleNewPost}>제출</button>
+      
       <div>
         <div
           style={{
@@ -123,7 +96,7 @@ function CommunityApp() {
           }}
         >
           <h2>게시물 목록</h2>
-          {/* <button onClick={handlewrite}>글쓰기</button> */}
+          <button onClick={handlewrite}>글쓰기</button>
         </div>
 
         <ul>
