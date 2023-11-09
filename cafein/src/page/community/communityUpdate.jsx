@@ -38,7 +38,7 @@ function CommunityWrite() {
         <h2>글 수정하기</h2>
         <h3>제목</h3>
         <textarea 
-        cols={50}
+        cols={70}
         rows={7}
         value={title}
         onChange={handleTitle}/>

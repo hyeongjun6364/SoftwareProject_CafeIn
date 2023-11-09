@@ -45,6 +45,7 @@ const WritePage = () => {
             <h3>제목</h3>
             <input 
                 type="text"
+                className='titleSize'
                 value={title}
                 onChange={handleTitle}
             />
@@ -52,7 +53,7 @@ const WritePage = () => {
             <ReactQuill 
                 value={body}
                 onChange={handleContent}
-                style={{height:'300px'}}
+                className='contentSize'
             />
             <button onClick={handleNewPost} style={{marginTop:'90px'}}>제출하기</button>
         </div>
