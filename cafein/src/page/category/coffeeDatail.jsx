@@ -16,16 +16,16 @@ import FilledStar from '../../asset/coffeeDetail/filled_star.png';
 import EmptyStar from '../../asset/coffeeDetail/empty_star.png';
 import { useRecoilState } from 'recoil';
 function CoffeeDetail() {
-  const { cafename, coffeeId,cafeId } = useParams();
+  const { cafename, coffeeId, cafeId } = useParams();
   const [posts, setPosts] = useState([]);
   const [heart, setHeart] = useState(true);
   const [detail, setDetail] = useState([]);
-  const [wishlist,setWishlist]= useState([]);
-  const [username,setUsername]=useState([]);
+  const [wishlist, setWishlist] = useState([]);
+  const [username, setUsername] = useState([]);
   const navigate = useNavigate();
   //total누적값, 
-  const averageRating = posts.length> 0 ? posts.reduce((total,post)=>total+post.rating,0)/posts.length: 0;
-  
+  const averageRating = posts.length > 0 ? posts.reduce((total, post) => total + post.rating, 0) / posts.length : 0;
+
   console.log(averageRating)
   const coffeeItem = coffeeData.find(
     (item) => item.cafe === cafename && item.id === parseInt(coffeeId)
@@ -34,7 +34,7 @@ function CoffeeDetail() {
   //음료 항목 하나 받아올 api 임시 구현 
 
   function StarRating({ rating }) {
-  
+
     return (
       <div>
         {[...Array(5)].map((star, i) => {
@@ -76,35 +76,35 @@ function CoffeeDetail() {
         const productIds = response.data.map(item => item.productId);
         setWishlist(response.data);
         const currentProductId = `${cafeId}_${coffeeId}`;
-        console.log("찜:",productIds)
+        console.log("찜:", productIds)
         console.log(username)
-        if(productIds.includes(currentProductId)){
+        if (productIds.includes(currentProductId)) {
           setHeart(false);
         }
-        else{
+        else {
           setHeart(true);
         }
       } catch (error) {
         console.log(error);
       }
     };
-  
+
     fetchWishlist();
     fetchData_detail();
   }, [heart])
-  const detailReview = ()=>{
-   navigate(`/detail/${cafeId}/${coffeeId}`)
+  const detailReview = () => {
+    navigate(`/detail/${cafeId}/${coffeeId}`)
   }
-  
+
   // rating 서버에서 불러와서 비교 후 -> 1,2,3... 순으로 렌더링
   // 각각의 url을 이용해서 하나씩 상태관리 -> setReview에 담고 setReview((pre)=>{new,...Pre})
   //  렌더링 빨라지려면 react-query사용하여 캐싱역할 해야함.
-  const handlePostHeart = async() => {
-    const response = await axios.post("http://localhost:4000/api/wishlist",{
-        userId: `${savedUsername}`,
-        productId: `${cafeId}_${coffeeId}`
+  const handlePostHeart = async () => {
+    const response = await axios.post("http://localhost:4000/api/wishlist", {
+      userId: `${savedUsername}`,
+      productId: `${cafeId}_${coffeeId}`
 
-    },{withCredentials: true,})
+    }, { withCredentials: true, })
     setHeart(!heart)
   }
   if (!detail) {
@@ -152,17 +152,16 @@ function CoffeeDetail() {
         <div className='coffee-detail-info'>
           <h1 className="coffee-title">{detail.name}</h1>
           <p className="coffee-info">가격: {detail.price}원</p>
-
           <p className="coffee-info">설명: {detail.content}</p>
           <p className="coffee-info">
             {detail.detail ? (
               <>
-                용량: {detail.detail.volume}<br />
-                칼로리: {detail.detail.kcal}<br />
-                포화 지방산: {detail.detail.sat_FAT}<br />
-                나트륨: {detail.detail.sodium}<br />
-                당류: {detail.detail.sugars}<br />
-                카페인: {detail.detail.caffeine}
+                <strong>용량:</strong>  {detail.detail.volume}<br />
+                <strong>칼로리:</strong> {detail.detail.kcal}<br />
+                <strong>포화 지방산:</strong> {detail.detail.sat_FAT}<br />
+                <strong>나트륨:</strong>  {detail.detail.sodium}<br />
+                <strong>당류:</strong> {detail.detail.sugars}<br />
+                <strong>카페인:</strong> {detail.detail.caffeine}
               </>
             ) : 'Loading...'}
 
@@ -176,25 +175,29 @@ function CoffeeDetail() {
         </div>
       </div>
       <br />
-      <hr style={{ borderTop: "1px solid gray", margin: "0 5%" }} />
-      <Review coffeeId={coffeeId}>이용후기</Review>
-      <button onClick={detailReview}>글쓰기</button>
+      <hr style={{ borderTop: "1px solid gray", margin: "0 10%" }} />
       <ul className='review-ul'>
-        {posts.map((post => (
+      <div style={{margin:'0 6%'}}>
+        <div style={{ display: 'flex', textAlign: 'center', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Review coffeeId={coffeeId}>이용후기</Review>
+          <button onClick={detailReview} className='reviewbutton'>글쓰기</button>
+        </div>
+      
+      {posts.map((post => (
           <li key={post.id} >
             <h3>{post.title}</h3>
             <p>내용:{post.content}</p>
             <small>작성자: {post.username}</small>
           </li>
-
         )))}
-
+      </div>
+        
       </ul>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
     </div>
   )
 }

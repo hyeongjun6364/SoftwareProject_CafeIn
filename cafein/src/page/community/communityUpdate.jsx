@@ -37,22 +37,16 @@ function CommunityWrite() {
     <div className='community-app'>
         <h2>글 수정하기</h2>
         <h3>제목</h3>
-        <textarea 
-        cols={70}
-        rows={7}
-        value={title}
-        onChange={handleTitle}/>
+        <input type='text'
+        className='titleSize'
+         value={title} onChange={handleTitle}/>
+        
         <h3>내용</h3>
-        <ReactQuill
-          value={body}
-          onChange={handleContent}
-          style={{height:"300px"}}
-        />
-        {/* <textarea 
-        cols={50}
-        rows={20}
-        value={body}
-        onChange={handleContent}/> */}
+        <ReactQuill 
+                value={body}
+                onChange={handleContent}
+                className='contentSize'
+            />
         <button onClick={() => handleUpdate()} style={{marginTop:'70px'}}>제출하기</button>
     </div>
     

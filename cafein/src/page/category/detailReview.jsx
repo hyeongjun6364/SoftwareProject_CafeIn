@@ -1,14 +1,15 @@
 import React, { useState } from 'react'
 import { useParams } from 'react-router-dom';
 import "../../style/categorypage/review.scss";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import axios from 'axios';
 function DetailReview() {
     const {cafeId,coffeeId} = useParams();
     const [newheader,setNewheader] = useState([]);
     const [newcontent,setNewcontent] = useState([]);
     const [newrating,setRating] = useState([]);
-   //http://localhost:4000/api/reviews?beverageId=2_71 GET 방식
-   //http://localhost:4000/api/reviews Post 방식
+   
     const handleheader = (e) =>{
         setNewheader(e.target.value)
     }
@@ -45,21 +46,13 @@ function DetailReview() {
     <div className='community-app'>
         <h2>리뷰 작성하기</h2>
         <h3>제목</h3>
-        <textarea 
-        cols={30} 
-        rows={10} 
-        value={newheader}
-        onChange={handleheader}
-        placeholder='제목을 작성해주세요'/>
+        <input type='text' className='titleSize' placeholder='제목을 작성해주세요' onChange={handleheader} value={newheader}/>
 
         <h3>내용</h3>
-        <textarea 
-        cols={30} 
-        rows={10} 
-        value={newcontent}
-        onChange={handlecontent}
-        placeholder='내용을 작성해주세요'/>
-        <h3>별점 매기기</h3>
+        <ReactQuill value={newcontent} className='contentSize' onChange={handlecontent} placeholder='내용을 입력해주세요'/>
+
+       
+        <h3 style={{marginTop:'100px'}}>별점 매기기</h3>
         <input value={newrating} onChange={handlereview} placeholder='1~5까지 별점매기기'/>
         <br/>
         <br/>

@@ -4,7 +4,7 @@
     
     padding: 20px;
     //max-width: 2000px;
-    margin: 0 5% ;
+    margin: 0 10% ;
    
     background-color: white;
     border-radius: 8px;
@@ -76,6 +76,24 @@
       }
     }
   }
+  .reviewbutton {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: #0056b3;
+    }
+    @media(max-width:768px){
+      padding: 5px 10px;
+      font-size: 10px;
+    }
+  }
 
  .starbucks_back{
   @media (max-width: 768px){
@@ -94,4 +112,8 @@
   left: 10px;
   font-weight: bolder;
   color: white; // 글자색을 하얀색으로 설정합니다. 필요에 따라 변경하세요.
+}
+
+.reviewContainer{
+  margin: 0 10%;
 }
