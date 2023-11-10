@@ -2,14 +2,17 @@ import React, { useState, useEffect } from "react"
 import "../../style/mypage/login.scss"
 import "../../style/mypage/wishList.scss"
 import Login from "./login"
-import { useRecoilState } from "recoil"
+import { constSelector, useRecoilState } from "recoil"
 import { loggedInState } from "./auth"
 import axios from "axios"
-import { Navigate,useNavigate } from "react-router-dom"
+import { getCommunity } from "../API/communityApi"
+import { Navigate, useNavigate } from "react-router-dom"
+import Plus from '../../asset/mypage/plus.png'
 const MyPage = () => {
   const [isLogged, setIsLogged] = useRecoilState(loggedInState)
   const [taste, setTaste] = useState([]) // 취향 정보를 저장할 상태
   const [wishCafeInfo, setWishCafeInfo] = useState([]);
+  const [myReview, setMyreview] = useState([]);
   const storedUsername = localStorage.getItem("LS_KEY_USERNAME")
   const navigate = useNavigate()
   useEffect(() => {
@@ -95,15 +98,36 @@ const MyPage = () => {
 
 
     }
+    fetchCommunity()
     fetchWish()
+
   }, [])
+  useEffect(() => {
+    console.log("안녕", myReview)
+  }, [myReview])
+  //myReview
+  const fetchCommunity = async () => {
+    try {
+      const response = await getCommunity();
+      const name = storedUsername.slice(1, -1)
+
+      if (Array.isArray(response)) {
+        const myPosts = response.filter((tag) => tag.user.username === name);
+        setMyreview((prevMyReview) => [...prevMyReview, ...myPosts])
+        console.log("gd", myPosts);
+
+      } else {
+        console.error("Response is not an array:", response);
+      }
+    } catch (error) {
+      console.error("Error fetching community:", error);
+    }
+
+  }
 
   const fetchCafeWishList = async (cafename, coffeeId) => {
-
     try {
       const response = await axios.get(`http://localhost:4000/api/cafe/db_get_${cafename}_menu?beverage=${coffeeId}`)
-      //console.log(response.data)
-
       return response
     }
     catch (error) {
@@ -111,11 +135,13 @@ const MyPage = () => {
     }
 
   }
- 
-  const handleDetail= (cafename,cafeId,coffeeId) =>{
+
+  const handleDetail = (cafename, cafeId, coffeeId) => {
     navigate(`/category/${cafename}/${cafeId}/${coffeeId}`)
   }
-console.log(wishCafeInfo)
+  const handleCommunity =()=>{
+    navigate(`/community`)
+  }
   // if (answer === '피곤한데... 커피!') {
   //   return 'coffee';
   // } else if (answer === '맛있는 음료가 좋아') {
@@ -238,18 +264,50 @@ console.log(wishCafeInfo)
             ))}
           </ul>
           <h3>찜한음료</h3>
-          
+
           <div className="scroll-container">
             {wishCafeInfo.map((info, index) => (
               <div key={index} className="image-container">
-                <img src={info.image} alt={info.name} onClick={()=>{
-                  handleDetail(info.cafe,info.cafeid,info.beverage)
-                }}/>
+                <img src={info.image} alt={info.name} onClick={() => {
+                  handleDetail(info.cafe, info.cafeid, info.beverage)
+                }} />
                 <p>{info.name}</p>
               </div>
             ))}
           </div>
+          <div style={{
+            display: 'flex', justifyContent: "space-between",
+            alignItems: "center",
+          }}>
+            <h3>내가 쓴 커뮤니티 글</h3>
+            <img src={Plus} alt="plus" width={20} onClick={handleCommunity}/>
+          </div>
 
+          <div>
+            {myReview.map((tag) => {
+              return (
+                <div>
+                  <h4 key={tag._id}>{tag.title}</h4>
+                  <p>{tag.body}</p>
+                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                    <small>{tag.publishedDate}</small>
+                    <small>{tag.user.username}</small>
+                  </div>
+                  
+                  
+                  <hr />
+                </div>
+
+              )
+            })}
+          </div>
+          <div style={{
+            display: 'flex', justifyContent: "space-between",
+            alignItems: "center",
+          }}>
+            <h3>내가 쓴 음료 리뷰</h3>
+            <img src={Plus} alt="plus" width={20} onClick={handleCommunity}/>
+          </div>
         </div>
       ) : (
         <Login />

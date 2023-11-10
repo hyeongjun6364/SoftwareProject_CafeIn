@@ -9,17 +9,20 @@ import WritePage from "./writePage"
 import {useQuery,useMutation, useQueryClient, QueryClient } from 'react-query'
 import { getCommunity, postCommunity, deleteCommunity } from "../API/communityApi"
 function CommunityApp() {
-  const [newPostText, setNewPostText] = useState("") // 새 게시물 텍스트
   const [activePage, setActivePage] = useState(1) // 현재 페이지
+  const [username, setUsername] = useState('')
   const postsPerPage = 10 // 페이지당 표시할 게시물 수
   const navigate = useNavigate()
-  
+  const savedUsername = localStorage.getItem("LS_KEY_USERNAME")
   const handlePageChange = (pageNumber) => {
     setActivePage(pageNumber)
   }
-  const handleTextChange = (e) => {
-    setNewPostText(e.target.value)
-  }
+  useEffect(() => {
+    if (savedUsername) {
+      setUsername(savedUsername)
+    }
+    console.log(username)
+  }, []);
   const {data:posts, isLoading, isError, error}= useQuery("communityPosts",getCommunity)
   const queryClient = useQueryClient()
   //console.log("쿼리확인:",queryClient)
@@ -77,8 +80,6 @@ function CommunityApp() {
   // update
   const handleupdate = (id, userid) => {
     const token = Cookies.get("access_token")
-    // console.log("token:",id)
-    // console.log("게시물유저id:",userid)
     navigate(`/write/${id}`)
 
   }
@@ -105,10 +106,12 @@ function CommunityApp() {
               <h3>{post.title}</h3>
               <p>{post.body}</p>
               <small>작성자: {post.user ? post.user.username : "none"}</small>
+              {username===`"${post.user.username}"` ? <div>
               <button onClick={() => handleDeletePost(post._id)}>삭제</button>
-              <button onClick={() => handleupdate(post._id, post.user?._id)}>
-                수정
-              </button>
+              <button onClick={() => handleupdate(post._id, post.user?._id)}>수정</button>
+              </div>  : ""}
+              
+              
             </li>
           ))}
         </ul>

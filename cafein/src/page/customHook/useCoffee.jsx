@@ -20,7 +20,7 @@ function useCoffeeCategory(selectedTagId, currentData, activePage, postsPerPage,
                       handleCoffeeDetail(tag.beverage, tag.cafe, tag.cafeid)
                     }
                   />
-                  <p>{tag.name}</p>
+                 <h4>{tag.name}</h4>
                 </div>
               </React.Fragment>
             ))}

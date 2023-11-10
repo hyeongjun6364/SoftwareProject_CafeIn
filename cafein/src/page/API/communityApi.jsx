@@ -4,15 +4,12 @@ import axios from 'axios'
 export  const getCommunity =async() => {
     try{
         const response = await axios.get(
-            "http://localhost:4000/api/posts?username=&tag&page="
-            
+            "http://localhost:4000/api/posts?username=&tag&page="            
         )
         return response.data
     }catch(error){
         throw error
     }
-    
-      
 }
   
 export const postCommunity = async (newPost) =>{
