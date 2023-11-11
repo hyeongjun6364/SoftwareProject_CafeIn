@@ -45,7 +45,7 @@ root.render(
             <Route path="/communitywrite" element={<CommunityWrite />} />
             <Route path="/qeustion" element={<Question />} />
             <Route path="/map" element={<Map />} />
-            <Route path="/detail/:cafeId/:coffeeId" element={<DetailWrite />} />
+            <Route path="/detail/:cafename/:cafeId/:coffeeId" element={<DetailWrite />} />
           </Routes>
         </Suspense>
       </Layout>

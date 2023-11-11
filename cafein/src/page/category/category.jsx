@@ -25,8 +25,9 @@ const TagList = ({ tags, onTagClick, selectedTagId }) => {
       {tags.map((tag) => (
         <button
           key={tag.id}
-          className={`category-tag ${selectedTagId === tag.id ? "selected" : ""
-            }`}
+          className={`category-tag ${
+            selectedTagId === tag.id ? "selected" : ""
+          }`}
           onClick={() => onTagClick(tag.id)}
         >
           {tag.name}
@@ -40,7 +41,6 @@ function Category() {
   const [selectedTagCafeId, setSelectedCafeTag] = useState(null)
   const [selectedTagCoffeeId, setSelectedTagCoffee] = useState(null)
   const [searchQuery, setSearchQuery] = useState("")
-
   const hollysData = useRecoilValue(hollysState)
   const starbucksData = useRecoilValue(starbucksState)
   const ediyaData = useRecoilValue(ediyaState)
@@ -56,6 +56,8 @@ function Category() {
   const [coffees, setCoffees] = useState([])
   const navigate = useNavigate()
   const [activePage, setActivePage] = useState(1) // 현재 페이지
+  const [view, setView] = useState(false)
+  const [selectedMenu, setSelectedMenu] = useState("최신순")
   const postsPerPage = 10 // 페이지당 표시할 게시물 수
 
   useEffect(() => {
@@ -136,7 +138,6 @@ function Category() {
     setFilterMenu(filteredCafe)
   }
 
-
   //검색어 결과 업데이트
 
   const indexOfLastPost = activePage * postsPerPage
@@ -152,6 +153,206 @@ function Category() {
   const currentTea = tea.slice(indexOfFirstPost, indexOfLastPost)
   const currentJuice = juice.slice(indexOfFirstPost, indexOfLastPost)
   const currentCoffee = coffees.slice(indexOfFirstPost, indexOfLastPost)
+  // 가격을 정수로 변환
+  const strtoint = (dataname) =>
+    dataname.map((item) => ({
+      ...item,
+      price: parseInt(item.price.replace(",", "")),
+    }))
+  // 카페 각각의 가격 int형 변환
+  const starbucksPrice = strtoint(starbucksData)
+  const ediyaPrice = strtoint(ediyaData)
+  const megaPrice = strtoint(megaData)
+  const hollysPrice = strtoint(hollysData)
+  const paikPrice = strtoint(paikData)
+  // 가격정렬(높은순, 낮은순)
+  const sortPriceHigh = (priceList) =>
+    priceList.sort((a, b) => b.price - a.price)
+  const sortPriceLow = (priceList) =>
+    priceList.sort((a, b) => a.price - b.price)
+  // 가격 높은순
+  const currentHighStarbucks = sortPriceHigh(starbucksPrice).slice(
+    indexOfFirstPost,
+    indexOfLastPost
+  )
+  const currentHighMega = sortPriceHigh(megaPrice).slice(
+    indexOfFirstPost,
+    indexOfLastPost
+  )
+  const currentHighEdiya = sortPriceHigh(ediyaPrice).slice(
+    indexOfFirstPost,
+    indexOfLastPost
+  )
+  const currentHighHollys = sortPriceHigh(hollysPrice).slice(
+    indexOfFirstPost,
+    indexOfLastPost
+  )
+  const currentHighPaik = sortPriceHigh(paikPrice).slice(
+    indexOfFirstPost,
+    indexOfLastPost
+  )
+  // 가겨 낮은순
+  const currentLowStarbucks = sortPriceLow(starbucksPrice).slice(
+    indexOfFirstPost,
+    indexOfLastPost
+  )
+  const currentLowMega = sortPriceLow(megaPrice).slice(
+    indexOfFirstPost,
+    indexOfLastPost
+  )
+  const currentLowEdiya = sortPriceLow(ediyaPrice).slice(
+    indexOfFirstPost,
+    indexOfLastPost
+  )
+  const currentLowHollys = sortPriceLow(hollysPrice).slice(
+    indexOfFirstPost,
+    indexOfLastPost
+  )
+  const currentLowPaik = sortPriceLow(paikPrice).slice(
+    indexOfFirstPost,
+    indexOfLastPost
+  )
+  // dropdown 상태관리 함수
+  const handleDropdown = (drop) => {
+    setSelectedMenu(drop)
+  }
+  //정렬한 데이터(평점,가격 높은,낮은 , 최신순)
+  const starbucksHigh = useCoffeeList(
+    selectedTagCafeId,
+    currentHighStarbucks,
+    activePage,
+    postsPerPage,
+    handleCoffeeDetail
+  )
+  const starbucksLow = useCoffeeList(
+    selectedTagCafeId,
+    currentLowStarbucks,
+    activePage,
+    postsPerPage,
+    handleCoffeeDetail
+  )
+  const starbucksNew = useCoffeeList(
+    selectedTagCafeId,
+    currentPosts,
+    activePage,
+    postsPerPage,
+    handleCoffeeDetail
+  )
+
+  const megaHigh = useCoffeeList(
+    selectedTagCafeId,
+    currentHighMega,
+    activePage,
+    postsPerPage,
+    handleCoffeeDetail
+  )
+  const megaLow = useCoffeeList(
+    selectedTagCafeId,
+    currentLowMega,
+    activePage,
+    postsPerPage,
+    handleCoffeeDetail
+  )
+  const megaNew = useCoffeeList(
+    selectedTagCafeId,
+    currentMega,
+    activePage,
+    postsPerPage,
+    handleCoffeeDetail
+  )
+
+  const ediyaHigh = useCoffeeList(
+    selectedTagCafeId,
+    currentHighEdiya,
+    activePage,
+    postsPerPage,
+    handleCoffeeDetail
+  )
+  const ediyaLow = useCoffeeList(
+    selectedTagCafeId,
+    currentLowEdiya,
+    activePage,
+    postsPerPage,
+    handleCoffeeDetail
+  )
+  const ediyaNew = useCoffeeList(
+    selectedTagCafeId,
+    currentEdyia,
+    activePage,
+    postsPerPage,
+    handleCoffeeDetail
+  )
+
+  const hollysHigh = useCoffeeList(
+    selectedTagCafeId,
+    currentHighHollys,
+    activePage,
+    postsPerPage,
+    handleCoffeeDetail
+  )
+  const hollysLow = useCoffeeList(
+    selectedTagCafeId,
+    currentLowHollys,
+    activePage,
+    postsPerPage,
+    handleCoffeeDetail
+  )
+  const hollysNew = useCoffeeList(
+    selectedTagCafeId,
+    currentHollys,
+    activePage,
+    postsPerPage,
+    handleCoffeeDetail
+  )
+
+  const paikHigh = useCoffeeList(
+    selectedTagCafeId,
+    currentHighPaik,
+    activePage,
+    postsPerPage,
+    handleCoffeeDetail
+  )
+  const paikLow = useCoffeeList(
+    selectedTagCafeId,
+    currentLowPaik,
+    activePage,
+    postsPerPage,
+    handleCoffeeDetail
+  )
+  const paikNew = useCoffeeList(
+    selectedTagCafeId,
+    currentPaik,
+    activePage,
+    postsPerPage,
+    handleCoffeeDetail
+  )
+
+  function Dropdown() {
+    return (
+      <>
+        {selectedMenu === "최신순" ? (
+          ""
+        ) : (
+          <li onClick={() => handleDropdown("최신순")}>최신순</li>
+        )}
+        {selectedMenu === "평점순" ? (
+          ""
+        ) : (
+          <li onClick={() => handleDropdown("평점순")}>평점순</li>
+        )}
+        {selectedMenu === "가격 높은순" ? (
+          ""
+        ) : (
+          <li onClick={() => handleDropdown("가격 높은순")}>가격 높은순</li>
+        )}
+        {selectedMenu === "가격 낮은순" ? (
+          ""
+        ) : (
+          <li onClick={() => handleDropdown("가격 낮은순")}>가격 낮은순</li>
+        )}
+      </>
+    )
+  }
 
   return (
     <div style={{ margin: "0 5%" }}>
@@ -188,23 +389,95 @@ function Category() {
         </div>
         {/* 선택한 태그에 대한 정보를 출력 */}
         <br />
-        <div className="category-cafe">총 메뉴</div>
-        {useCoffeeList(selectedTagCafeId, currentPosts, activePage, postsPerPage, handleCoffeeDetail)}
-        {useCoffeeList(selectedTagCafeId, currentEdyia, activePage, postsPerPage, handleCoffeeDetail)}
-        {useCoffeeList(selectedTagCafeId, currentHollys, activePage, postsPerPage, handleCoffeeDetail)}
-        {useCoffeeList(selectedTagCafeId, currentMega, activePage, postsPerPage, handleCoffeeDetail)}
-        {useCoffeeList(selectedTagCafeId, currentPaik, activePage, postsPerPage, handleCoffeeDetail)}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <div className="category-cafe">총 메뉴</div>
+          <ul
+            onClick={() => {
+              setView(!view)
+            }}
+          >
+            {selectedMenu}
+            {view ? "⌃" : "⌄"}
+            {view && <Dropdown />}
+          </ul>
+        </div>
+
         {/*커피, 음료, 티 등 구분 */}
 
-        {UseCoffee(selectedTagCoffeeId, currentCoffee, activePage, postsPerPage, handleCoffeeDetail, 1)}
-        {UseCoffee(selectedTagCoffeeId, currentAde, activePage, postsPerPage, handleCoffeeDetail, 2)}
-        {UseCoffee(selectedTagCoffeeId, currentSmoody, activePage, postsPerPage, handleCoffeeDetail, 3)}
-        {UseCoffee(selectedTagCoffeeId, currentTea, activePage, postsPerPage, handleCoffeeDetail, 4)}
-        {UseCoffee(selectedTagCoffeeId, currentJuice, activePage, postsPerPage, handleCoffeeDetail, 5)}
+        {UseCoffee(
+          selectedTagCoffeeId,
+          currentCoffee,
+          activePage,
+          postsPerPage,
+          handleCoffeeDetail,
+          1
+        )}
+        {UseCoffee(
+          selectedTagCoffeeId,
+          currentAde,
+          activePage,
+          postsPerPage,
+          handleCoffeeDetail,
+          2
+        )}
+        {UseCoffee(
+          selectedTagCoffeeId,
+          currentSmoody,
+          activePage,
+          postsPerPage,
+          handleCoffeeDetail,
+          3
+        )}
+        {UseCoffee(
+          selectedTagCoffeeId,
+          currentTea,
+          activePage,
+          postsPerPage,
+          handleCoffeeDetail,
+          4
+        )}
+        {UseCoffee(
+          selectedTagCoffeeId,
+          currentJuice,
+          activePage,
+          postsPerPage,
+          handleCoffeeDetail,
+          5
+        )}
 
-        {useSearch(selectedTagCoffeeId, currentFilter, activePage, postsPerPage, handleCoffeeDetail, searchQuery)}
-        
+        {useSearch(
+          selectedTagCoffeeId,
+          currentFilter,
+          activePage,
+          postsPerPage,
+          handleCoffeeDetail,
+          searchQuery
+        )}
+        {selectedMenu === "가격 높은순" ? starbucksHigh : ""}
+        {selectedMenu === "가격 낮은순" ? starbucksLow : ""}
+        {selectedMenu === "최신순" ? starbucksNew : ""}
 
+        {selectedMenu === "가격 높은순" ? megaHigh : ""}
+        {selectedMenu === "가격 낮은순" ? megaLow : ""}
+        {selectedMenu === "최신순" ? megaNew : ""}
+
+        {selectedMenu === "가격 높은순" ? hollysHigh : ""}
+        {selectedMenu === "가격 낮은순" ? hollysLow : ""}
+        {selectedMenu === "최신순" ? hollysNew : ""}
+
+        {selectedMenu === "가격 높은순" ? ediyaHigh : ""}
+        {selectedMenu === "가격 낮은순" ? ediyaLow : ""}
+        {selectedMenu === "최신순" ? ediyaNew : ""}
+
+        {selectedMenu === "가격 높은순" ? paikHigh : ""}
+        {selectedMenu === "가격 낮은순" ? paikLow : ""}
+        {selectedMenu === "최신순" ? paikNew : ""}
       </div>
       <br />
       <br />
