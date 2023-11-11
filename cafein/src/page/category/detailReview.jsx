@@ -4,26 +4,29 @@ import "../../style/categorypage/review.scss";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import axios from 'axios';
+import { Navigate,useNavigate } from 'react-router-dom';
+import Category from './category';
 function DetailReview() {
-    const {cafeId,coffeeId} = useParams();
+    const {cafename,cafeId,coffeeId} = useParams();
     const [newheader,setNewheader] = useState([]);
     const [newcontent,setNewcontent] = useState([]);
     const [newrating,setRating] = useState([]);
-   
+    const navigate = useNavigate()
     const handleheader = (e) =>{
         setNewheader(e.target.value)
     }
-    const handlecontent = (e) =>{
-        setNewcontent(e.target.value)
+    const handlecontent = (value) =>{
+        setNewcontent(value)
     }
     const handlereview = (e) =>{
         setRating(e.target.value)
     }
     const detailpost=()=>{
+        const plainText = newcontent.replace(/<[^>]+>/g, '');
         const newPost = {
             beverageId:`${cafeId}_${coffeeId}`,
             title: newheader,
-            content: newcontent,
+            content: plainText,
             rating: newrating,
           }
         if(newcontent||newheader||newrating){
@@ -33,6 +36,7 @@ function DetailReview() {
                 })
 
                 alert("리뷰가 작성되었습니다.")
+                navigate(`/category/${cafename}/${cafeId}/${coffeeId}`)
             }
             catch(error){
                 console.log(error)

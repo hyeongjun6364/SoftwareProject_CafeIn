@@ -30,6 +30,7 @@ const WritePage = () => {
     const handleNewPost = async () => {
         
         if (title && body) {
+            //p태그 없애기
             const plainText = body.replace(/<[^>]+>/g, '');
             createPostMutation.mutate({
               title: title,
