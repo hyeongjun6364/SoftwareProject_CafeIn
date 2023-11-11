@@ -571,7 +571,7 @@
 
 // export default CoffeeShopMap
 
-import React, { useEffect, useState, useRef } from "react"
+import React, { useEffect, useState } from "react"
 import axios from "axios"
 import "../../style/kakaoApi/kakaomap.scss"
 
@@ -582,7 +582,6 @@ const CoffeeShopMap = () => {
   const [userMarker, setUserMarker] = useState(null)
   const [cafeMarker, setCafeMarker] = useState(null)
   const [polyline, setPolyline] = useState(null)
-  const mapRef = useRef(null)
 
   const handleCafeButtonClick = (keyword) => {
     navigator.geolocation.getCurrentPosition((position) => {
@@ -596,7 +595,6 @@ const CoffeeShopMap = () => {
       }
 
       const map = new window.kakao.maps.Map(container, options)
-      mapRef.current = map
 
       // 사용자의 현재 위치를 빨간 핀으로 표시
       displayUserMarker(map, position.coords)
@@ -607,12 +605,14 @@ const CoffeeShopMap = () => {
   }
 
   const displayUserMarker = (map, coords) => {
+    // 사용자의 현재 위치를 빨간 핀으로 표시
     const userPosition = new window.kakao.maps.LatLng(
       coords.latitude,
       coords.longitude
     )
 
     if (userMarker) {
+      // 기존 빨간 핀이 있다면 제거
       userMarker.setMap(null)
     }
 
@@ -631,15 +631,18 @@ const CoffeeShopMap = () => {
   }
 
   const displayCafeMarker = (map, coords, cafeName) => {
+    // 기존 파란 마커가 있다면 제거
     if (cafeMarker) {
       cafeMarker.setMap(null)
     }
 
+    // 카페 위치를 파란 마커로 표시
     const cafePosition = new window.kakao.maps.LatLng(
       coords.latitude,
       coords.longitude
     )
 
+    // setCafeMarker를 사용하여 상태 업데이트
     const newCafeMarker = new window.kakao.maps.Marker({
       map,
       position: cafePosition,
@@ -653,11 +656,12 @@ const CoffeeShopMap = () => {
 
     setCafeMarker(newCafeMarker)
 
+    // 마커 클릭 이벤트
     window.kakao.maps.event.addListener(newCafeMarker, "click", function () {
-      const startCoords = userMarker.getPosition()
-      const endCoords = newCafeMarker.getPosition()
+      const startCoords = userMarker.getPosition() // 빨간 핀의 좌표를 출발지로 설정
+      const endCoords = newCafeMarker.getPosition() // 파란 핀의 좌표를 목적지로 설정
 
-      drawPathWithRoad(mapRef.current, startCoords, endCoords)
+      drawPathWithRoad(map, startCoords, endCoords)
     })
   }
 
@@ -671,11 +675,12 @@ const CoffeeShopMap = () => {
           query: keyword,
           x: coords.longitude,
           y: coords.latitude,
-          radius: 3000,
+          radius: 3000, // 3km 반경
         },
       })
       .then((response) => {
         response.data.documents.forEach((place) => {
+          // 카페 마커 생성
           const marker = new window.kakao.maps.Marker({
             map,
             position: new window.kakao.maps.LatLng(place.y, place.x),
@@ -691,14 +696,15 @@ const CoffeeShopMap = () => {
 
           window.kakao.maps.event.addListener(marker, "click", function () {
             infowindow.open(map, marker)
-
-            drawPathWithRoad(mapRef.current, coords, {
+            // 클릭한 카페 위치까지의 최단 거리를 도로를 따라 선으로 표시
+            drawPathWithRoad(map, coords, {
               latitude: marker.getPosition().getLat(),
               longitude: marker.getPosition().getLng(),
             })
           })
         })
 
+        // 첫 번째 카페 위치에 파란 마커로 표시
         if (response.data.documents.length > 0) {
           displayCafeMarker(
             map,
@@ -711,6 +717,7 @@ const CoffeeShopMap = () => {
   }
 
   const clearPolyline = () => {
+    // 이전에 그려진 선이 있다면 제거
     if (polyline) {
       polyline.setMap(null)
       setPolyline(null)
@@ -745,6 +752,8 @@ const CoffeeShopMap = () => {
 
       const data = await response.json()
 
+      console.log(data)
+
       if (data.routes && data.routes.length > 0) {
         const linePath = []
 
@@ -761,6 +770,7 @@ const CoffeeShopMap = () => {
           })
         })
 
+        // 이전에 그려진 선이 있다면 제거
         clearPolyline()
 
         const newPolyline = new window.kakao.maps.Polyline({
@@ -771,8 +781,10 @@ const CoffeeShopMap = () => {
           strokeStyle: "solid",
         })
 
+        // 새로운 선을 지도에 추가
         newPolyline.setMap(map)
 
+        // 상태 업데이트
         setPolyline(newPolyline)
       } else {
         console.error("No route data available")
@@ -781,20 +793,6 @@ const CoffeeShopMap = () => {
       console.error("Error:", error)
     }
   }
-
-  useEffect(() => {
-    if (polyline && mapRef.current) {
-      const clickListener = window.kakao.maps.event.addListener(
-        mapRef.current,
-        "click",
-        function () {
-          clearPolyline()
-          window.kakao.maps.event.removeListener(clickListener)
-        }
-      )
-    }
-  }, [polyline])
-
   useEffect(() => {
     const script = document.createElement("script")
     script.async = true
@@ -814,10 +812,11 @@ const CoffeeShopMap = () => {
           }
 
           const map = new window.kakao.maps.Map(container, options)
-          mapRef.current = map
 
+          // 사용자의 현재 위치를 빨간 핀으로 표시
           displayUserMarker(map, position.coords)
 
+          // 버튼들에 대한 클릭 이벤트 추가
           const cafeButtons = document.querySelectorAll(".cafe-button")
           cafeButtons.forEach((button) => {
             button.addEventListener("click", () => {
@@ -833,6 +832,7 @@ const CoffeeShopMap = () => {
     <div>
       <div id="map" style={{ width: "500px", height: "500px" }} />
       <div>
+        {/* 카페 버튼들 */}
         <button className="cafe-button" data-keyword="스타벅스">
           스타벅스
         </button>
