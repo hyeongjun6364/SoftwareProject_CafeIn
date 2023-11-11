@@ -31,7 +31,7 @@ function CoffeeDetail() {
     (item) => item.cafe === cafename && item.id === parseInt(coffeeId)
   );
 
-  //음료 항목 하나 받아올 api 임시 구현 
+
 
   function StarRating({ rating }) {
 
@@ -93,7 +93,7 @@ function CoffeeDetail() {
     fetchData_detail();
   }, [heart])
   const detailReview = () => {
-    navigate(`/detail/${cafeId}/${coffeeId}`)
+    navigate(`/detail/${cafename}/${cafeId}/${coffeeId}`)
   }
 
   // rating 서버에서 불러와서 비교 후 -> 1,2,3... 순으로 렌더링

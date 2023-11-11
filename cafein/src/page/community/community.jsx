@@ -25,7 +25,7 @@ function CommunityApp() {
   }, []);
   const {data:posts, isLoading, isError, error}= useQuery("communityPosts",getCommunity)
   const queryClient = useQueryClient()
-  //console.log("쿼리확인:",queryClient)
+  console.log(posts)
   
   const deletePostMutation = useMutation(
     (id,token) =>
