@@ -1,44 +1,44 @@
-import React, { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import { cafename, coffee } from './coffeedata';
-import coffeeData from './Data.json'
-import '../../style/categorypage/coffeeDetail.scss'
-import Review from './Review';
-import axios from 'axios';
-import EmptyHeart from '../../asset/coffeeDetail/Heart.png';
-import FilledHeart from '../../asset/coffeeDetail/FilledHeart.png';
-import Starbucks_back from '../../asset/coffeeDetail/starbucks_detail.PNG'
-import Ediya_back from '../../asset/coffeeDetail/Ediya_detail.PNG';
-import Hollys_back from '../../asset/coffeeDetail/hollys_detail.PNG';
-import Paik_back from '../../asset/coffeeDetail/paik_detail.PNG';
-import Mega_back from '../../asset/coffeeDetail/mega_detail.PNG';
-import FilledStar from '../../asset/coffeeDetail/filled_star.png';
-import EmptyStar from '../../asset/coffeeDetail/empty_star.png';
-import { useRecoilState } from 'recoil';
+import React, { useEffect, useState } from "react"
+import { useNavigate, useParams } from "react-router-dom"
+import { cafename, coffee } from "./coffeedata"
+import coffeeData from "./Data.json"
+import "../../style/categorypage/coffeeDetail.scss"
+import Review from "./Review"
+import axios from "axios"
+import EmptyHeart from "../../asset/coffeeDetail/Heart.png"
+import FilledHeart from "../../asset/coffeeDetail/FilledHeart.png"
+import Starbucks_back from "../../asset/coffeeDetail/starbucks_detail.PNG"
+import Ediya_back from "../../asset/coffeeDetail/Ediya_detail.PNG"
+import Hollys_back from "../../asset/coffeeDetail/hollys_detail.PNG"
+import Paik_back from "../../asset/coffeeDetail/paik_detail.PNG"
+import Mega_back from "../../asset/coffeeDetail/mega_detail.PNG"
+import FilledStar from "../../asset/coffeeDetail/filled_star.png"
+import EmptyStar from "../../asset/coffeeDetail/empty_star.png"
+import { useRecoilState } from "recoil"
 function CoffeeDetail() {
-  const { cafename, coffeeId, cafeId } = useParams();
-  const [posts, setPosts] = useState([]);
-  const [heart, setHeart] = useState(true);
-  const [detail, setDetail] = useState([]);
-  const [wishlist, setWishlist] = useState([]);
-  const [username, setUsername] = useState([]);
-  const navigate = useNavigate();
-  //total누적값, 
-  const averageRating = posts.length > 0 ? posts.reduce((total, post) => total + post.rating, 0) / posts.length : 0;
+  const { cafename, coffeeId, cafeId } = useParams()
+  const [posts, setPosts] = useState([])
+  const [heart, setHeart] = useState(true)
+  const [detail, setDetail] = useState([])
+  const [wishlist, setWishlist] = useState([])
+  const [username, setUsername] = useState([])
+  const navigate = useNavigate()
+  //total누적값,
+  const averageRating =
+    posts.length > 0
+      ? posts.reduce((total, post) => total + post.rating, 0) / posts.length
+      : 0
 
   console.log(averageRating)
   const coffeeItem = coffeeData.find(
     (item) => item.cafe === cafename && item.id === parseInt(coffeeId)
-  );
-
-
+  )
 
   function StarRating({ rating }) {
-
     return (
       <div>
         {[...Array(5)].map((star, i) => {
-          const starValue = i + 1;
+          const starValue = i + 1
           return (
             <img
               key={i}
@@ -46,51 +46,55 @@ function CoffeeDetail() {
               alt="star"
               width={30}
             />
-          );
+          )
         })}
       </div>
-    );
+    )
   }
   const savedUsername = localStorage.getItem("LS_KEY_USERNAME")
   useEffect(() => {
     if (savedUsername) {
       setUsername(savedUsername)
     }
-  }, []);
+  }, [])
   useEffect(() => {
     async function fetchData_detail() {
       try {
-        const response = await axios.get(`http://localhost:4000/api/cafe/db_get_${cafename}_menu?beverage=${coffeeId}`)
+        const response = await axios.get(
+          `http://localhost:4000/api/cafe/db_get_${cafename}_menu?beverage=${coffeeId}`
+        )
         setDetail(response.data)
-        const response1 = await axios.get(`http://localhost:4000/api/reviews?beverageId=${cafeId}_${coffeeId}`);
-        setPosts(response1.data);
-      }
-      catch (error) {
+        const response1 = await axios.get(
+          `http://localhost:4000/api/reviews?beverageId=${cafeId}_${coffeeId}`
+        )
+        setPosts(response1.data)
+      } catch (error) {
         console.log(error)
       }
     }
 
     const fetchWishlist = async () => {
       try {
-        const response = await axios.get(`http://localhost:4000/api/wishlist/${savedUsername}`);
-        const productIds = response.data.map(item => item.productId);
-        setWishlist(response.data);
-        const currentProductId = `${cafeId}_${coffeeId}`;
+        const response = await axios.get(
+          `http://localhost:4000/api/wishlist/${savedUsername}`
+        )
+        const productIds = response.data.map((item) => item.productId)
+        setWishlist(response.data)
+        const currentProductId = `${cafeId}_${coffeeId}`
         console.log("찜:", productIds)
         console.log(username)
         if (productIds.includes(currentProductId)) {
-          setHeart(false);
-        }
-        else {
-          setHeart(true);
+          setHeart(false)
+        } else {
+          setHeart(true)
         }
       } catch (error) {
-        console.log(error);
+        console.log(error)
       }
-    };
+    }
 
-    fetchWishlist();
-    fetchData_detail();
+    fetchWishlist()
+    fetchData_detail()
   }, [heart])
   const detailReview = () => {
     navigate(`/detail/${cafename}/${cafeId}/${coffeeId}`)
@@ -100,98 +104,154 @@ function CoffeeDetail() {
   // 각각의 url을 이용해서 하나씩 상태관리 -> setReview에 담고 setReview((pre)=>{new,...Pre})
   //  렌더링 빨라지려면 react-query사용하여 캐싱역할 해야함.
   const handlePostHeart = async () => {
-    const response = await axios.post("http://localhost:4000/api/wishlist", {
-      userId: `${savedUsername}`,
-      productId: `${cafeId}_${coffeeId}`
-
-    }, { withCredentials: true, })
+    const response = await axios.post(
+      "http://localhost:4000/api/wishlist",
+      {
+        userId: `${savedUsername}`,
+        productId: `${cafeId}_${coffeeId}`,
+      },
+      { withCredentials: true }
+    )
     setHeart(!heart)
   }
   if (!detail) {
-    return <div>커피를 찾을 수 없습니다.</div>;
+    return <div>커피를 찾을 수 없습니다.</div>
   }
   return (
     <div>
       <div className="image-container">
-        {cafename === 'starbucks' ?
+        {cafename === "starbucks" ? (
           <>
-            <img src={Starbucks_back} alt="starbucks background image" width={'100%'} height={'600px'} className='starbucks_back' />
-            <div className='image-text'>스타벅스</div>
+            <img
+              src={Starbucks_back}
+              alt="starbucks background image"
+              width={"100%"}
+              height={"600px"}
+              className="starbucks_back"
+            />
+            <div className="image-text">스타벅스</div>
           </>
-          : ""}
-        <>
-        </>
-        {cafename === 'ediya' ?
+        ) : (
+          ""
+        )}
+        <></>
+        {cafename === "ediya" ? (
           <>
-            <img src={Ediya_back} alt="starbucks background image" width={'100%'} height={'600px'} className='starbucks_back' />
-            <div className='image-text'>이디야</div>
+            <img
+              src={Ediya_back}
+              alt="starbucks background image"
+              width={"100%"}
+              height={"600px"}
+              className="starbucks_back"
+            />
+            <div className="image-text">이디야</div>
           </>
-          : ""}
-        {cafename === 'hollys' ?
+        ) : (
+          ""
+        )}
+        {cafename === "hollys" ? (
           <>
-            <img src={Hollys_back} alt="starbucks background image" width={'100%'} height={'600px'} className='starbucks_back' />
-            <div className='image-text'>할리스</div>
+            <img
+              src={Hollys_back}
+              alt="starbucks background image"
+              width={"100%"}
+              height={"600px"}
+              className="starbucks_back"
+            />
+            <div className="image-text">할리스</div>
           </>
-          : ""}
-        {cafename === 'paik' ?
+        ) : (
+          ""
+        )}
+        {cafename === "paik" ? (
           <>
-            <img src={Paik_back} alt="starbucks background image" width={'100%'} height={'600px'} className='starbucks_back' />
-            <div className='image-text'>빽다방</div>
+            <img
+              src={Paik_back}
+              alt="starbucks background image"
+              width={"100%"}
+              height={"600px"}
+              className="starbucks_back"
+            />
+            <div className="image-text">빽다방</div>
           </>
-          : ""}
-        {cafename === 'mega' ?
+        ) : (
+          ""
+        )}
+        {cafename === "mega" ? (
           <>
-            <img src={Mega_back} alt="starbucks background image" width={'100%'} height={'600px'} className='starbucks_back' />
-            <div className='image-text'>메가커피</div>
+            <img
+              src={Mega_back}
+              alt="starbucks background image"
+              width={"100%"}
+              height={"600px"}
+              className="starbucks_back"
+            />
+            <div className="image-text">메가커피</div>
           </>
-          : ""}
-
+        ) : (
+          ""
+        )}
       </div>
       <div className="coffee-detail-wrapper">
         <img src={detail.image} alt={cafename} className="category-image" />
-        <div className='coffee-detail-info'>
+        <div className="coffee-detail-info">
           <h1 className="coffee-title">{detail.name}</h1>
           <p className="coffee-info">가격: {detail.price}원</p>
           <p className="coffee-info">설명: {detail.content}</p>
           <p className="coffee-info">
             {detail.detail ? (
               <>
-                <strong>용량:</strong>  {detail.detail.volume}<br />
-                <strong>칼로리:</strong> {detail.detail.kcal}<br />
-                <strong>포화 지방산:</strong> {detail.detail.sat_FAT}<br />
-                <strong>나트륨:</strong>  {detail.detail.sodium}<br />
-                <strong>당류:</strong> {detail.detail.sugars}<br />
+                <strong>용량:</strong> {detail.detail.volume}
+                <br />
+                <strong>칼로리:</strong> {detail.detail.kcal}
+                <br />
+                <strong>포화 지방산:</strong> {detail.detail.sat_FAT}
+                <br />
+                <strong>나트륨:</strong> {detail.detail.sodium}
+                <br />
+                <strong>당류:</strong> {detail.detail.sugars}
+                <br />
                 <strong>카페인:</strong> {detail.detail.caffeine}
               </>
-            ) : 'Loading...'}
-
+            ) : (
+              "Loading..."
+            )}
           </p>
           <br />
           <br />
           <StarRating rating={averageRating} />
-          <div className='coffee-heart' onClick={handlePostHeart}>찜하기
-            <img src={heart ? EmptyHeart : FilledHeart} alt='Empty' />
+          <div className="coffee-heart" onClick={handlePostHeart}>
+            찜하기
+            <img src={heart ? EmptyHeart : FilledHeart} alt="Empty" />
           </div>
         </div>
       </div>
       <br />
       <hr style={{ borderTop: "1px solid gray", margin: "0 10%" }} />
-      <ul className='review-ul'>
-      <div style={{margin:'0 6%'}}>
-        <div style={{ display: 'flex', textAlign: 'center', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Review coffeeId={coffeeId}>이용후기</Review>
-          <button onClick={detailReview} className='reviewbutton'>글쓰기</button>
+      <ul className="review-ul">
+        <div style={{ margin: "0 6%" }}>
+          <div
+            style={{
+              display: "flex",
+              textAlign: "center",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Review coffeeId={coffeeId}>이용후기</Review>
+            <button onClick={detailReview} className="reviewbutton">
+              글쓰기
+            </button>
+          </div>
+
+          {posts.map((post) => (
+            <li key={post.id}>
+              <h3>{post.title}</h3>
+              <p>내용:{post.content}</p>
+              <small>작성자: {post.username}</small>
+            </li>
+          ))}
         </div>
-      
-      {posts.map((post => (
-          <li key={post.id} >
-            <h3>{post.title}</h3>
-            <p>내용:{post.content}</p>
-            <small>작성자: {post.username}</small>
-          </li>
-        )))}
-      </div>
-        
       </ul>
       <br />
       <br />
