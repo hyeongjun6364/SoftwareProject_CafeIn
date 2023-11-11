@@ -6,115 +6,88 @@ import "../../style/categorypage/pagination.scss"
 import Cookies from "js-cookie"
 import { useNavigate } from "react-router-dom"
 import WritePage from "./writePage"
+import {useQuery,useMutation, useQueryClient, QueryClient } from 'react-query'
+import { getCommunity, postCommunity, deleteCommunity } from "../API/communityApi"
 function CommunityApp() {
-  const [posts, setPosts] = useState([]) // 게시물 목록
-  const [newPostText, setNewPostText] = useState("") // 새 게시물 텍스트
   const [activePage, setActivePage] = useState(1) // 현재 페이지
+  const [username, setUsername] = useState('')
   const postsPerPage = 10 // 페이지당 표시할 게시물 수
   const navigate = useNavigate()
-
+  const savedUsername = localStorage.getItem("LS_KEY_USERNAME")
   const handlePageChange = (pageNumber) => {
     setActivePage(pageNumber)
   }
-  const handleTextChange = (e) => {
-    setNewPostText(e.target.value)
-  }
-  // READ data
   useEffect(() => {
-    async function CommunityFetch() {
-      try {
-        const response = await axios.get(
-          "http://localhost:4000/api/posts?username=&tag&page="
-        )
-        setPosts(response.data)
-      } catch (error) {
-        console.log(error)
+    if (savedUsername) {
+      setUsername(savedUsername)
+    }
+    console.log(username)
+  }, []);
+  const {data:posts, isLoading, isError, error}= useQuery("communityPosts",getCommunity)
+  const queryClient = useQueryClient()
+  //console.log("쿼리확인:",queryClient)
+  
+  const deletePostMutation = useMutation(
+    (id,token) =>
+    axios
+    .delete(`http://localhost:4000/api/posts/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      withCredentials: true, // 모든 쿠키 허용
+    }),
+    {
+      onMutate: (id) => {
+        const prevPosts = queryClient.getQueryData('communityPosts');
+        queryClient.setQueryData('communityPosts', (oldData) => {
+          const updatedData = oldData.filter((post) => post.id !== id);
+          return updatedData;
+        });
+        return { prevPosts };
+      },
+      onError: (error, variables, context) => {
+        // 삭제 실패 시 이전 데이터로 롤백
+        queryClient.setQueryData('communityPosts', context.prevPosts);
+        alert("해당글 사용자가 아닙니다")
+      },
+      onSettled: () => {
+        // 성공 또는 실패 후 쿼리 다시 불러오기
+        queryClient.invalidateQueries('communityPosts');
+        
+      },
+      onSuccess: ()=>{
+        alert("삭제되었습니다.")
       }
     }
-    CommunityFetch()
-  }, [posts])
-
-  // write post
-  const handleNewPost = () => {
-    if (newPostText) {
-      const newPost = {
-        title: newPostText,
-        body: newPostText,
-        tags: ["태그1", "태그2"],
-      }
-
-      try {
-        axios.post("http://localhost:4000/api/posts", newPost, {
-          withCredentials: true, // 모든 쿠키 허용
-        })
-
-        setPosts([newPost, ...posts])
-        setNewPostText("")
-        alert("글이 작성되었습니다")
-      } catch (e) {
-        console.log(e)
-      }
-    }
-  }
-  //글쓰기
-  const handlewrite = () => {
-    navigate("/communitywrite")
-  }
-
-  //delete post
+  );
 
   const handleDeletePost = (id) => {
-    const token = Cookies.get("access_token")
-
-    axios
-      .delete(`http://localhost:4000/api/posts/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        withCredentials: true, // 모든 쿠키 허용
-      })
-      .then(() => {
-        const updatedPost = posts.filter((post) => post.id !== id)
-        setPosts(updatedPost)
-        alert("글이 삭제되었습니다")
-      })
-      .catch((error) => {
-        alert("해당작성자만 삭제 가능")
-        console.error(error)
-      })
+    const token = Cookies.get("access_token");
+    deletePostMutation.mutate(id,token);
   }
+
+   //글쓰기
+   const handlewrite = () => {
+     navigate("/communitywrite")
+   }
+
 
   const indexOfLastPost = activePage * postsPerPage
   const indexOfFirstPost = indexOfLastPost - postsPerPage
-  const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost)
+  const currentPosts = posts ? posts.slice(indexOfFirstPost, indexOfLastPost) : [];
+
 
   // update
   const handleupdate = (id, userid) => {
     const token = Cookies.get("access_token")
-    // console.log("token:",id)
-    // console.log("게시물유저id:",userid)
     navigate(`/write/${id}`)
-    // if(token==userid){
-    //   navigate(`/write/${id}`)
-    // }
-    // else{
-    //   alert('해당글 작성자가 아닙니다.')
-    // }
+
   }
 
   return (
     <div className="community-app">
       <h2>커뮤니티</h2>
-      <div>
-        <textarea
-          cols={40}
-          rows={10}
-          value={newPostText}
-          onChange={handleTextChange}
-          placeholder="새로운 게시물 작성"
-        />
-      </div>
-      <button onClick={handleNewPost}>제출</button>
+      
       <div>
         <div
           style={{
@@ -124,7 +97,7 @@ function CommunityApp() {
           }}
         >
           <h2>게시물 목록</h2>
-          {/* <button onClick={handlewrite}>글쓰기</button> */}
+          <button onClick={handlewrite}>글쓰기</button>
         </div>
 
         <ul>
@@ -133,17 +106,19 @@ function CommunityApp() {
               <h3>{post.title}</h3>
               <p>{post.body}</p>
               <small>작성자: {post.user ? post.user.username : "none"}</small>
+              {username===`"${post.user.username}"` ? <div>
               <button onClick={() => handleDeletePost(post._id)}>삭제</button>
-              <button onClick={() => handleupdate(post._id, post.user?._id)}>
-                수정
-              </button>
+              <button onClick={() => handleupdate(post._id, post.user?._id)}>수정</button>
+              </div>  : ""}
+              
+              
             </li>
           ))}
         </ul>
         <Pagination
           activePage={activePage}
           itemsCountPerPage={postsPerPage}
-          totalItemsCount={posts.length}
+          totalItemsCount={posts?.length || 0}
           pageRangeDisplayed={5}
           onChange={handlePageChange}
           itemClass="page-item"

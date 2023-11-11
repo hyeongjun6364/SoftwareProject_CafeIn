@@ -92,12 +92,13 @@
 .coffee-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  /* 2개씩 열을 생성합니다. */
+  
   gap: 20px;
   /* 그리드 아이템 사이의 간격을 조절합니다. */
-  grid-row-gap: 50px;
+  grid-row-gap: 70px;
 
   @media (max-width:768px) {
+    /* 2개씩 열을 생성합니다. */
     grid-template-columns: repeat(2, 1fr);
 
   }

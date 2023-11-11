@@ -1,20 +1,41 @@
 /* MyPage.css */
 
-h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
-    color: #333;
-}
-
 button {
     padding: 10px 20px;
     background-color: #333;
     color: #fff;
     border: none;
     border-radius: 4px;
-    cursor: pointer;
+    cursor: pointer;    
 }
 
 button:hover {
     background-color: #555;
+}
+
+.mypage-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.mypage-content {
+    padding: 10px;
+}
+
+.welcome-text {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.custom {
+    border: 2px solid #333;
+    border-radius: 10px;
+    padding: 20px;
+    // text-align: center;
+    list-style: none;
+    background-color: #f0f0f0; /* 원하는 배경색 */
+    margin: 5px; /* 필요에 따라 여백 조정 */
 }
