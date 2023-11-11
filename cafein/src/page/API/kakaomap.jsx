@@ -831,7 +831,7 @@ const CoffeeShopMap = () => {
 
   return (
     <div>
-      <div id="map" style={{ width: "500px", height: "500px" }}></div>
+      <div id="map" style={{ width: "500px", height: "500px" }} />
       <div>
         <button className="cafe-button" data-keyword="스타벅스">
           스타벅스
