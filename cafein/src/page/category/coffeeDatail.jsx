@@ -24,12 +24,12 @@ function CoffeeDetail() {
   const [posts, setPosts] = useState([])
   const [heart, setHeart] = useState(true)
   const [likeState, setLikeState] = useState(true)
-  const [disLikeState,setDisLikeState] = useState(true)
+  const [disLikeState, setDisLikeState] = useState(true)
   const [detail, setDetail] = useState([])
   const [wishlist, setWishlist] = useState([])
   const [username, setUsername] = useState([])
-  const [likeCount,setLikeCount]= useState(0);
-  const [disLikeCount,setDisLikeCount]= useState(0);
+  const [likeCount, setLikeCount] = useState(0);
+  const [disLikeCount, setDisLikeCount] = useState(0);
   const navigate = useNavigate()
   //total누적값,
   const averageRating =
@@ -59,6 +59,18 @@ function CoffeeDetail() {
       </div>
     )
   }
+  useEffect(()=>{
+    if (likeState===false){
+      setDisLikeState(true)
+    }
+    
+  },[likeState])
+  useEffect(()=>{
+    if (disLikeState===false){
+      setLikeState(true)
+    }
+   
+  },[disLikeState])
   const savedUsername = localStorage.getItem("LS_KEY_USERNAME")
   useEffect(() => {
     if (savedUsername) {
@@ -100,10 +112,11 @@ function CoffeeDetail() {
         console.log(error)
       }
     }
-    fetchLikeCount()
+
     fetchWishlist()
     fetchData_detail()
-  }, [heart,likeCount,disLikeCount])
+    fetchLikeCount()
+  }, [heart, likeCount, disLikeCount])
   const detailReview = () => {
     navigate(`/detail/${cafename}/${cafeId}/${coffeeId}`)
   }
@@ -125,58 +138,65 @@ function CoffeeDetail() {
 
   const handlePostLike = async () => {
     //const likeboolean= true
-    
+
     const response = await axios.post(
       `http://localhost:4000/api/like/${cafeId}_${coffeeId}`,
       {
-        like:true
+        like: true
       },
       { withCredentials: true }
     )
     const response2 = await axios.post(
       `http://localhost:4000/api/likecount/${cafeId}_${coffeeId}`,
       {
-        like:true
+        like: true
       },
       { withCredentials: true }
     )
     setLikeCount(response2.data.likesCount)
     setLikeState(!likeState)
-    console.log('likestate:',response.data)
-    console.log('likecount:',response2.data)
+    console.log('likestate:', response.data)
+    console.log('likecount:', response2.data)
     //console.log('like boolean:',likeboolean)
-    
+
   }
 
   const handlePostDisLike = async () => {
     //const likeboolean= true
-    
+
     const response = await axios.post(
       `http://localhost:4000/api/like/${cafeId}_${coffeeId}`,
       {
-        like:false
+        like: false
       },
       { withCredentials: true }
     )
     const response2 = await axios.post(
       `http://localhost:4000/api/likecount/${cafeId}_${coffeeId}`,
       {
-        like:false
+        like: false
       },
       { withCredentials: true }
     )
     setDisLikeCount(response2.data.dislikesCount)
     setDisLikeState(!disLikeState)
-    console.log('likestate:',response.data)
-    console.log('likecount:',response2.data)
+    console.log('likestate:', response.data)
+    console.log('likecount:', response2.data)
     //console.log('like boolean:',likeboolean)
-    
+
   }
-  const fetchLikeCount =async()=>{
-    const response = await axios.get(`http://localhost:4000/api/likecount/${cafeId}_${coffeeId}`)
-    setLikeCount(response.data.likesCount);
-    setDisLikeCount(response.data.dislikesCount)
-    console.log(response.data)
+  const fetchLikeCount = async () => {
+    try {
+      const response = await axios.get(`http://localhost:4000/api/likecount/${cafeId}_${coffeeId}`)
+      setLikeCount(response.data.likesCount);
+      setDisLikeCount(response.data.dislikesCount)
+      console.log(response.data)
+    }
+    catch (error) {
+      console.log(error)
+    }
+
+
   }
   if (!detail) {
     return <div>커피를 찾을 수 없습니다.</div>
@@ -290,9 +310,9 @@ function CoffeeDetail() {
             찜하기
             <img src={heart ? EmptyHeart : FilledHeart} alt="Empty" />
           </div>
-          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-            <img src={likeState ?  UnLike : Like} alt="like" className="likeImage" onClick={handlePostLike}/>
-            <img src={disLikeState ? EmptyUnlike : FilledUnLike} alt="like" className="likeImage" onClick={handlePostDisLike}/>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <img src={likeState ? UnLike : Like} alt="like" className="likeImage" onClick={handlePostLike} />
+            <img src={disLikeState ? EmptyUnlike : FilledUnLike} alt="like" className="likeImage" onClick={handlePostDisLike} />
             <p>좋아요 수:{`${likeCount}`}</p>
             <p>싫어요 수:{`${disLikeCount}`}</p>
           </div>
