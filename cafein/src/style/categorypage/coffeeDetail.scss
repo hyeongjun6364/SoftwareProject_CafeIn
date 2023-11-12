@@ -117,3 +117,10 @@
 .reviewContainer{
   margin: 0 10%;
 }
+
+.likeImage{
+  width:50px ;
+  @media(max-width:768px){
+    width:30px;
+  }
+}
