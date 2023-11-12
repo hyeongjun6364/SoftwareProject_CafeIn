@@ -381,10 +381,6 @@ function Category() {
         {selectedMenu === "가격 낮은순" ? paikLow : ""}
         {selectedMenu === "최신순" ? paikNew : ""}
 
-        {selectedMenu === "가격 높은순" ? paikHigh : ""}
-        {selectedMenu === "가격 낮은순" ? paikLow : ""}
-        {selectedMenu === "최신순" ? paikNew : ""}
-
         {selectedMenu === "가격 높은순" ? coffeeHigh : ""}
         {selectedMenu === "가격 낮은순" ? coffeeLow : ""}
         {selectedMenu === "최신순" ? coffeeNew : ""}
