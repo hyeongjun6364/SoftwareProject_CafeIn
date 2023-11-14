@@ -19,6 +19,7 @@ import UnLike from "../../asset/coffeeDetail/unlike.png"
 import EmptyUnlike from "../../asset/coffeeDetail/emptyUnlike.png"
 import FilledUnLike from "../../asset/coffeeDetail/filledUnlike.png"
 import { useRecoilState } from "recoil"
+import { fetchCoffeeDetail, fetchReview, fetchWishList, PostHeart, PostLike, PostLikeCount, fetchLikeCountAPI } from "../API/coffeeDetail"
 function CoffeeDetail() {
   const { cafename, coffeeId, cafeId } = useParams()
   const [posts, setPosts] = useState([])
@@ -59,18 +60,18 @@ function CoffeeDetail() {
       </div>
     )
   }
-  useEffect(()=>{
-    if (likeState===false){
+  useEffect(() => {
+    if (likeState === false) {
       setDisLikeState(true)
     }
-    
-  },[likeState])
-  useEffect(()=>{
-    if (disLikeState===false){
+
+  }, [likeState])
+  useEffect(() => {
+    if (disLikeState === false) {
       setLikeState(true)
     }
-   
-  },[disLikeState])
+
+  }, [disLikeState])
   const savedUsername = localStorage.getItem("LS_KEY_USERNAME")
   useEffect(() => {
     if (savedUsername) {
@@ -79,41 +80,29 @@ function CoffeeDetail() {
   }, [])
   useEffect(() => {
     async function fetchData_detail() {
-      try {
-        const response = await axios.get(
-          `http://localhost:4000/api/cafe/db_get_${cafename}_menu?beverage=${coffeeId}`
-        )
-        setDetail(response.data)
-        const response1 = await axios.get(
-          `http://localhost:4000/api/reviews?beverageId=${cafeId}_${coffeeId}`
-        )
-        setPosts(response1.data)
-      } catch (error) {
-        console.log(error)
-      }
+
+      const detailResponse = await fetchCoffeeDetail(cafename, coffeeId)
+      const reviewResponse = await fetchReview(cafeId, coffeeId)
+      setDetail(detailResponse.data)
+      setPosts(reviewResponse.data)
     }
 
-    const fetchWishlist = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:4000/api/wishlist/${savedUsername}`
-        )
-        const productIds = response.data.map((item) => item.productId)
-        setWishlist(response.data)
-        const currentProductId = `${cafeId}_${coffeeId}`
-        console.log("찜:", productIds)
-        console.log(username)
-        if (productIds.includes(currentProductId)) {
-          setHeart(false)
-        } else {
-          setHeart(true)
-        }
-      } catch (error) {
-        console.log(error)
+    const fetchWish = async () => {
+      const response = await fetchWishList(savedUsername)
+      const productIds = response.data.map((item) => item.productId)
+      setWishlist(response.data)
+      const currentProductId = `${cafeId}_${coffeeId}`
+      console.log("찜:", productIds)
+      console.log(username)
+      if (productIds.includes(currentProductId)) {
+        setHeart(false)
+      } else {
+        setHeart(true)
       }
+
     }
 
-    fetchWishlist()
+    fetchWish()
     fetchData_detail()
     fetchLikeCount()
   }, [heart, likeCount, disLikeCount])
@@ -125,34 +114,15 @@ function CoffeeDetail() {
   // 각각의 url을 이용해서 하나씩 상태관리 -> setReview에 담고 setReview((pre)=>{new,...Pre})
   //  렌더링 빨라지려면 react-query사용하여 캐싱역할 해야함.
   const handlePostHeart = async () => {
-    const response = await axios.post(
-      "http://localhost:4000/api/wishlist",
-      {
-        userId: `${savedUsername}`,
-        productId: `${cafeId}_${coffeeId}`,
-      },
-      { withCredentials: true }
-    )
+    const response = await PostHeart(savedUsername, cafeId, coffeeId)
     setHeart(!heart)
   }
 
   const handlePostLike = async () => {
     //const likeboolean= true
 
-    const response = await axios.post(
-      `http://localhost:4000/api/like/${cafeId}_${coffeeId}`,
-      {
-        like: true
-      },
-      { withCredentials: true }
-    )
-    const response2 = await axios.post(
-      `http://localhost:4000/api/likecount/${cafeId}_${coffeeId}`,
-      {
-        like: true
-      },
-      { withCredentials: true }
-    )
+    const response = await PostLike(cafeId, coffeeId, true)
+    const response2 = await PostLikeCount(cafeId, coffeeId, true)
     setLikeCount(response2.data.likesCount)
     setLikeState(!likeState)
     console.log('likestate:', response.data)
@@ -164,20 +134,8 @@ function CoffeeDetail() {
   const handlePostDisLike = async () => {
     //const likeboolean= true
 
-    const response = await axios.post(
-      `http://localhost:4000/api/like/${cafeId}_${coffeeId}`,
-      {
-        like: false
-      },
-      { withCredentials: true }
-    )
-    const response2 = await axios.post(
-      `http://localhost:4000/api/likecount/${cafeId}_${coffeeId}`,
-      {
-        like: false
-      },
-      { withCredentials: true }
-    )
+    const response = await PostLike(cafeId, coffeeId, false)
+    const response2 = await PostLikeCount(cafeId, coffeeId, false)
     setDisLikeCount(response2.data.dislikesCount)
     setDisLikeState(!disLikeState)
     console.log('likestate:', response.data)
@@ -185,16 +143,12 @@ function CoffeeDetail() {
     //console.log('like boolean:',likeboolean)
 
   }
+  
   const fetchLikeCount = async () => {
-    try {
-      const response = await axios.get(`http://localhost:4000/api/likecount/${cafeId}_${coffeeId}`)
-      setLikeCount(response.data.likesCount);
-      setDisLikeCount(response.data.dislikesCount)
-      console.log(response.data)
-    }
-    catch (error) {
-      console.log(error)
-    }
+    const response = await fetchLikeCountAPI(cafeId, coffeeId)
+    setLikeCount(response.data.likesCount);
+    setDisLikeCount(response.data.dislikesCount)
+
 
 
   }

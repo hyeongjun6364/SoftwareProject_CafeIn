@@ -6,6 +6,7 @@ import "react-quill/dist/quill.snow.css"
 import axios from "axios"
 import { Navigate, useNavigate } from "react-router-dom"
 import Category from "./category"
+import { PostReview } from "../API/coffeeDetail"
 function DetailReview() {
   const { cafename, cafeId, coffeeId } = useParams()
   const [newheader, setNewheader] = useState([])
@@ -30,17 +31,10 @@ function DetailReview() {
       rating: newrating,
     }
     if (newcontent || newheader || newrating) {
-      try {
-        axios.post("http://localhost:4000/api/reviews", newPost, {
-          withCredentials: true,
-        })
-
-        alert("리뷰가 작성되었습니다.")
-        navigate(`/category/${cafename}/${cafeId}/${coffeeId}`)
-      } catch (error) {
-        console.log(error)
-        alert("에러발생")
-      }
+      PostReview(newPost)
+      alert("리뷰가 작성되었습니다.")
+      navigate(`/category/${cafename}/${cafeId}/${coffeeId}`)
+      
     }
   }
   return (
