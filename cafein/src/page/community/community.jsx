@@ -35,6 +35,9 @@ function CommunityApp() {
   } = useQuery("communityPosts", getCommunity)
   const queryClient = useQueryClient()
   console.log(posts)
+  //cache값 확인하기
+  
+  
 
   const deletePostMutation = useMutation(
     (id, token) =>

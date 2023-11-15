@@ -145,10 +145,15 @@ function CoffeeDetail() {
   }
   
   const fetchLikeCount = async () => {
-    const response = await fetchLikeCountAPI(cafeId, coffeeId)
+    try{
+      const response = await fetchLikeCountAPI(cafeId, coffeeId)
     setLikeCount(response.data.likesCount);
     setDisLikeCount(response.data.dislikesCount)
-
+    }
+    catch(error){
+      console.log(error)
+    }
+    
 
 
   }
