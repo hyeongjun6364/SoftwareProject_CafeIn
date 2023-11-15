@@ -112,7 +112,7 @@ const MyPage = () => {
   
   //myReview
     const { data:communityPosts,isLoading, isFetching} = useQuery('communityPosts',getCommunity,{
-      keepPreviousData:true // 5분 동안 캐시된 데이터 사용
+      keepPreviousData:true 
     });
     console.log("usequery:",communityPosts)
     useEffect(() => {
