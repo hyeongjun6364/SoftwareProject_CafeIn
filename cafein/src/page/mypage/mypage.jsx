@@ -8,6 +8,7 @@ import axios from "axios"
 import { getCommunity } from "../API/communityApi"
 import { Navigate, useNavigate } from "react-router-dom"
 import Plus from '../../asset/mypage/plus.png'
+import { useQuery, useMutation, useQueryClient, QueryClient } from "react-query"
 const MyPage = () => {
   const [isLogged, setIsLogged] = useRecoilState(loggedInState)
   const [taste, setTaste] = useState([]) // 취향 정보를 저장할 상태
@@ -15,6 +16,7 @@ const MyPage = () => {
   const [myReview, setMyreview] = useState([]);
   const storedUsername = localStorage.getItem("LS_KEY_USERNAME")
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
   useEffect(() => {
     const storedLoginStatus = localStorage.getItem("login")
     if (storedLoginStatus === "true") {
@@ -98,32 +100,38 @@ const MyPage = () => {
 
 
     }
-    fetchCommunity()
     fetchWish()
 
   }, [])
   useEffect(() => {
     console.log("안녕", myReview)
   }, [myReview])
+  const queryCache = queryClient.getQueryCache();
+  const isCommunityPostsCached = queryCache.find("communityPosts");
+  console.log("cache12:",isCommunityPostsCached); 
+  
   //myReview
-  const fetchCommunity = async () => {
-    try {
-      const response = await getCommunity();
-      const name = storedUsername.slice(1, -1)
-
-      if (Array.isArray(response)) {
-        const myPosts = response.filter((tag) => tag.user.username === name);
-        setMyreview((prevMyReview) => [...prevMyReview, ...myPosts])
-        console.log("gd", myPosts);
-
-      } else {
-        console.error("Response is not an array:", response);
+    const { data:communityPosts,isLoading, isFetching} = useQuery('communityPosts',getCommunity,{
+      keepPreviousData:true 
+    });
+    console.log("usequery:",communityPosts)
+    useEffect(() => {
+      if (!isLoading && !isFetching) {
+        
+        const name = storedUsername.slice(1, -1);
+        
+        if (Array.isArray(communityPosts)) {
+          const myPosts = communityPosts.filter(
+            (tag) => tag.user.username === name
+          );
+          setMyreview((prevMyReview) => [...prevMyReview, ...myPosts]);
+          console.log("gd", myPosts);
+        } else {
+          console.error("Response is not an array:");
+        }
       }
-    } catch (error) {
-      console.error("Error fetching community:", error);
-    }
-
-  }
+    }, [communityPosts, isLoading, isFetching]);
+   
 
   const fetchCafeWishList = async (cafename, coffeeId) => {
     try {

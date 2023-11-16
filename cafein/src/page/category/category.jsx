@@ -64,7 +64,7 @@ function Category() {
     setSelectedCafeTag(null)
     setSelectedTagCoffee(null)
   }, [searchQuery])
-
+  
   useEffect(() => {
     const adeItems = entireData.filter((tag) =>
       tag.name.toLowerCase().includes("에이드")
@@ -254,8 +254,8 @@ function Category() {
   const coffeeNew = useSortedCoffeeHook(currentCoffee,1)
 
   const adeHigh = useSortedCoffeeHook(currentHighAde,2)
-  const adeLow = useSortedCoffeeHook(currentHighAde,2)
-  const adeNew = useSortedCoffeeHook(currentHighAde,2)
+  const adeLow = useSortedCoffeeHook(currentLowAde,2)
+  const adeNew = useSortedCoffeeHook(currentAde,2)
 
   const smoodyHigh = useSortedCoffeeHook(currentHighSmoody,3)
   const smoodyLow = useSortedCoffeeHook(currentLowSmoody,3)
@@ -376,10 +376,6 @@ function Category() {
         {selectedMenu === "가격 높은순" ? ediyaHigh : ""}
         {selectedMenu === "가격 낮은순" ? ediyaLow : ""}
         {selectedMenu === "최신순" ? ediyaNew : ""}
-
-        {selectedMenu === "가격 높은순" ? paikHigh : ""}
-        {selectedMenu === "가격 낮은순" ? paikLow : ""}
-        {selectedMenu === "최신순" ? paikNew : ""}
 
         {selectedMenu === "가격 높은순" ? paikHigh : ""}
         {selectedMenu === "가격 낮은순" ? paikLow : ""}
