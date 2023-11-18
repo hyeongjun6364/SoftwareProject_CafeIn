@@ -1,108 +1,87 @@
-// import React, { useState, useEffect } from 'react';
-// import '../../style/chatbot/chatbot.scss';
-
-// function Chatbot() {
-//   const [messages, setMessages] = useState([]);
-//   const [input, setInput] = useState('');
-
-//   useEffect(() => {
-//     const chatMessages = document.querySelector('.chat-messages');
-//     chatMessages.scrollTop = chatMessages.scrollHeight;
-//   }, [messages]);
-
-//   const handleSend = () => {
-//     setMessages([...messages, { text: input, sender: 'user' }]);
-
-//     setTimeout(() => {
-//       let botMessage;
-
-//       if (input.toLowerCase().includes('hello')) {
-//         botMessage = '안녕';
-//       } else if (input.toLowerCase().includes('name')) {
-//         botMessage = '내이름은 카봇이야';
-//       } else if (input.toLowerCase().includes('weather')) {
-//         botMessage = "오늘 날씨 좋아";
-//       } else {
-//         botMessage = "I'm sorry, I didn't understand that.";
-//       }
-
-//       setMessages([...messages, { text: input, sender: 'user' }, { text: botMessage, sender: 'bot' }]);
-//     }, 1000);
-
-//     setInput('');
-//   };
-
-//   return (
-//     <div className="chatbot">
-//         <h2>Chatbot</h2>
-//       <div className="chat-messages">
-//         {messages.map((message,id) => (
-//           <div key={id} className={`chat-message ${message.sender}`}>
-//             <p>{message.text}</p>
-//           </div>
-//         ))}
-//       </div>
-
-//       <div className="chat-input">
-//         <input
-//         placeholder='글 작성'
-//           value={input}
-//           onChange={e => setInput(e.target.value)}
-//           onKeyPress={e => e.key === 'Enter' && !e.shiftKey ? handleSend() : null}
-//         />
-
-//         <button onClick={handleSend}>전송</button>
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default Chatbot;
-
 import React, { useState, useEffect } from "react"
 import axios from "axios"
 import "../../style/chatbot/chatbot.scss"
 
 function Chatbot() {
-  const [messages, setMessages] = useState([])
+  const [questions, setQuestions] = useState([])
   const [input, setInput] = useState("")
 
   useEffect(() => {
-    const chatMessages = document.querySelector(".chat-messages")
-    chatMessages.scrollTop = chatMessages.scrollHeight
-  }, [messages])
+    const chatquestions = document.querySelector(".chat-questions")
+    chatquestions.scrollTop = chatquestions.scrollHeight
+  }, [questions])
 
   const handleSend = () => {
-    const userMessage = input
-    setMessages([...messages, { text: userMessage, sender: "user" }])
+    const userQuestion = input
+    setQuestions([...questions, { text: userQuestion, sender: "user" }])
     setInput("")
 
-    // Send the user's message to the server using Axios
+    // Send the user's question to the server using Axios
     axios
-      .post("http://127.0.0.1:5000/chat", { message: userMessage }) // 서버 주소 및 라우트 수정
+      .post("http://localhost:4000/api/gpt/ask", { question: userQuestion })
       .then((response) => {
-        // Extract chat messages from the response and update the state
-        const chatLog = response.data.chat
-        setMessages((prevMessages) => [...prevMessages, ...chatLog])
+        // Check if 'answer' property exists in the response.data
+        if (response.data && response.data.answer) {
+          // Extract URL from the answer
+          const dynamicUrlRegex =
+            /<a href="([^"]+)" target="_blank">([^<]+)<\/a>/
+          const match = response.data.answer.match(dynamicUrlRegex)
+
+          if (match) {
+            // If URL exists, show both the answer and the URL
+            setQuestions((prevquestions) => [
+              ...prevquestions,
+              { text: response.data.answer, sender: "bot" },
+              {
+                text: (
+                  <p>
+                    <a
+                      href={match[1]}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {match[2]}
+                    </a>
+                  </p>
+                ),
+                sender: "bot",
+              },
+            ])
+          } else {
+            // If no URL, show only the answer
+            setQuestions((prevquestions) => [
+              ...prevquestions,
+              { text: response.data.answer, sender: "bot" },
+            ])
+          }
+        } else {
+          console.error("Invalid response format:", response.data)
+        }
       })
       .catch((error) => {
-        console.error("Error sending message to the server:", error)
+        console.error("Error sending question to the server:", error)
       })
   }
 
   return (
     <div className="chatbot">
       <h2>Chatbot</h2>
-      <div className="chat-messages">
-        {messages.map((message, id) => (
-          <div key={id} className={`chat-message ${message.role}`}>
-            <p>{message.message}</p>
+      <div className="chat-questions chat-messages">
+        {questions.map((question, id) => (
+          <div
+            key={id}
+            className={`chat-message ${
+              question.sender === "user" ? "user" : "bot"
+            }`}
+          >
+            <p>{question.text}</p>
           </div>
         ))}
       </div>
 
       <div className="chat-input">
         <input
+          className="chat-input-field"
           placeholder="글 작성"
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -111,7 +90,9 @@ function Chatbot() {
           }
         />
 
-        <button onClick={handleSend}>전송</button>
+        <button className="chat-input-button" onClick={handleSend}>
+          전송
+        </button>
       </div>
     </div>
   )
