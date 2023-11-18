@@ -29,6 +29,7 @@ export const fetchWishList = async(savedUsername) => {
       `http://localhost:4000/api/wishlist/${savedUsername}`
     )
     return response
+    
   }
   catch(error){
     console.log(error)

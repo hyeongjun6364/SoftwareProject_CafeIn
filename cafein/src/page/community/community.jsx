@@ -32,7 +32,9 @@ function CommunityApp() {
     isLoading,
     isError,
     error,
-  } = useQuery("communityPosts", getCommunity)
+  } = useQuery("communityPosts", getCommunity,{
+    staleTime:60000,
+  })
   const queryClient = useQueryClient()
   console.log(posts)
   //cache값 확인하기
