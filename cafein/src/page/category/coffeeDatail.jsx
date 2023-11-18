@@ -14,14 +14,23 @@ import Paik_back from "../../asset/coffeeDetail/paik_detail.PNG"
 import Mega_back from "../../asset/coffeeDetail/mega_detail.PNG"
 import FilledStar from "../../asset/coffeeDetail/filled_star.png"
 import EmptyStar from "../../asset/coffeeDetail/empty_star.png"
+import Like from "../../asset/coffeeDetail/like.png"
+import UnLike from "../../asset/coffeeDetail/unlike.png"
+import EmptyUnlike from "../../asset/coffeeDetail/emptyUnlike.png"
+import FilledUnLike from "../../asset/coffeeDetail/filledUnlike.png"
 import { useRecoilState } from "recoil"
+import { fetchCoffeeDetail, fetchReview, fetchWishList, PostHeart, PostLike, PostLikeCount, fetchLikeCountAPI } from "../API/coffeeDetail"
 function CoffeeDetail() {
   const { cafename, coffeeId, cafeId } = useParams()
   const [posts, setPosts] = useState([])
   const [heart, setHeart] = useState(true)
+  const [likeState, setLikeState] = useState(true)
+  const [disLikeState, setDisLikeState] = useState(true)
   const [detail, setDetail] = useState([])
   const [wishlist, setWishlist] = useState([])
   const [username, setUsername] = useState([])
+  const [likeCount, setLikeCount] = useState(0);
+  const [disLikeCount, setDisLikeCount] = useState(0);
   const navigate = useNavigate()
   //total누적값,
   const averageRating =
@@ -51,6 +60,18 @@ function CoffeeDetail() {
       </div>
     )
   }
+  useEffect(() => {
+    if (likeState === false) {
+      setDisLikeState(true)
+    }
+
+  }, [likeState])
+  useEffect(() => {
+    if (disLikeState === false) {
+      setLikeState(true)
+    }
+
+  }, [disLikeState])
   const savedUsername = localStorage.getItem("LS_KEY_USERNAME")
   useEffect(() => {
     if (savedUsername) {
@@ -59,43 +80,32 @@ function CoffeeDetail() {
   }, [])
   useEffect(() => {
     async function fetchData_detail() {
-      try {
-        const response = await axios.get(
-          `http://localhost:4000/api/cafe/db_get_${cafename}_menu?beverage=${coffeeId}`
-        )
-        setDetail(response.data)
-        const response1 = await axios.get(
-          `http://localhost:4000/api/reviews?beverageId=${cafeId}_${coffeeId}`
-        )
-        setPosts(response1.data)
-      } catch (error) {
-        console.log(error)
-      }
+
+      const detailResponse = await fetchCoffeeDetail(cafename, coffeeId)
+      const reviewResponse = await fetchReview(cafeId, coffeeId)
+      setDetail(detailResponse.data)
+      setPosts(reviewResponse.data)
     }
 
-    const fetchWishlist = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:4000/api/wishlist/${savedUsername}`
-        )
-        const productIds = response.data.map((item) => item.productId)
-        setWishlist(response.data)
-        const currentProductId = `${cafeId}_${coffeeId}`
-        console.log("찜:", productIds)
-        console.log(username)
-        if (productIds.includes(currentProductId)) {
-          setHeart(false)
-        } else {
-          setHeart(true)
-        }
-      } catch (error) {
-        console.log(error)
+    const fetchWish = async () => {
+      const response = await fetchWishList(savedUsername)
+      const productIds = response.data.map((item) => item.productId)
+      setWishlist(response.data)
+      const currentProductId = `${cafeId}_${coffeeId}`
+      console.log("찜:", productIds)
+      console.log(username)
+      if (productIds.includes(currentProductId)) {
+        setHeart(false)
+      } else {
+        setHeart(true)
       }
+
     }
 
-    fetchWishlist()
+    fetchWish()
     fetchData_detail()
-  }, [heart])
+    fetchLikeCount()
+  }, [heart, likeCount, disLikeCount])
   const detailReview = () => {
     navigate(`/detail/${cafename}/${cafeId}/${coffeeId}`)
   }
@@ -104,19 +114,54 @@ function CoffeeDetail() {
   // 각각의 url을 이용해서 하나씩 상태관리 -> setReview에 담고 setReview((pre)=>{new,...Pre})
   //  렌더링 빨라지려면 react-query사용하여 캐싱역할 해야함.
   const handlePostHeart = async () => {
-    const response = await axios.post(
-      "http://localhost:4000/api/wishlist",
-      {
-        userId: `${savedUsername}`,
-        productId: `${cafeId}_${coffeeId}`,
-      },
-      { withCredentials: true }
-    )
+    const response = await PostHeart(savedUsername, cafeId, coffeeId)
     setHeart(!heart)
+  }
+
+  const handlePostLike = async () => {
+    //const likeboolean= true
+
+    const response = await PostLike(cafeId, coffeeId, true)
+    const response2 = await PostLikeCount(cafeId, coffeeId, true)
+    setLikeCount(response2.data.likesCount)
+    setLikeState(!likeState)
+    console.log('likestate:', response.data)
+    console.log('likecount:', response2.data)
+    //console.log('like boolean:',likeboolean)
+
+  }
+
+  const handlePostDisLike = async () => {
+    //const likeboolean= true
+
+    const response = await PostLike(cafeId, coffeeId, false)
+    const response2 = await PostLikeCount(cafeId, coffeeId, false)
+    setDisLikeCount(response2.data.dislikesCount)
+    setDisLikeState(!disLikeState)
+    console.log('likestate:', response.data)
+    console.log('likecount:', response2.data)
+    //console.log('like boolean:',likeboolean)
+
+  }
+  
+  const fetchLikeCount = async () => {
+    try{
+      const response = await fetchLikeCountAPI(cafeId, coffeeId)
+    setLikeCount(response.data.likesCount);
+    setDisLikeCount(response.data.dislikesCount)
+    }
+    catch(error){
+      console.log(error)
+    }
+    
+
+
   }
   if (!detail) {
     return <div>커피를 찾을 수 없습니다.</div>
   }
+
+
   return (
     <div>
       <div className="image-container">
@@ -223,6 +268,12 @@ function CoffeeDetail() {
           <div className="coffee-heart" onClick={handlePostHeart}>
             찜하기
             <img src={heart ? EmptyHeart : FilledHeart} alt="Empty" />
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <img src={likeState ? UnLike : Like} alt="like" className="likeImage" onClick={handlePostLike} />
+            <img src={disLikeState ? EmptyUnlike : FilledUnLike} alt="like" className="likeImage" onClick={handlePostDisLike} />
+            <p>좋아요 수:{`${likeCount}`}</p>
+            <p>싫어요 수:{`${disLikeCount}`}</p>
           </div>
         </div>
       </div>

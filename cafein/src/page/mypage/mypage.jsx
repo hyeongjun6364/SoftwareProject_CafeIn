@@ -7,14 +7,16 @@ import { loggedInState } from "./auth"
 import axios from "axios"
 import { getCommunity } from "../API/communityApi"
 import { Navigate, useNavigate } from "react-router-dom"
-import Plus from '../../asset/mypage/plus.png'
+import Plus from "../../asset/mypage/plus.png"
+import { useQuery, useMutation, useQueryClient, QueryClient } from "react-query"
 const MyPage = () => {
   const [isLogged, setIsLogged] = useRecoilState(loggedInState)
   const [taste, setTaste] = useState([]) // 취향 정보를 저장할 상태
-  const [wishCafeInfo, setWishCafeInfo] = useState([]);
-  const [myReview, setMyreview] = useState([]);
+  const [wishCafeInfo, setWishCafeInfo] = useState([])
+  const [myReview, setMyreview] = useState([])
   const storedUsername = localStorage.getItem("LS_KEY_USERNAME")
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
   useEffect(() => {
     const storedLoginStatus = localStorage.getItem("login")
     if (storedLoginStatus === "true") {
@@ -48,98 +50,106 @@ const MyPage = () => {
   useEffect(() => {
     const fetchWish = async () => {
       try {
-        const response = await axios.get(`http://localhost:4000/api/wishlist/${savedUsername}`);
+        const response = await axios.get(
+          `http://localhost:4000/api/wishlist/${savedUsername}`
+        )
         const wishList = response.data.map((wish) => wish.productId)
         console.log(wishList)
         //정규식을 이용하여 cafeid , beverageid 추출
-        const wishCafe = wishList.map((wish) => {
-          if (typeof wish === 'string') {
-            const matches = wish.match(/^(\d+)_(\d+)$/);
-            if (matches && matches.length > 2) {
-              const cafeId = matches[1];
-              const beverageId = matches[2];
-              if (cafeId === '1') {
-                const cafename = 'starbucks'
-                return { cafeId, cafename, beverageId };
+        const wishCafe = wishList
+          .map((wish) => {
+            if (typeof wish === "string") {
+              const matches = wish.match(/^(\d+)_(\d+)$/)
+              if (matches && matches.length > 2) {
+                const cafeId = matches[1]
+                const beverageId = matches[2]
+                if (cafeId === "1") {
+                  const cafename = "starbucks"
+                  return { cafeId, cafename, beverageId }
+                } else if (cafeId === "2") {
+                  const cafename = "ediya"
+                  return { cafeId, cafename, beverageId }
+                } else if (cafeId === "3") {
+                  const cafename = "hollys"
+                  return { cafeId, cafename, beverageId }
+                } else if (cafeId === "4") {
+                  const cafename = "paik"
+                  return { cafeId, cafename, beverageId }
+                } else if (cafeId === "5") {
+                  const cafename = "mega"
+                  return { cafeId, cafename, beverageId }
+                }
+                //객체 형식으로 반환
               }
-              else if (cafeId === '2') {
-                const cafename = 'ediya'
-                return { cafeId, cafename, beverageId };
-              }
-              else if (cafeId === '3') {
-                const cafename = 'hollys'
-                return { cafeId, cafename, beverageId };
-              }
-              else if (cafeId === '4') {
-                const cafename = 'paik'
-                return { cafeId, cafename, beverageId };
-              }
-              else if (cafeId === '5') {
-                const cafename = 'mega'
-                return { cafeId, cafename, beverageId };
-              }
-              //객체 형식으로 반환
             }
-          }
-          return null;
-        }).filter(Boolean);//null이나 undefined요소 제거
+            return null
+          })
+          .filter(Boolean) //null이나 undefined요소 제거
         console.log("cafeid", wishCafe)
-        const wishCafeResponses = await Promise.all(wishCafe.map(async ({ cafename, beverageId }) => {
-          if (cafename && beverageId) { // cafename과 beverageId가 존재하는 경우에만 API 호출
-            return fetchCafeWishList(cafename, beverageId);
-          }
-        }));
+        const wishCafeResponses = await Promise.all(
+          wishCafe.map(async ({ cafename, beverageId }) => {
+            if (cafename && beverageId) {
+              // cafename과 beverageId가 존재하는 경우에만 API 호출
+              return fetchCafeWishList(cafename, beverageId)
+            }
+          })
+        )
 
-        setWishCafeInfo(wishCafeResponses.map(response => response.data));
-      }
-      catch (error) {
+        setWishCafeInfo(wishCafeResponses.map((response) => response.data))
+      } catch (error) {
         console.log(error)
       }
-
-
     }
-    fetchCommunity()
     fetchWish()
-
   }, [])
   useEffect(() => {
     console.log("안녕", myReview)
   }, [myReview])
+  const queryCache = queryClient.getQueryCache()
+  const isCommunityPostsCached = queryCache.find("communityPosts")
+  console.log("cache12:", isCommunityPostsCached)
+
   //myReview
-  const fetchCommunity = async () => {
-    try {
-      const response = await getCommunity();
-      const name = storedUsername.slice(1, -1)
+  const {
+    data: communityPosts,
+    isLoading,
+    isFetching,
+  } = useQuery("communityPosts", getCommunity, {
+    keepPreviousData: true,
+  })
+  console.log("usequery:", communityPosts)
+  useEffect(() => {
+    if (!isLoading && !isFetching) {
+      // const name = storedUsername.slice(1, -1);
+      const name = storedUsername ? storedUsername.slice(1, -1) : ""
 
-      if (Array.isArray(response)) {
-        const myPosts = response.filter((tag) => tag.user.username === name);
+      if (Array.isArray(communityPosts)) {
+        const myPosts = communityPosts.filter(
+          (tag) => tag.user.username === name
+        )
         setMyreview((prevMyReview) => [...prevMyReview, ...myPosts])
-        console.log("gd", myPosts);
-
+        console.log("gd", myPosts)
       } else {
-        console.error("Response is not an array:", response);
+        console.error("Response is not an array:")
       }
-    } catch (error) {
-      console.error("Error fetching community:", error);
     }
-
-  }
+  }, [communityPosts, isLoading, isFetching])
 
   const fetchCafeWishList = async (cafename, coffeeId) => {
     try {
-      const response = await axios.get(`http://localhost:4000/api/cafe/db_get_${cafename}_menu?beverage=${coffeeId}`)
+      const response = await axios.get(
+        `http://localhost:4000/api/cafe/db_get_${cafename}_menu?beverage=${coffeeId}`
+      )
       return response
-    }
-    catch (error) {
+    } catch (error) {
       console.log(error)
     }
-
   }
 
   const handleDetail = (cafename, cafeId, coffeeId) => {
     navigate(`/category/${cafename}/${cafeId}/${coffeeId}`)
   }
-  const handleCommunity =()=>{
+  const handleCommunity = () => {
     navigate(`/community`)
   }
   // if (answer === '피곤한데... 커피!') {
@@ -244,7 +254,13 @@ const MyPage = () => {
       {isLogged ? (
         <div className="mypage-content">
           <h2 className="welcome-text">환영합니다!</h2>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
             <h2 className="welcome-text">
               {storedUsername
                 ? storedUsername.substring(1, storedUsername.length - 1)
@@ -268,19 +284,26 @@ const MyPage = () => {
           <div className="scroll-container">
             {wishCafeInfo.map((info, index) => (
               <div key={index} className="image-container">
-                <img src={info.image} alt={info.name} onClick={() => {
-                  handleDetail(info.cafe, info.cafeid, info.beverage)
-                }} />
+                <img
+                  src={info.image}
+                  alt={info.name}
+                  onClick={() => {
+                    handleDetail(info.cafe, info.cafeid, info.beverage)
+                  }}
+                />
                 <p>{info.name}</p>
               </div>
             ))}
           </div>
-          <div style={{
-            display: 'flex', justifyContent: "space-between",
-            alignItems: "center",
-          }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <h3>내가 쓴 커뮤니티 글</h3>
-            <img src={Plus} alt="plus" width={20} onClick={handleCommunity}/>
+            <img src={Plus} alt="plus" width={20} onClick={handleCommunity} />
           </div>
 
           <div>
@@ -289,24 +312,31 @@ const MyPage = () => {
                 <div>
                   <h4 key={tag._id}>{tag.title}</h4>
                   <p>{tag.body}</p>
-                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
                     <small>{tag.publishedDate}</small>
                     <small>{tag.user.username}</small>
                   </div>
-                  
-                  
+
                   <hr />
                 </div>
-
               )
             })}
           </div>
-          <div style={{
-            display: 'flex', justifyContent: "space-between",
-            alignItems: "center",
-          }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <h3>내가 쓴 음료 리뷰</h3>
-            <img src={Plus} alt="plus" width={20} onClick={handleCommunity}/>
+            <img src={Plus} alt="plus" width={20} onClick={handleCommunity} />
           </div>
         </div>
       ) : (

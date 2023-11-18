@@ -8,7 +8,7 @@ import Pagination from "react-js-pagination"
 import "../../style/categorypage/pagination.scss"
 import { useRecoilState, useRecoilValue } from "recoil"
 import useCoffeeList from "../customHook/useCafe.jsx"
-import UseCoffee from "../customHook/useCoffee.jsx"
+import useCoffee from "../customHook/useCoffee.jsx"
 import useSearch from "../customHook/useSearch.jsx"
 import {
   starbucksState,
@@ -64,7 +64,7 @@ function Category() {
     setSelectedCafeTag(null)
     setSelectedTagCoffee(null)
   }, [searchQuery])
-
+  
   useEffect(() => {
     const adeItems = entireData.filter((tag) =>
       tag.name.toLowerCase().includes("에이드")
@@ -165,168 +165,109 @@ function Category() {
   const megaPrice = strtoint(megaData)
   const hollysPrice = strtoint(hollysData)
   const paikPrice = strtoint(paikData)
+  const adePrice = strtoint(ade)
+  const smoodyPrice = strtoint(smoody)
+  const juicePrice = strtoint(juice)
+  const teaPrice = strtoint(tea)
+  const coffeePrice = strtoint(coffees)
   // 가격정렬(높은순, 낮은순)
   const sortPriceHigh = (priceList) =>
     priceList.sort((a, b) => b.price - a.price)
   const sortPriceLow = (priceList) =>
     priceList.sort((a, b) => a.price - b.price)
+  // 페이지에 보여줄 데이터 슬라이싱
+  const sliceHighData = (pricedata) => {
+    return sortPriceHigh(pricedata).slice(indexOfFirstPost,indexOfLastPost)
+  }
+  const sliceLowData = (pricedata) => {
+    return sortPriceLow(pricedata).slice(indexOfFirstPost,indexOfLastPost)
+  }
   // 가격 높은순
-  const currentHighStarbucks = sortPriceHigh(starbucksPrice).slice(
-    indexOfFirstPost,
-    indexOfLastPost
-  )
-  const currentHighMega = sortPriceHigh(megaPrice).slice(
-    indexOfFirstPost,
-    indexOfLastPost
-  )
-  const currentHighEdiya = sortPriceHigh(ediyaPrice).slice(
-    indexOfFirstPost,
-    indexOfLastPost
-  )
-  const currentHighHollys = sortPriceHigh(hollysPrice).slice(
-    indexOfFirstPost,
-    indexOfLastPost
-  )
-  const currentHighPaik = sortPriceHigh(paikPrice).slice(
-    indexOfFirstPost,
-    indexOfLastPost
-  )
+  const currentHighStarbucks = sliceHighData(starbucksPrice)
+  const currentHighMega = sliceHighData(megaPrice)
+  const currentHighEdiya = sliceHighData(ediyaPrice)
+  const currentHighHollys = sliceHighData(hollysPrice)
+  const currentHighPaik = sliceHighData(paikPrice)
+  const currentHighCoffee = sliceHighData(coffeePrice)
+  const currentHighAde = sliceHighData(adePrice)
+  const currentHighSmoody = sliceHighData(smoodyPrice)
+  const currentHighTea = sliceHighData(teaPrice)
+  const currentHighJuice = sliceHighData(juicePrice)
   // 가겨 낮은순
-  const currentLowStarbucks = sortPriceLow(starbucksPrice).slice(
-    indexOfFirstPost,
-    indexOfLastPost
-  )
-  const currentLowMega = sortPriceLow(megaPrice).slice(
-    indexOfFirstPost,
-    indexOfLastPost
-  )
-  const currentLowEdiya = sortPriceLow(ediyaPrice).slice(
-    indexOfFirstPost,
-    indexOfLastPost
-  )
-  const currentLowHollys = sortPriceLow(hollysPrice).slice(
-    indexOfFirstPost,
-    indexOfLastPost
-  )
-  const currentLowPaik = sortPriceLow(paikPrice).slice(
-    indexOfFirstPost,
-    indexOfLastPost
-  )
+  const currentLowStarbucks = sliceLowData(starbucksPrice)
+  const currentLowMega = sliceLowData(megaPrice)
+  const currentLowEdiya = sliceLowData(ediyaPrice)
+  const currentLowHollys = sliceLowData(hollysPrice)
+  const currentLowPaik = sliceLowData(paikPrice)
+  const currentLowCoffee = sliceLowData(coffeePrice)
+  const currentLowAde = sliceLowData(adePrice)
+  const currentLowSmoody = sliceLowData(smoodyPrice)
+  const currentLowTea = sliceLowData(teaPrice)
+  const currentLowJuice = sliceLowData(juicePrice)
   // dropdown 상태관리 함수
   const handleDropdown = (drop) => {
     setSelectedMenu(drop)
   }
+  //정렬 데이터
+  const useSortedCafeHook = (data) => {
+    return(
+      useCoffeeList(selectedTagCafeId,
+        data,
+        activePage,
+        postsPerPage,
+        handleCoffeeDetail)
+    )
+  }
+  const useSortedCoffeeHook = (data,num) => {
+    return(
+      useCoffee(selectedTagCoffeeId,
+        data,
+        activePage,
+        postsPerPage,
+        handleCoffeeDetail,
+        num)
+    )
+  }
   //정렬한 데이터(평점,가격 높은,낮은 , 최신순)
-  const starbucksHigh = useCoffeeList(
-    selectedTagCafeId,
-    currentHighStarbucks,
-    activePage,
-    postsPerPage,
-    handleCoffeeDetail
-  )
-  const starbucksLow = useCoffeeList(
-    selectedTagCafeId,
-    currentLowStarbucks,
-    activePage,
-    postsPerPage,
-    handleCoffeeDetail
-  )
-  const starbucksNew = useCoffeeList(
-    selectedTagCafeId,
-    currentPosts,
-    activePage,
-    postsPerPage,
-    handleCoffeeDetail
-  )
+  const starbucksHigh = useSortedCafeHook(currentHighStarbucks)
+  const starbucksLow = useSortedCafeHook(currentLowStarbucks)
+  const starbucksNew = useSortedCafeHook(currentPosts)
 
-  const megaHigh = useCoffeeList(
-    selectedTagCafeId,
-    currentHighMega,
-    activePage,
-    postsPerPage,
-    handleCoffeeDetail
-  )
-  const megaLow = useCoffeeList(
-    selectedTagCafeId,
-    currentLowMega,
-    activePage,
-    postsPerPage,
-    handleCoffeeDetail
-  )
-  const megaNew = useCoffeeList(
-    selectedTagCafeId,
-    currentMega,
-    activePage,
-    postsPerPage,
-    handleCoffeeDetail
-  )
+  const megaHigh = useSortedCafeHook(currentHighMega)
+  const megaLow = useSortedCafeHook(currentLowMega)
+  const megaNew = useSortedCafeHook(currentMega)
 
-  const ediyaHigh = useCoffeeList(
-    selectedTagCafeId,
-    currentHighEdiya,
-    activePage,
-    postsPerPage,
-    handleCoffeeDetail
-  )
-  const ediyaLow = useCoffeeList(
-    selectedTagCafeId,
-    currentLowEdiya,
-    activePage,
-    postsPerPage,
-    handleCoffeeDetail
-  )
-  const ediyaNew = useCoffeeList(
-    selectedTagCafeId,
-    currentEdyia,
-    activePage,
-    postsPerPage,
-    handleCoffeeDetail
-  )
+  const ediyaHigh = useSortedCafeHook(currentHighEdiya)
+  const ediyaLow = useSortedCafeHook(currentLowEdiya)
+  const ediyaNew =useSortedCafeHook(currentEdyia)
 
-  const hollysHigh = useCoffeeList(
-    selectedTagCafeId,
-    currentHighHollys,
-    activePage,
-    postsPerPage,
-    handleCoffeeDetail
-  )
-  const hollysLow = useCoffeeList(
-    selectedTagCafeId,
-    currentLowHollys,
-    activePage,
-    postsPerPage,
-    handleCoffeeDetail
-  )
-  const hollysNew = useCoffeeList(
-    selectedTagCafeId,
-    currentHollys,
-    activePage,
-    postsPerPage,
-    handleCoffeeDetail
-  )
+  const hollysHigh = useSortedCafeHook(currentHighHollys)
+  const hollysLow = useSortedCafeHook(currentLowHollys)
+  const hollysNew = useSortedCafeHook(currentHollys)
 
-  const paikHigh = useCoffeeList(
-    selectedTagCafeId,
-    currentHighPaik,
-    activePage,
-    postsPerPage,
-    handleCoffeeDetail
-  )
-  const paikLow = useCoffeeList(
-    selectedTagCafeId,
-    currentLowPaik,
-    activePage,
-    postsPerPage,
-    handleCoffeeDetail
-  )
-  const paikNew = useCoffeeList(
-    selectedTagCafeId,
-    currentPaik,
-    activePage,
-    postsPerPage,
-    handleCoffeeDetail
-  )
+  const paikHigh = useSortedCafeHook(currentHighPaik)
+  const paikLow = useSortedCafeHook(currentLowPaik)
+  const paikNew = useSortedCafeHook(currentPaik)
+// 커피이름
+  const coffeeHigh = useSortedCoffeeHook(currentHighCoffee,1)
+  const coffeeLow = useSortedCoffeeHook(currentLowCoffee,1)
+  const coffeeNew = useSortedCoffeeHook(currentCoffee,1)
 
+  const adeHigh = useSortedCoffeeHook(currentHighAde,2)
+  const adeLow = useSortedCoffeeHook(currentLowAde,2)
+  const adeNew = useSortedCoffeeHook(currentAde,2)
+
+  const smoodyHigh = useSortedCoffeeHook(currentHighSmoody,3)
+  const smoodyLow = useSortedCoffeeHook(currentLowSmoody,3)
+  const smoodyNew = useSortedCoffeeHook(currentSmoody,3)
+
+  const teaHigh = useSortedCoffeeHook(currentHighTea,4)
+  const teaLow = useSortedCoffeeHook(currentLowTea,4)
+  const teaNew = useSortedCoffeeHook(currentTea,4)
+
+  const juiceHigh = useSortedCoffeeHook(currentHighJuice,5)
+  const juiceLow = useSortedCoffeeHook(currentLowJuice,5)
+  const juiceNew = useSortedCoffeeHook(currentJuice,5)
   function Dropdown() {
     return (
       <>
@@ -410,46 +351,7 @@ function Category() {
 
         {/*커피, 음료, 티 등 구분 */}
 
-        {UseCoffee(
-          selectedTagCoffeeId,
-          currentCoffee,
-          activePage,
-          postsPerPage,
-          handleCoffeeDetail,
-          1
-        )}
-        {UseCoffee(
-          selectedTagCoffeeId,
-          currentAde,
-          activePage,
-          postsPerPage,
-          handleCoffeeDetail,
-          2
-        )}
-        {UseCoffee(
-          selectedTagCoffeeId,
-          currentSmoody,
-          activePage,
-          postsPerPage,
-          handleCoffeeDetail,
-          3
-        )}
-        {UseCoffee(
-          selectedTagCoffeeId,
-          currentTea,
-          activePage,
-          postsPerPage,
-          handleCoffeeDetail,
-          4
-        )}
-        {UseCoffee(
-          selectedTagCoffeeId,
-          currentJuice,
-          activePage,
-          postsPerPage,
-          handleCoffeeDetail,
-          5
-        )}
+        
 
         {useSearch(
           selectedTagCoffeeId,
@@ -478,6 +380,27 @@ function Category() {
         {selectedMenu === "가격 높은순" ? paikHigh : ""}
         {selectedMenu === "가격 낮은순" ? paikLow : ""}
         {selectedMenu === "최신순" ? paikNew : ""}
+
+        {selectedMenu === "가격 높은순" ? coffeeHigh : ""}
+        {selectedMenu === "가격 낮은순" ? coffeeLow : ""}
+        {selectedMenu === "최신순" ? coffeeNew : ""}
+
+        {selectedMenu === "가격 높은순" ? adeHigh : ""}
+        {selectedMenu === "가격 낮은순" ? adeLow : ""}
+        {selectedMenu === "최신순" ? adeNew : ""}
+
+        {selectedMenu === "가격 높은순" ? smoodyHigh : ""}
+        {selectedMenu === "가격 낮은순" ? smoodyLow : ""}
+        {selectedMenu === "최신순" ? smoodyNew : ""}
+
+        {selectedMenu === "가격 높은순" ? teaHigh : ""}
+        {selectedMenu === "가격 낮은순" ? teaLow : ""}
+        {selectedMenu === "최신순" ? teaNew : ""}
+
+        {selectedMenu === "가격 높은순" ? juiceHigh : ""}
+        {selectedMenu === "가격 낮은순" ? juiceLow : ""}
+        {selectedMenu === "최신순" ? juiceNew : ""}
+
       </div>
       <br />
       <br />
