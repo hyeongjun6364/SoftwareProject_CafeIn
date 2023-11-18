@@ -9,6 +9,7 @@ import { getCommunity } from "../API/communityApi"
 import { Navigate, useNavigate } from "react-router-dom"
 import Plus from "../../asset/mypage/plus.png"
 import { useQuery, useMutation, useQueryClient, QueryClient } from "react-query"
+
 const MyPage = () => {
   const [isLogged, setIsLogged] = useRecoilState(loggedInState)
   const [taste, setTaste] = useState([]) // 취향 정보를 저장할 상태
@@ -152,53 +153,6 @@ const MyPage = () => {
   const handleCommunity = () => {
     navigate(`/community`)
   }
-  // if (answer === '피곤한데... 커피!') {
-  //   return 'coffee';
-  // } else if (answer === '맛있는 음료가 좋아') {
-  //   return 'non-coffee';
-  // }
-
-  // if (answer === '아메리카노') {
-  //   return 'americano';
-  // } else if (answer === '라뗴') {
-  //   return 'latte';
-  // } else if (answer === '에이드') {
-  //   return 'ade';
-  // } else if (answer === '주스') {
-  //   return 'juice';
-  // } else if (answer === '티') {
-  //   return 'tea';
-  // }
-
-  // if (answer === '콜라도 제로로 먹는데?') {
-  //   return 'k_low';
-  // } else if (answer === '그래도 칼로리는 칼로리지') {
-  //   return 'k_mid';
-  // } else if (answer === '맛있으면 0칼로리!') {
-  //   return 'k_high';
-  // }
-
-  // if (answer === '아이스') {
-  //   return 'ice';
-  // } else if (answer === '핫') {
-  //   return 'hot';
-  // }
-
-  // if (answer === '아니 별로...') {
-  //   return 'p_low';
-  // } else if (answer === '적당한게 좋아') {
-  //   return 'p_mid';
-  // } else if (answer === '단게 땡긴다!!') {
-  //   return 'p_high';
-  // }
-
-  // if (answer === '텅장이다 ㅠ') {
-  //   return 'p_low';
-  // } else if (answer === 'soso') {
-  //   return 'p_mid';
-  // } else if (answer === '사치 좀 부려봐?') {
-  //   return 'p_high';
-  // }
 
   const mapTasteToDescription = (taste) => {
     switch (taste) {
