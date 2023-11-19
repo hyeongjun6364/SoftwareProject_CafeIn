@@ -123,7 +123,8 @@ const MyPage = () => {
   console.log("usequery:", communityPosts)
   useEffect(() => {
     if (!isLoading && !isFetching) {
-      const name = storedUsername.slice(1, -1)
+      // const name = storedUsername.slice(1, -1)
+      const name = storedUsername ? storedUsername.slice(1, -1) : ""
 
       if (Array.isArray(communityPosts)) {
         const myPosts = communityPosts.filter(
