@@ -8,6 +8,7 @@ import axios from "axios"
 import { getCommunity } from "../API/communityApi"
 import { fetchCafeWishList } from "../API/myPageApi"
 import { fetchWishList } from "../API/coffeeDetail"
+import { coffeeAllReview } from "../API/mypage/coffeeReview"
 import { Navigate, useNavigate } from "react-router-dom"
 import Plus from '../../asset/mypage/plus.png'
 import { useQuery, useMutation, useQueryClient, QueryClient } from "react-query"
@@ -103,6 +104,7 @@ const MyPage = () => {
 
     }
     fetchWish()
+    fetchCoffeeReview()
 
   }, [])
   useEffect(() => {
@@ -134,7 +136,10 @@ const MyPage = () => {
         }
       }
     }, [communityPosts, isLoading, isFetching]);
-   
+   const fetchCoffeeReview = () => {
+    const response = coffeeAllReview()
+    console.log("coffeeReview",response.data)
+   }
 
  
 
@@ -261,6 +266,7 @@ const MyPage = () => {
           }}>
             <h3>내가 쓴 음료 리뷰</h3>
             <img src={Plus} alt="plus" width={20} onClick={handleCommunity}/>
+            
           </div>
         </div>
       ) : (
