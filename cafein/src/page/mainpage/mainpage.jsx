@@ -30,10 +30,11 @@ function Mainpage() {
   //  경고 메시지가 나와서 함수를 정의하고 이 함수를 반환하는 식으로 바꿈
   const averageRating = review.length > 0 ? review.reduce((total, post) => total + post.rating, 0) / review.length : 0;
   const storedUsername = localStorage.getItem("LS_KEY_USERNAME")
-  // const entireTag = entireData.map((drink)=>{return drink.tag})
-  // const recommendDrink = entireTag.filter((drink)=>{
-
-  // }) 
+  const userRecommend= entireData.filter((drink)=>{
+    const data = myTaste.filter((info)=>{ return drink.tag.includes(info)})
+    return data.length >= 4
+  })
+  console.log(userRecommend)
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -97,16 +98,12 @@ function Mainpage() {
         <h1>{`${storedUsername}`}님 추천 음료</h1>
 
         <div className="image-container">
-          {entireData
-            .filter((drink) => {
-              const commonTags = myTaste.filter(tag => drink.tag.includes(tag));
-              return commonTags.length >= 4;
-            })
+          {userRecommend
             .map((filteredDrink) => (
               <div className="image-item" key={filteredDrink.id}>
                 <img src={filteredDrink.image} alt={filteredDrink.name} onClick={() => handleMonth(filteredDrink.cafe, filteredDrink.beverage, filteredDrink.cafeid)} />
                 <p>{filteredDrink.name}</p>
-                {console.log(filteredDrink)}
+                
               </div>
 
             ))}
