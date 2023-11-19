@@ -6,10 +6,12 @@ import { constSelector, useRecoilState } from "recoil"
 import { loggedInState } from "./auth"
 import axios from "axios"
 import { getCommunity } from "../API/communityApi"
+import { fetchCafeWishList } from "../API/myPageApi"
+import { fetchWishList } from "../API/coffeeDetail"
+import { coffeeAllReview } from "../API/mypage/coffeeReview"
 import { Navigate, useNavigate } from "react-router-dom"
 import Plus from "../../asset/mypage/plus.png"
 import { useQuery, useMutation, useQueryClient, QueryClient } from "react-query"
-
 const MyPage = () => {
   const [isLogged, setIsLogged] = useRecoilState(loggedInState)
   const [taste, setTaste] = useState([]) // 취향 정보를 저장할 상태
@@ -47,13 +49,11 @@ const MyPage = () => {
       console.error("로그아웃 오류:", error)
     }
   }
-  const savedUsername = localStorage.getItem("LS_KEY_USERNAME")
+
   useEffect(() => {
     const fetchWish = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:4000/api/wishlist/${savedUsername}`
-        )
+        const response = await fetchWishList(storedUsername)
         const wishList = response.data.map((wish) => wish.productId)
         console.log(wishList)
         //정규식을 이용하여 cafeid , beverageid 추출
@@ -102,6 +102,7 @@ const MyPage = () => {
       }
     }
     fetchWish()
+    fetchCoffeeReview()
   }, [])
   useEffect(() => {
     console.log("안녕", myReview)
@@ -116,13 +117,13 @@ const MyPage = () => {
     isLoading,
     isFetching,
   } = useQuery("communityPosts", getCommunity, {
+    staleTime: 60000,
     keepPreviousData: true,
   })
   console.log("usequery:", communityPosts)
   useEffect(() => {
     if (!isLoading && !isFetching) {
-      // const name = storedUsername.slice(1, -1);
-      const name = storedUsername ? storedUsername.slice(1, -1) : ""
+      const name = storedUsername.slice(1, -1)
 
       if (Array.isArray(communityPosts)) {
         const myPosts = communityPosts.filter(
@@ -135,16 +136,9 @@ const MyPage = () => {
       }
     }
   }, [communityPosts, isLoading, isFetching])
-
-  const fetchCafeWishList = async (cafename, coffeeId) => {
-    try {
-      const response = await axios.get(
-        `http://localhost:4000/api/cafe/db_get_${cafename}_menu?beverage=${coffeeId}`
-      )
-      return response
-    } catch (error) {
-      console.log(error)
-    }
+  const fetchCoffeeReview = () => {
+    const response = coffeeAllReview()
+    console.log("coffeeReview", response.data)
   }
 
   const handleDetail = (cafename, cafeId, coffeeId) => {
@@ -153,7 +147,6 @@ const MyPage = () => {
   const handleCommunity = () => {
     navigate(`/community`)
   }
-
   const mapTasteToDescription = (taste) => {
     switch (taste) {
       case "coffee":
