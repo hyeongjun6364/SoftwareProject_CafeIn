@@ -49,7 +49,7 @@ const MyPage = () => {
       console.error("로그아웃 오류:", error)
     }
   }
-  
+
   useEffect(() => {
     const fetchWish = async () => {
       try {
@@ -103,7 +103,6 @@ const MyPage = () => {
     }
     fetchWish()
     fetchCoffeeReview()
-
   }, [])
   useEffect(() => {
     console.log("안녕", myReview)
@@ -113,33 +112,34 @@ const MyPage = () => {
   console.log("cache12:", isCommunityPostsCached)
 
   //myReview
-    const { data:communityPosts,isLoading, isFetching} = useQuery('communityPosts',getCommunity,{
-      staleTime:60000,
-      keepPreviousData:true 
-    });
-    console.log("usequery:",communityPosts)
-    useEffect(() => {
-      if (!isLoading && !isFetching) {
-        
-        const name = storedUsername.slice(1, -1);
-        
-        if (Array.isArray(communityPosts)) {
-          const myPosts = communityPosts.filter(
-            (tag) => tag.user.username === name
-          );
-          setMyreview((prevMyReview) => [...prevMyReview, ...myPosts]);
-          console.log("gd", myPosts);
-        } else {
-          console.error("Response is not an array:");
-        }
-      }
-    }, [communityPosts, isLoading, isFetching]);
-   const fetchCoffeeReview = () => {
-    const response = coffeeAllReview()
-    console.log("coffeeReview",response.data)
-   }
+  const {
+    data: communityPosts,
+    isLoading,
+    isFetching,
+  } = useQuery("communityPosts", getCommunity, {
+    staleTime: 60000,
+    keepPreviousData: true,
+  })
+  console.log("usequery:", communityPosts)
+  useEffect(() => {
+    if (!isLoading && !isFetching) {
+      const name = storedUsername.slice(1, -1)
 
- 
+      if (Array.isArray(communityPosts)) {
+        const myPosts = communityPosts.filter(
+          (tag) => tag.user.username === name
+        )
+        setMyreview((prevMyReview) => [...prevMyReview, ...myPosts])
+        console.log("gd", myPosts)
+      } else {
+        console.error("Response is not an array:")
+      }
+    }
+  }, [communityPosts, isLoading, isFetching])
+  const fetchCoffeeReview = () => {
+    const response = coffeeAllReview()
+    console.log("coffeeReview", response.data)
+  }
 
   const handleDetail = (cafename, cafeId, coffeeId) => {
     navigate(`/category/${cafename}/${cafeId}/${coffeeId}`)
@@ -283,8 +283,7 @@ const MyPage = () => {
             }}
           >
             <h3>내가 쓴 음료 리뷰</h3>
-            <img src={Plus} alt="plus" width={20} onClick={handleCommunity}/>
-            
+            <img src={Plus} alt="plus" width={20} onClick={handleCommunity} />
           </div>
         </div>
       ) : (
