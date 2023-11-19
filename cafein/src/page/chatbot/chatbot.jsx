@@ -74,30 +74,87 @@ function Chatbot() {
   //   }
   // }
 
+  // const handleResponse = (data) => {
+  //   if (data && data.answer) {
+  //     // const dynamicUrlRegex = /<a href="([^"]+)" target="_blank">([^<]+)<\/a>/g
+  //     const dynamicUrlRegex =
+  //       /\[([^<]+)\]\(([^)]+)\)|<a href="([^"]+)" target="_blank">([^<]+)<\/a>/g
+  //     const matches = Array.from(data.answer.matchAll(dynamicUrlRegex))
+
+  //     const elements = []
+  //     let lastIndex = 0
+
+  //     for (const match of matches) {
+  //       const [fullMatch, href, linkText] = match
+  //       const plainText = data.answer.substring(lastIndex, match.index)
+
+  //       // Add plain text
+  //       elements.push(<span key={`plain-${lastIndex}`}>{plainText}</span>)
+
+  //       // Add clickable link
+  //       elements.push(
+  //         <a
+  //           key={`link-${lastIndex}`}
+  //           href={href}
+  //           target="_blank"
+  //           rel="noopener noreferrer"
+  //         >
+  //           {linkText}
+  //         </a>
+  //       )
+
+  //       lastIndex = match.index + fullMatch.length
+  //     }
+
+  //     // Add the remaining plain text
+  //     const remainingText = data.answer.substring(lastIndex)
+  //     elements.push(<span key={`plain-${lastIndex}`}>{remainingText}</span>)
+
+  //     setQuestions((prevQuestions) => [
+  //       ...prevQuestions,
+  //       {
+  //         text: <p>{elements}</p>,
+  //         sender: "bot",
+  //       },
+  //     ])
+  //   } else {
+  //     // Render plain text if there is no link
+  //     setQuestions((prevQuestions) => [
+  //       ...prevQuestions,
+  //       { text: data.answer, sender: "bot" },
+  //     ])
+  //   }
+  // }
+
   const handleResponse = (data) => {
     if (data && data.answer) {
-      const dynamicUrlRegex = /<a href="([^"]+)" target="_blank">([^<]+)<\/a>/g
+      const dynamicUrlRegex =
+        /\[([^<]+)\]\(([^)]+)\)|<a href="([^"]+)" target="_blank">([^<]+)<\/a>/g
       const matches = Array.from(data.answer.matchAll(dynamicUrlRegex))
 
       const elements = []
       let lastIndex = 0
 
       for (const match of matches) {
-        const [fullMatch, href, linkText] = match
+        const [fullMatch, linkText, href, altLinkText] = match
         const plainText = data.answer.substring(lastIndex, match.index)
 
         // Add plain text
         elements.push(<span key={`plain-${lastIndex}`}>{plainText}</span>)
 
+        // Determine the link text and href
+        const finalLinkText = linkText || altLinkText
+        const finalHref = href || altLinkText
+
         // Add clickable link
         elements.push(
           <a
             key={`link-${lastIndex}`}
-            href={href}
+            href={finalHref}
             target="_blank"
             rel="noopener noreferrer"
           >
-            {linkText}
+            {finalLinkText}
           </a>
         )
 
