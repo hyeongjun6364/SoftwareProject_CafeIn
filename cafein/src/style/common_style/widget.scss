@@ -10,7 +10,7 @@
 
 .widget-container.bottom {
     position: fixed;
-    
+
     bottom: 10px;
     /* Adjust as needed when scrolled to bottom */
 }
@@ -21,8 +21,9 @@
 
     /* Make it round */
     border-radius: 50%;
-
+    text-align: center;
+    border: none;
     /* Optional styling */
-    background-color: black;
+    background-color: #333333;
     color: white;
 }
