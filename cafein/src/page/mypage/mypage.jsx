@@ -6,6 +6,9 @@ import { constSelector, useRecoilState } from "recoil"
 import { loggedInState } from "./auth"
 import axios from "axios"
 import { getCommunity } from "../API/communityApi"
+import { fetchCafeWishList } from "../API/myPageApi"
+import { fetchWishList } from "../API/coffeeDetail"
+import { coffeeAllReview } from "../API/mypage/coffeeReview"
 import { Navigate, useNavigate } from "react-router-dom"
 import Plus from "../../asset/mypage/plus.png"
 import { useQuery, useMutation, useQueryClient, QueryClient } from "react-query"
@@ -46,13 +49,11 @@ const MyPage = () => {
       console.error("로그아웃 오류:", error)
     }
   }
-  const savedUsername = localStorage.getItem("LS_KEY_USERNAME")
+  
   useEffect(() => {
     const fetchWish = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:4000/api/wishlist/${savedUsername}`
-        )
+        const response = await fetchWishList(storedUsername)
         const wishList = response.data.map((wish) => wish.productId)
         console.log(wishList)
         //정규식을 이용하여 cafeid , beverageid 추출
@@ -101,6 +102,8 @@ const MyPage = () => {
       }
     }
     fetchWish()
+    fetchCoffeeReview()
+
   }, [])
   useEffect(() => {
     console.log("안녕", myReview)
@@ -110,41 +113,33 @@ const MyPage = () => {
   console.log("cache12:", isCommunityPostsCached)
 
   //myReview
-  const {
-    data: communityPosts,
-    isLoading,
-    isFetching,
-  } = useQuery("communityPosts", getCommunity, {
-    keepPreviousData: true,
-  })
-  console.log("usequery:", communityPosts)
-  useEffect(() => {
-    if (!isLoading && !isFetching) {
-      // const name = storedUsername.slice(1, -1);
-      const name = storedUsername ? storedUsername.slice(1, -1) : ""
-
-      if (Array.isArray(communityPosts)) {
-        const myPosts = communityPosts.filter(
-          (tag) => tag.user.username === name
-        )
-        setMyreview((prevMyReview) => [...prevMyReview, ...myPosts])
-        console.log("gd", myPosts)
-      } else {
-        console.error("Response is not an array:")
+    const { data:communityPosts,isLoading, isFetching} = useQuery('communityPosts',getCommunity,{
+      staleTime:60000,
+      keepPreviousData:true 
+    });
+    console.log("usequery:",communityPosts)
+    useEffect(() => {
+      if (!isLoading && !isFetching) {
+        
+        const name = storedUsername.slice(1, -1);
+        
+        if (Array.isArray(communityPosts)) {
+          const myPosts = communityPosts.filter(
+            (tag) => tag.user.username === name
+          );
+          setMyreview((prevMyReview) => [...prevMyReview, ...myPosts]);
+          console.log("gd", myPosts);
+        } else {
+          console.error("Response is not an array:");
+        }
       }
-    }
-  }, [communityPosts, isLoading, isFetching])
+    }, [communityPosts, isLoading, isFetching]);
+   const fetchCoffeeReview = () => {
+    const response = coffeeAllReview()
+    console.log("coffeeReview",response.data)
+   }
 
-  const fetchCafeWishList = async (cafename, coffeeId) => {
-    try {
-      const response = await axios.get(
-        `http://localhost:4000/api/cafe/db_get_${cafename}_menu?beverage=${coffeeId}`
-      )
-      return response
-    } catch (error) {
-      console.log(error)
-    }
-  }
+ 
 
   const handleDetail = (cafename, cafeId, coffeeId) => {
     navigate(`/category/${cafename}/${cafeId}/${coffeeId}`)
@@ -152,54 +147,6 @@ const MyPage = () => {
   const handleCommunity = () => {
     navigate(`/community`)
   }
-  // if (answer === '피곤한데... 커피!') {
-  //   return 'coffee';
-  // } else if (answer === '맛있는 음료가 좋아') {
-  //   return 'non-coffee';
-  // }
-
-  // if (answer === '아메리카노') {
-  //   return 'americano';
-  // } else if (answer === '라뗴') {
-  //   return 'latte';
-  // } else if (answer === '에이드') {
-  //   return 'ade';
-  // } else if (answer === '주스') {
-  //   return 'juice';
-  // } else if (answer === '티') {
-  //   return 'tea';
-  // }
-
-  // if (answer === '콜라도 제로로 먹는데?') {
-  //   return 'k_low';
-  // } else if (answer === '그래도 칼로리는 칼로리지') {
-  //   return 'k_mid';
-  // } else if (answer === '맛있으면 0칼로리!') {
-  //   return 'k_high';
-  // }
-
-  // if (answer === '아이스') {
-  //   return 'ice';
-  // } else if (answer === '핫') {
-  //   return 'hot';
-  // }
-
-  // if (answer === '아니 별로...') {
-  //   return 'p_low';
-  // } else if (answer === '적당한게 좋아') {
-  //   return 'p_mid';
-  // } else if (answer === '단게 땡긴다!!') {
-  //   return 'p_high';
-  // }
-
-  // if (answer === '텅장이다 ㅠ') {
-  //   return 'p_low';
-  // } else if (answer === 'soso') {
-  //   return 'p_mid';
-  // } else if (answer === '사치 좀 부려봐?') {
-  //   return 'p_high';
-  // }
-
   const mapTasteToDescription = (taste) => {
     switch (taste) {
       case "coffee":
@@ -336,7 +283,8 @@ const MyPage = () => {
             }}
           >
             <h3>내가 쓴 음료 리뷰</h3>
-            <img src={Plus} alt="plus" width={20} onClick={handleCommunity} />
+            <img src={Plus} alt="plus" width={20} onClick={handleCommunity}/>
+            
           </div>
         </div>
       ) : (
