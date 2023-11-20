@@ -17,6 +17,7 @@
   .chat-messages {
     padding: 20px;
     overflow-y: auto;
+    overflow-x: hidden;
   }
 
   .chat-message {
@@ -42,6 +43,8 @@
     }
 
     &.bot {
+      width: 200px;
+
       align-self: flex-start;
       margin-right: 60%;
       background-color: #ececec;

@@ -139,14 +139,11 @@ function Chatbot() {
         const [fullMatch, linkText, href, altLinkText] = match
         const plainText = data.answer.substring(lastIndex, match.index)
 
-        // Add plain text
         elements.push(<span key={`plain-${lastIndex}`}>{plainText}</span>)
 
-        // Determine the link text and href
         const finalLinkText = linkText || altLinkText
         const finalHref = href || altLinkText
 
-        // Add clickable link
         elements.push(
           <a
             key={`link-${lastIndex}`}
@@ -161,7 +158,6 @@ function Chatbot() {
         lastIndex = match.index + fullMatch.length
       }
 
-      // Add the remaining plain text
       const remainingText = data.answer.substring(lastIndex)
       elements.push(<span key={`plain-${lastIndex}`}>{remainingText}</span>)
 
@@ -173,7 +169,6 @@ function Chatbot() {
         },
       ])
     } else {
-      // Render plain text if there is no link
       setQuestions((prevQuestions) => [
         ...prevQuestions,
         { text: data.answer, sender: "bot" },
