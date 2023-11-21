@@ -130,7 +130,14 @@ function Chatbot() {
     if (data && data.answer) {
       const dynamicUrlRegex =
         /\[([^<]+)\]\(([^)]+)\)|<a href="([^"]+)" target="_blank">([^<]+)<\/a>/g
+
+      const dynamicImageRegex = /"메뉴 이미지" (.+\.jpg|jpeg|png|gif)/i
+
       const matches = Array.from(data.answer.matchAll(dynamicUrlRegex))
+
+      const Imgmatches = data.answer.match(dynamicImageRegex)
+
+      console.log(Imgmatches)
 
       const elements = []
       let lastIndex = 0
@@ -154,6 +161,17 @@ function Chatbot() {
             {finalLinkText}
           </a>
         )
+
+        if (Imgmatches) {
+          elements.push(
+            <div
+              key="image"
+              dangerouslySetInnerHTML={{
+                __html: `<p><img className="img" src="${Imgmatches[1]}" alt="Image" /></p>`,
+              }}
+            />
+          )
+        }
 
         lastIndex = match.index + fullMatch.length
       }
