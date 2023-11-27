@@ -55,24 +55,24 @@ function Chatbot() {
   }
 
   // 디버깅 코드
-  // const handleResponse = (data) => {
-  //   if (data && data.answer) {
-  //     const dynamicUrlRegex = /<a href="([^"]+)" target="_blank">([^<]+)<\/a>/
-  //     const match = data.answer.match(dynamicUrlRegex)
+  const handleResponse = (data) => {
+    if (data && data.answer) {
+      const dynamicUrlRegex = /<a href="([^"]+)" target="_blank">([^<]+)<\/a>/
+      const match = data.answer.match(dynamicUrlRegex)
 
-  //     const botMessages = [
-  //       { text: data.answer, sender: "bot" },
-  //       match && {
-  //         text: <p dangerouslySetInnerHTML={{ __html: data.answer }}></p>,
-  //         sender: "bot",
-  //       },
-  //     ].filter(Boolean)
+      const botMessages = [
+        { text: data.answer, sender: "bot" },
+        match && {
+          text: <p dangerouslySetInnerHTML={{ __html: data.answer }}></p>,
+          sender: "bot",
+        },
+      ].filter(Boolean)
 
-  //     setQuestions((prevQuestions) => [...prevQuestions, ...botMessages])
-  //   } else {
-  //     console.error("Invalid response format:", data)
-  //   }
-  // }
+      setQuestions((prevQuestions) => [...prevQuestions, ...botMessages])
+    } else {
+      console.error("Invalid response format:", data)
+    }
+  }
 
   // const handleResponse = (data) => {
   //   if (data && data.answer) {
@@ -126,73 +126,73 @@ function Chatbot() {
   //   }
   // }
 
-  const handleResponse = (data) => {
-    if (data && data.answer) {
-      const dynamicUrlRegex =
-        /\[([^<]+)\]\(([^)]+)\)|<a href="([^"]+)" target="_blank">([^<]+)<\/a>/g
+  // const handleResponse = (data) => {
+  //   if (data && data.answer) {
+  //     const dynamicUrlRegex =
+  //       /\[([^<]+)\]\(([^)]+)\)|<a href="([^"]+)" target="_blank">([^<]+)<\/a>/g
 
-      const dynamicImageRegex = /"메뉴 이미지" (.+\.jpg|jpeg|png|gif)/i
+  //     const dynamicImageRegex = /"메뉴 이미지" (.+\.jpg|jpeg|png|gif)/i
 
-      const matches = Array.from(data.answer.matchAll(dynamicUrlRegex))
+  //     const matches = Array.from(data.answer.matchAll(dynamicUrlRegex))
 
-      const Imgmatches = data.answer.match(dynamicImageRegex)
+  //     const Imgmatches = data.answer.match(dynamicImageRegex)
 
-      console.log(Imgmatches)
+  //     console.log(Imgmatches)
 
-      const elements = []
-      let lastIndex = 0
+  //     const elements = []
+  //     let lastIndex = 0
 
-      for (const match of matches) {
-        const [fullMatch, linkText, href, altLinkText] = match
-        const plainText = data.answer.substring(lastIndex, match.index)
+  //     for (const match of matches) {
+  //       const [fullMatch, linkText, href, altLinkText] = match
+  //       const plainText = data.answer.substring(lastIndex, match.index)
 
-        elements.push(<span key={`plain-${lastIndex}`}>{plainText}</span>)
+  //       elements.push(<span key={`plain-${lastIndex}`}>{plainText}</span>)
 
-        const finalLinkText = linkText || altLinkText
-        const finalHref = href || altLinkText
+  //       const finalLinkText = linkText || altLinkText
+  //       const finalHref = href || altLinkText
 
-        elements.push(
-          <a
-            key={`link-${lastIndex}`}
-            href={finalHref}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {finalLinkText}
-          </a>
-        )
+  //       elements.push(
+  //         <a
+  //           key={`link-${lastIndex}`}
+  //           href={finalHref}
+  //           target="_blank"
+  //           rel="noopener noreferrer"
+  //         >
+  //           {finalLinkText}
+  //         </a>
+  //       )
 
-        if (Imgmatches) {
-          elements.push(
-            <div
-              key="image"
-              dangerouslySetInnerHTML={{
-                __html: `<p><img className="img" src="${Imgmatches[1]}" alt="Image" /></p>`,
-              }}
-            />
-          )
-        }
+  //       if (Imgmatches) {
+  //         elements.push(
+  //           <div
+  //             key="image"
+  //             dangerouslySetInnerHTML={{
+  //               __html: `<p><img className="img" src="${Imgmatches[1]}" alt="Image" /></p>`,
+  //             }}
+  //           />
+  //         )
+  //       }
 
-        lastIndex = match.index + fullMatch.length
-      }
+  //       lastIndex = match.index + fullMatch.length
+  //     }
 
-      const remainingText = data.answer.substring(lastIndex)
-      elements.push(<span key={`plain-${lastIndex}`}>{remainingText}</span>)
+  //     const remainingText = data.answer.substring(lastIndex)
+  //     elements.push(<span key={`plain-${lastIndex}`}>{remainingText}</span>)
 
-      setQuestions((prevQuestions) => [
-        ...prevQuestions,
-        {
-          text: <p>{elements}</p>,
-          sender: "bot",
-        },
-      ])
-    } else {
-      setQuestions((prevQuestions) => [
-        ...prevQuestions,
-        { text: data.answer, sender: "bot" },
-      ])
-    }
-  }
+  //     setQuestions((prevQuestions) => [
+  //       ...prevQuestions,
+  //       {
+  //         text: <p>{elements}</p>,
+  //         sender: "bot",
+  //       },
+  //     ])
+  //   } else {
+  //     setQuestions((prevQuestions) => [
+  //       ...prevQuestions,
+  //       { text: data.answer, sender: "bot" },
+  //     ])
+  //   }
+  // }
 
   return (
     <div className="chatbot">
@@ -227,6 +227,16 @@ function Chatbot() {
             </div>
           </div>
         )}
+      </div>
+
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          paddingRight: "10px",
+        }}
+      >
+        <input type="checkbox"></input> 사용자 취향 적용하기
       </div>
 
       <div id="wave" className={`chat-input ${isUserTyping ? "typing" : ""}`}>

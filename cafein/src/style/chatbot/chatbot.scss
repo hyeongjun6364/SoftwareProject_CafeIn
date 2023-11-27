@@ -1,7 +1,7 @@
 .chatbot {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  // justify-content: space-between;
   margin: 0 auto;
   width: 700px;
   height: 900px;
@@ -16,6 +16,7 @@
 
   .chat-messages {
     padding: 20px;
+    height: 30rem;
     overflow-y: auto;
     overflow-x: hidden;
   }
@@ -60,7 +61,7 @@
   #wave {
     display: flex;
     align-items: center;
-    margin-top: 20px;
+    margin-top: 10px;
 
     .chat-input-field {
       flex-grow: 1;
