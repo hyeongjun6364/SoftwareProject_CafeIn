@@ -10,42 +10,46 @@ import { fetchCafeWishList } from "../API/myPageApi"
 import { fetchWishList } from "../API/coffeeDetail"
 import { coffeeAllReview } from "../API/mypage/coffeeReview"
 import { Navigate, useNavigate } from "react-router-dom"
-import { currentRecommendState ,recommendState} from "../Atom/recommend"
-import { useSetRecoilState,useRecoilValue } from "recoil"
+import { currentRecommendState, recommendState } from "../Atom/recommend"
+import { useSetRecoilState, useRecoilValue } from "recoil"
 import Plus from "../../asset/mypage/plus.png"
 import { useQuery, useMutation, useQueryClient, QueryClient } from "react-query"
+import { getQeustionAnsewer } from "../API/auth/questionAPI"
+import { postLogout } from "../API/auth/loginAPI"
+
 const MyPage = () => {
   const [isLogged, setIsLogged] = useRecoilState(loggedInState)
   const [taste, setTaste] = useState([]) // 취향 정보를 저장할 상태
   const [wishCafeInfo, setWishCafeInfo] = useState([])
   const [myReview, setMyreview] = useState([])
   const storedUsername = localStorage.getItem("LS_KEY_USERNAME")
-  const setCurrentRecommendState=useSetRecoilState(currentRecommendState)
-  const allRecommendData=useRecoilValue(recommendState)
+  const setCurrentRecommendState = useSetRecoilState(currentRecommendState)
+  const allRecommendData = useRecoilValue(recommendState)
   const navigate = useNavigate()
   const queryClient = useQueryClient()
+
   useEffect(() => {
-    const storedLoginStatus = localStorage.getItem("login")
-    if (storedLoginStatus === "true") {
-      setIsLogged(true)
-      // 로그인한 경우, 취향 정보를 가져오는 API 호출
-      axios
-        .get("http://localhost:4000/api/auth/register/answer", {
-          withCredentials: true,
-        })
-        .then((response) => {
-          setTaste(response.data) // 취향 정보를 설정
-        })
-        .catch((error) => {
-          console.error("취향 정보를 불러오는 중 오류 발생:", error)
-        })
+    const fetchData = async () => {
+      try {
+        const response = await getQeustionAnsewer()
+        if (response && response.data) {
+          setTaste(response.data)
+        } else {
+          console.error("취향 정보를 불러오는 중 오류 발생: 데이터 없음")
+        }
+      } catch (error) {
+        console.error("취향 정보를 불러오는 중 오류 발생:", error)
+      }
     }
+
+    fetchData()
   }, [isLogged])
 
   const handleLogout = async () => {
     try {
       // 로그아웃 요청을 서버로 보냄
-      await axios.post("/api/auth/logout")
+      // await axios.post("/api/auth/logout")
+      await postLogout()
 
       // 로컬 스토리지에서 로그인 상태를 제거하고 클라이언트 상태를 업데이트
       localStorage.removeItem("login")
@@ -148,7 +152,9 @@ const MyPage = () => {
   }
 
   const handleDetail = (cafename, cafeId, coffeeId) => {
-    const current = allRecommendData.filter((tag)=> tag.Selected===`${cafeId}_${coffeeId}`)
+    const current = allRecommendData.filter(
+      (tag) => tag.Selected === `${cafeId}_${coffeeId}`
+    )
     setCurrentRecommendState(current)
     navigate(`/category/${cafename}/${cafeId}/${coffeeId}`)
   }

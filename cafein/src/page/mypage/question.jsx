@@ -103,6 +103,7 @@ import { useState, useEffect } from "react"
 import "../../style/mypage/question.scss"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
+import { postQuestion } from "../API/auth/questionAPI"
 
 const Question = (props) => {
   const [questions, setQuestions] = useState([
@@ -162,17 +163,23 @@ const Question = (props) => {
       answers: answers.slice(0, answers.length - 1), // 마지막 빈 답변을 제외한 답변 배열
     }
 
-    // 서버로 데이터를 POST 요청
-    axios
-      .post("http://localhost:4000/api/auth/register/question", data)
-      .then((response) => {
-        console.log("서버 응답:", response.data)
-        // 마이페이지로 이동
-        navigate("/mypage")
-      })
-      .catch((error) => {
-        console.error("데이터를 서버에 보내는 중 오류 발생:", error)
-      })
+    // // 서버로 데이터를 POST 요청
+    // axios
+    //   .post("http://localhost:4000/api/auth/register/question", data)
+    //   .then((response) => {
+    //     console.log("서버 응답:", response.data)
+    //     // 마이페이지로 이동
+    //     navigate("/mypage")
+    //   })
+    //   .catch((error) => {
+    //     console.error("데이터를 서버에 보내는 중 오류 발생:", error)
+    //   })
+
+    const response = postQuestion(data)
+    if (response) {
+      // 마이페이지로 이동
+      navigate("/mypage")
+    }
   }
 
   useEffect(() => {

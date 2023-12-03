@@ -418,19 +418,13 @@ const Login = () => {
 
   const login = async () => {
     try {
-      // const response = await axios.post("/api/auth/login", {
-      //   loginid: loginID,
-      //   password: loginPassword,
-      // })
-      const response = await postLogin(loginID, loginPassword)
+      const response = await axios.post("/api/auth/login", {
+        loginid: loginID,
+        password: loginPassword,
+      })
+      // const response = await postLogin(loginID, loginPassword)
 
       if (response.status === 200) {
-        // const accessToken = response.data.access_token
-
-        // // Store the access token securely, for example, in an HTTP-only cookie
-        // document.cookie = `access_token=${accessToken}; Secure; HttpOnly; SameSite=Strict`
-        localStorage.setItem("accessToken", response.data.accessToken)
-
         localStorage.setItem("login", "true")
         setIsLogged(true)
         const storeName = JSON.stringify(response.data.username)
@@ -512,12 +506,12 @@ const Login = () => {
             </div>
           </form>
           <ul className="login-li-group">
-            <li>
+            {/* <li>
               <span onClick={() => alert("아이디 찾기")}>아이디 찾기</span>
-            </li>
-            <li>
+            </li> */}
+            {/* <li>
               <span onClick={() => alert("비밀번호 찾기")}>비밀번호 찾기</span>
-            </li>
+            </li> */}
             <li>
               <Link to="/signup">
                 <span className="bold">회원가입</span>

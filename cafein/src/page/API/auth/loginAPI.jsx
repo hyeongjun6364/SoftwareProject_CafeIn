@@ -11,6 +11,28 @@ export const postLogin = async (loginID, loginPassword) => {
     })
     return response
   } catch (error) {
-    console.log(error)
+    console.log("로그인 오류:", error)
+  }
+}
+
+export const postLogout = async () => {
+  try {
+    const response = await axios.post(`${url}/api/auth/logout`)
+    return response
+  } catch (error) {
+    console.log("로그아웃 오류:", error)
+  }
+}
+
+export const postRegister = async (username, loginid, password) => {
+  try {
+    const response = await axios.post(`${url}/api/auth/register`, {
+      username,
+      loginid,
+      password,
+    })
+    return response
+  } catch (error) {
+    console.log("회원가입 오류:", error)
   }
 }

@@ -149,6 +149,7 @@ import React, { useState } from "react"
 import "../../style/mypage/signup.scss"
 import axios from "axios"
 import Question from "./question"
+import { postRegister } from "../API/auth/loginAPI"
 
 const SignUp = () => {
   const [username, setUsername] = useState("")
@@ -159,14 +160,15 @@ const SignUp = () => {
 
   const handleSignUp = async () => {
     try {
-      const response = await axios.post(
-        "http://localhost:4000/api/auth/register",
-        {
-          username,
-          loginid,
-          password,
-        }
-      )
+      // const response = await axios.post(
+      //   "http://localhost:4000/api/auth/register",
+      //   {
+      //     username,
+      //     loginid,
+      //     password,
+      //   }
+      // )
+      const response = await postRegister(username, loginid, password)
 
       if (response.status === 200) {
         setIsRegistered(true)
