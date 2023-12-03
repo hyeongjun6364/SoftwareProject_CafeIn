@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom"
 import axios from "axios"
 import Pagination from "react-js-pagination"
 import "../../style/categorypage/pagination.scss"
-import { useRecoilState, useRecoilValue } from "recoil"
+import { useRecoilState, useRecoilValue,useSetRecoilState } from "recoil"
 import useCoffeeList from "../customHook/useCafe.jsx"
 import useCoffee from "../customHook/useCoffee.jsx"
 import useSearch from "../customHook/useSearch.jsx"
@@ -18,6 +18,7 @@ import {
   paikState,
   allState,
 } from "../Atom/cafeatom"
+import { currentRecommendState, recommendState } from "../Atom/recommend.jsx"
 
 const TagList = ({ tags, onTagClick, selectedTagId }) => {
   return (
@@ -47,6 +48,8 @@ function Category() {
   const megaData = useRecoilValue(megaState)
   const paikData = useRecoilValue(paikState)
   const entireData = useRecoilValue(allState)
+  const currentRecommendData = useRecoilValue(currentRecommendState)
+  const allRecommendData=useRecoilValue(recommendState)
   const [filterMenu, setFilterMenu] = useState([])
   const [tempSearchQuery, setTempSearchQuery] = useState("")
   const [ade, setAde] = useState([])
@@ -58,6 +61,7 @@ function Category() {
   const [activePage, setActivePage] = useState(1) // 현재 페이지
   const [view, setView] = useState(false)
   const [selectedMenu, setSelectedMenu] = useState("최신순")
+  const setCurrentRecommendState=useSetRecoilState(currentRecommendState)
   const postsPerPage = 10 // 페이지당 표시할 게시물 수
 
   useEffect(() => {
@@ -121,8 +125,12 @@ function Category() {
   }
   //cofeId 추가해야함
   const handleCoffeeDetail = (coffeeId, cafename, cafeId) => {
+    const current = allRecommendData.filter((tag)=> tag.Selected===`${cafeId}_${coffeeId}`)
+    setCurrentRecommendState(current)
+    console.log("recoil_Current",currentRecommendData)
     navigate(`/category/${cafename}/${cafeId}/${coffeeId}`)
   }
+
 
   const handleInputChange = (e) => {
     setTempSearchQuery(e.target.value)
