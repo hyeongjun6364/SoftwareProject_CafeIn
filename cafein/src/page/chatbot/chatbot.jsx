@@ -55,24 +55,24 @@ function Chatbot() {
   }
 
   // 디버깅 코드
-  // const handleResponse = (data) => {
-  //   if (data && data.answer) {
-  //     const dynamicUrlRegex = /<a href="([^"]+)" target="_blank">([^<]+)<\/a>/
-  //     const match = data.answer.match(dynamicUrlRegex)
+  const handleResponse = (data) => {
+    if (data && data.answer) {
+      const dynamicUrlRegex = /<a href="([^"]+)" target="_blank">([^<]+)<\/a>/
+      const match = data.answer.match(dynamicUrlRegex)
 
-  //     const botMessages = [
-  //       { text: data.answer, sender: "bot" },
-  //       match && {
-  //         text: <p dangerouslySetInnerHTML={{ __html: data.answer }}></p>,
-  //         sender: "bot",
-  //       },
-  //     ].filter(Boolean)
+      const botMessages = [
+        { text: data.answer, sender: "bot" },
+        match && {
+          text: <p dangerouslySetInnerHTML={{ __html: data.answer }}></p>,
+          sender: "bot",
+        },
+      ].filter(Boolean)
 
-  //     setQuestions((prevQuestions) => [...prevQuestions, ...botMessages])
-  //   } else {
-  //     console.error("Invalid response format:", data)
-  //   }
-  // }
+      setQuestions((prevQuestions) => [...prevQuestions, ...botMessages])
+    } else {
+      console.error("Invalid response format:", data)
+    }
+  }
 
   // const handleResponse = (data) => {
   //   if (data && data.answer) {
@@ -126,55 +126,55 @@ function Chatbot() {
   //   }
   // }
 
-  const handleResponse = (data) => {
-    if (data && data.answer) {
-      const dynamicUrlRegex =
-        /\[([^<]+)\]\(([^)]+)\)|<a href="([^"]+)" target="_blank">([^<]+)<\/a>/g
-      const matches = Array.from(data.answer.matchAll(dynamicUrlRegex))
+  // const handleResponse = (data) => {
+  //   if (data && data.answer) {
+  //     const dynamicUrlRegex =
+  //       /\[([^<]+)\]\(([^)]+)\)|<a href="([^"]+)" target="_blank">([^<]+)<\/a>/g
+  //     const matches = Array.from(data.answer.matchAll(dynamicUrlRegex))
 
-      const elements = []
-      let lastIndex = 0
+  //     const elements = []
+  //     let lastIndex = 0
 
-      for (const match of matches) {
-        const [fullMatch, linkText, href, altLinkText] = match
-        const plainText = data.answer.substring(lastIndex, match.index)
+  //     for (const match of matches) {
+  //       const [fullMatch, linkText, href, altLinkText] = match
+  //       const plainText = data.answer.substring(lastIndex, match.index)
 
-        elements.push(<span key={`plain-${lastIndex}`}>{plainText}</span>)
+  //       elements.push(<span key={`plain-${lastIndex}`}>{plainText}</span>)
 
-        const finalLinkText = linkText || altLinkText
-        const finalHref = href || altLinkText
+  //       const finalLinkText = linkText || altLinkText
+  //       const finalHref = href || altLinkText
 
-        elements.push(
-          <a
-            key={`link-${lastIndex}`}
-            href={finalHref}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {finalLinkText}
-          </a>
-        )
+  //       elements.push(
+  //         <a
+  //           key={`link-${lastIndex}`}
+  //           href={finalHref}
+  //           target="_blank"
+  //           rel="noopener noreferrer"
+  //         >
+  //           {finalLinkText}
+  //         </a>
+  //       )
 
-        lastIndex = match.index + fullMatch.length
-      }
+  //       lastIndex = match.index + fullMatch.length
+  //     }
 
-      const remainingText = data.answer.substring(lastIndex)
-      elements.push(<span key={`plain-${lastIndex}`}>{remainingText}</span>)
+  //     const remainingText = data.answer.substring(lastIndex)
+  //     elements.push(<span key={`plain-${lastIndex}`}>{remainingText}</span>)
 
-      setQuestions((prevQuestions) => [
-        ...prevQuestions,
-        {
-          text: <p>{elements}</p>,
-          sender: "bot",
-        },
-      ])
-    } else {
-      setQuestions((prevQuestions) => [
-        ...prevQuestions,
-        { text: data.answer, sender: "bot" },
-      ])
-    }
-  }
+  //     setQuestions((prevQuestions) => [
+  //       ...prevQuestions,
+  //       {
+  //         text: <p>{elements}</p>,
+  //         sender: "bot",
+  //       },
+  //     ])
+  //   } else {
+  //     setQuestions((prevQuestions) => [
+  //       ...prevQuestions,
+  //       { text: data.answer, sender: "bot" },
+  //     ])
+  //   }
+  // }
 
   // const handleResponse = (data) => {
   //   if (data && data.answer) {
