@@ -16,7 +16,7 @@ function ImageSlider() {
     }
   
     return (
-      <div style={{ width: "100%" }}>
+      <div  style={{ width: "100%", }}>
         <Slider {...settings}>
           {images.map((img, idx) => (
             <div key={idx} className="slider-image">
