@@ -4,7 +4,9 @@ import "slick-carousel/slick/slick.css"
 import "slick-carousel/slick/slick-theme.css"
 import { useState, useEffect } from "react"
 import { starbucksState, ediyaState, hollysState, megaState, paikState, allState } from '../Atom/cafeatom';
+import { currentRecommendState, recommendState } from "../Atom/recommend"
 import { getPaik, getEdiya, getMega, getHollys, getStarbucks } from "../API/cafeinfo"
+import { getRecommendApi } from "../API/recommendApi"
 import { tasteInfoApi } from "../API/tasteInfo"
 import { useRecoilState, useRecoilValue } from "recoil"
 import ImageSlider from "./imageSlider"
@@ -14,21 +16,21 @@ import { useNavigate } from "react-router-dom"
 import Widget from '../../common/layout/widget'
 
 function Mainpage() {
-  const [showChatbot, setShowChatbot] = useState(false);
   const [starbucksData, setStarbucksData] = useRecoilState(starbucksState);
   const [ediyaData, setEdiyaData] = useRecoilState(ediyaState);
   const [hollysData, setHollysData] = useRecoilState(hollysState);
   const [megaData, setMegaData] = useRecoilState(megaState);
   const [paikData, setPaikData] = useRecoilState(paikState);
   const [entireData, setEntireData] = useRecoilState(allState);
+  const [allrecommend,setAllRecommend] = useRecoilState(recommendState);
   const [myTaste, setMyTaste] = useState([])
-  const [reviews, setReviews] = useState([]);
   const [review, setReview] = useState([]);
+  const [currentRecommend,setCurrentRecommend] = useRecoilState(currentRecommendState)
+ 
   const navigate = useNavigate();
   //http://localhost:4000/api/reviews?beverageId=${cafeId}_${coffeeId}
   // 비동기통신을 하기위해 async, await를 useEffect 함수내에서 직접 썻지만
   //  경고 메시지가 나와서 함수를 정의하고 이 함수를 반환하는 식으로 바꿈
-  const averageRating = review.length > 0 ? review.reduce((total, post) => total + post.rating, 0) / review.length : 0;
   const storedUsername = localStorage.getItem("LS_KEY_USERNAME")
   const userRecommend= entireData.filter((drink)=>{
     const data = myTaste.filter((info)=>{ return drink.tag.includes(info)})
@@ -44,7 +46,7 @@ function Mainpage() {
         let response4 = await getMega()
         let response5 = await getPaik()
         let response6 = await tasteInfoApi()
-
+        let response_recommend = await getRecommendApi()
         //let newreview = axios.get("http://localhost:4000/api/reviews?beverageId=")
         // 요청이 완료될때 까지 기다리게 하기위해 Promise 사용 -> 효율성을 위해 병렬로 요청
         const results = await Promise.all([response1, response2, response3, response4, response5]);
@@ -54,6 +56,7 @@ function Mainpage() {
         setMegaData(response4.data);
         setPaikData(response5.data);
         setMyTaste(response6.data)
+        setAllRecommend(response_recommend.data)
         let allData = [];
         //api호출하고받아올때 if문통해서 검사안하면 error남
         results.forEach(result => {
@@ -73,11 +76,19 @@ function Mainpage() {
 
   }, [])
   console.log("myTaste", myTaste)
-  console.log('entireData', entireData)
-
+  console.log('recommend',allrecommend)
+  useEffect(() => {
+    console.log("currentRecommend", currentRecommend);
+  }, [currentRecommend]);
   const handleMonth = (cafename, coffeeId, cafeId) => {
+    const current=allrecommend.filter((tag)=>tag.Selected===`${cafeId}_${coffeeId}`)
+    console.log("current ",current)
+    setCurrentRecommend(current)
     navigate(`/category/${cafename}/${cafeId}/${coffeeId}`)
+    
   }
+
+  
   return (
     <div>
       <ImageSlider />
@@ -108,6 +119,14 @@ function Mainpage() {
 
             ))}
         </div>
+        <h1>맞춤추천음료</h1>
+        <div className="image-container">
+        {currentRecommend.map((item, index) => (
+          <div className="image-item" key={index}>
+            <p>{item.recommend}</p>
+          </div>
+        ))}
+      </div>
         <br />
         <br />
         <br />

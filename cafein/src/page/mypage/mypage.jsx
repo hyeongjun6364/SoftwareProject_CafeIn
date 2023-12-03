@@ -10,6 +10,8 @@ import { fetchCafeWishList } from "../API/myPageApi"
 import { fetchWishList } from "../API/coffeeDetail"
 import { coffeeAllReview } from "../API/mypage/coffeeReview"
 import { Navigate, useNavigate } from "react-router-dom"
+import { currentRecommendState ,recommendState} from "../Atom/recommend"
+import { useSetRecoilState,useRecoilValue } from "recoil"
 import Plus from "../../asset/mypage/plus.png"
 import { useQuery, useMutation, useQueryClient, QueryClient } from "react-query"
 const MyPage = () => {
@@ -18,6 +20,8 @@ const MyPage = () => {
   const [wishCafeInfo, setWishCafeInfo] = useState([])
   const [myReview, setMyreview] = useState([])
   const storedUsername = localStorage.getItem("LS_KEY_USERNAME")
+  const setCurrentRecommendState=useSetRecoilState(currentRecommendState)
+  const allRecommendData=useRecoilValue(recommendState)
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   useEffect(() => {
@@ -144,6 +148,8 @@ const MyPage = () => {
   }
 
   const handleDetail = (cafename, cafeId, coffeeId) => {
+    const current = allRecommendData.filter((tag)=> tag.Selected===`${cafeId}_${coffeeId}`)
+    setCurrentRecommendState(current)
     navigate(`/category/${cafename}/${cafeId}/${coffeeId}`)
   }
   const handleCommunity = () => {
