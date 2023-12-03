@@ -26,7 +26,9 @@ const MyPage = () => {
       setIsLogged(true)
       // 로그인한 경우, 취향 정보를 가져오는 API 호출
       axios
-        .get("/api/auth/register/answer")
+        .get("http://localhost:4000/api/auth/register/answer", {
+          withCredentials: true,
+        })
         .then((response) => {
           setTaste(response.data) // 취향 정보를 설정
         })

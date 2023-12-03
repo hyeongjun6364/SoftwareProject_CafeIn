@@ -6,6 +6,7 @@ import "../../style/categorypage/pagination.scss"
 import Cookies from "js-cookie"
 import { useNavigate } from "react-router-dom"
 import WritePage from "./writePage"
+
 import { useQuery, useMutation, useQueryClient, QueryClient } from "react-query"
 import {
   getCommunity,
@@ -32,23 +33,22 @@ function CommunityApp() {
     isLoading,
     isError,
     error,
-  } = useQuery("communityPosts", getCommunity,{
-    staleTime:60000,
+  } = useQuery("communityPosts", getCommunity, {
+    staleTime: 60000,
   })
   const queryClient = useQueryClient()
   console.log(posts)
   //cache값 확인하기
-  
-  
 
   const deletePostMutation = useMutation(
     (id, token) =>
-      axios.delete(`http://localhost:4000/api/posts/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        withCredentials: true, // 모든 쿠키 허용
-      }),
+      // axios.delete(`http://localhost:4000/api/posts/${id}`, {
+      //   headers: {
+      //     Authorization: `Bearer ${token}`,
+      //   },
+      //   withCredentials: true, // 모든 쿠키 허용
+      // }),
+      deleteCommunity(id, token),
     {
       onMutate: (id) => {
         const prevPosts = queryClient.getQueryData("communityPosts")

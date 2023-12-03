@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react"
 import axios from "axios"
 import "../../style/chatbot/chatbot.scss"
+import { postChatbot } from "../API/chatbotAPI"
 
 function Chatbot() {
   const [questions, setQuestions] = useState([])
@@ -41,10 +42,11 @@ function Chatbot() {
       setInput("")
       setIsLoading(true)
 
-      // Send the user's question to the server using Axios
-      const response = await axios.post("http://localhost:4000/api/gpt/ask", {
-        question: userQuestion,
-      })
+      // const response = await axios.post("http://localhost:4000/api/gpt/ask", {
+      //   question: userQuestion,
+      // })
+
+      const response = await postChatbot(userQuestion)
 
       handleResponse(response.data)
     } catch (error) {

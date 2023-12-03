@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react"
 
 function like() {
-  return (
-    <div>like</div>
-  )
+  return <div>like</div>
 }
 
 export default like
