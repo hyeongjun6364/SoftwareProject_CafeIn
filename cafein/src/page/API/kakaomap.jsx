@@ -2,8 +2,11 @@ import React, { useEffect, useState } from "react"
 import axios from "axios"
 import "../../style/kakaoApi/kakaomap.scss"
 
-const JSAPIKey = "84b336534898286eb05c9564060de18b"
-const RestAPIKey = "6eaec46b97664b8bbd4f9ab66ce60627"
+// const JSAPIKey = "84b336534898286eb05c9564060de18b"
+// const RestAPIKey = "6eaec46b97664b8bbd4f9ab66ce60627"
+
+const JSAPIKey = process.env.REACT_APP_KAKAO_JS_API_KEY
+const RestAPIKey = process.env.REACT_APP_KAKAO_REST_API_KEY
 
 const CoffeeShopMap = () => {
   const [userMarker, setUserMarker] = useState(null)

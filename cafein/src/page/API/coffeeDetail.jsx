@@ -1,10 +1,11 @@
-import React from "react"
 import axios from "axios"
+
+const backendUrl = process.env.REACT_APP_BACK_URL
 
 export const fetchCoffeeDetail = async (cafename, coffeeId) => {
   try {
     const response = await axios.get(
-      `http://localhost:4000/api/cafe/db_get_${cafename}_menu?beverage=${coffeeId}`
+      `${backendUrl}/api/cafe/db_get_${cafename}_menu?beverage=${coffeeId}`
     )
     return response
   } catch (error) {
@@ -15,7 +16,7 @@ export const fetchCoffeeDetail = async (cafename, coffeeId) => {
 export const fetchReview = async (cafeId, coffeeId) => {
   try {
     const response = await axios.get(
-      `http://localhost:4000/api/reviews?beverageId=${cafeId}_${coffeeId}`
+      `${backendUrl}/api/reviews?beverageId=${cafeId}_${coffeeId}`
     )
     return response
   } catch (error) {
@@ -25,7 +26,7 @@ export const fetchReview = async (cafeId, coffeeId) => {
 export const fetchWishList = async (savedUsername) => {
   try {
     const response = await axios.get(
-      `http://localhost:4000/api/wishlist/${savedUsername}`
+      `${backendUrl}/api/wishlist/${savedUsername}`
     )
     return response
   } catch (error) {
@@ -36,7 +37,7 @@ export const fetchWishList = async (savedUsername) => {
 export const PostHeart = async (savedUsername, cafeId, coffeeId) => {
   try {
     const response = await axios.post(
-      "http://localhost:4000/api/wishlist",
+      "${backendUrl}/api/wishlist",
       {
         userId: `${savedUsername}`,
         productId: `${cafeId}_${coffeeId}`,
@@ -52,7 +53,7 @@ export const PostHeart = async (savedUsername, cafeId, coffeeId) => {
 export const PostLike = async (cafeId, coffeeId, likeState) => {
   try {
     const response = await axios.post(
-      `http://localhost:4000/api/like/${cafeId}_${coffeeId}`,
+      `${backendUrl}/api/like/${cafeId}_${coffeeId}`,
       {
         like: likeState,
       },
@@ -67,7 +68,7 @@ export const PostLike = async (cafeId, coffeeId, likeState) => {
 export const PostLikeCount = async (cafeId, coffeeId, likeState) => {
   try {
     const response = await axios.post(
-      `http://localhost:4000/api/likecount/${cafeId}_${coffeeId}`,
+      `${backendUrl}/api/likecount/${cafeId}_${coffeeId}`,
       {
         like: likeState,
       },
@@ -80,7 +81,7 @@ export const PostLikeCount = async (cafeId, coffeeId, likeState) => {
 }
 export const PostReview = async (newPost) => {
   try {
-    await axios.post("http://localhost:4000/api/reviews", newPost, {
+    await axios.post("${backendUrl}/api/reviews", newPost, {
       withCredentials: true,
     })
   } catch (error) {
@@ -91,7 +92,7 @@ export const PostReview = async (newPost) => {
 export const fetchLikeCountAPI = async (cafeId, coffeeId) => {
   try {
     const response = await axios.get(
-      `http://localhost:4000/api/likecount/${cafeId}_${coffeeId}`
+      `${backendUrl}/api/likecount/${cafeId}_${coffeeId}`
     )
     return response
   } catch (error) {
