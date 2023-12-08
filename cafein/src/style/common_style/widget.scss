@@ -1,0 +1,29 @@
+.widget-container {
+    position: fixed;
+    bottom: 100px;
+    /* Adjust as needed */
+    right: 20px;
+    /* Adjust as needed */
+    transition: opacity 0.2s ease-in-out;
+    z-index: 999;
+}
+
+.widget-container.bottom {
+    position: fixed;
+
+    bottom: 10px;
+    /* Adjust as needed when scrolled to bottom */
+}
+
+.chatbot-button {
+    width: 50px;
+    height: 50px;
+
+    /* Make it round */
+    border-radius: 50%;
+    text-align: center;
+    border: none;
+    /* Optional styling */
+    background-color: #333333;
+    color: white;
+}

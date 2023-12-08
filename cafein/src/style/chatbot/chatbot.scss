@@ -1,0 +1,181 @@
+.chatbot {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 0 auto;
+  width: 700px;
+  height: 900px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+  background-color: white;
+
+  @media (max-width: 768px) {
+    width: 350px;
+    height: 600px;
+  }
+
+  .chat-messages {
+    padding: 20px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .chat-message {
+    margin-bottom: 10px;
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 0.9em;
+
+    &.user {
+      align-self: flex-end;
+      margin-left: 60%;
+      background-color: #007bff;
+      color: white;
+
+      .srtyping::after {
+        content: "...";
+        display: inline-block;
+        width: auto; /* 변경된 부분: width를 auto로 설정 */
+        overflow: hidden;
+        vertical-align: bottom;
+        animation: ellipsis 1s steps(3) infinite;
+      }
+    }
+
+    &.bot {
+      width: 200px;
+
+      align-self: flex-start;
+      margin-right: 60%;
+      background-color: #ececec;
+    }
+  }
+
+  #wave {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+
+    .chat-input-field {
+      flex-grow: 1;
+      margin-right: 10px;
+      border: none;
+      border-radius: 5px;
+      padding: 5px 10px;
+      font-size: 0.9em;
+      transition: border 0.3s ease;
+
+      &:focus {
+        outline: none;
+        &::placeholder {
+          color: transparent;
+        }
+      }
+
+      &.loading::after {
+        content: "";
+        display: inline-block;
+        width: 5px;
+        height: 5px;
+        margin-left: 5px;
+        background-color: #333333;
+        border-radius: 50%;
+        animation: wave 1s linear infinite;
+        animation-delay: -0.9s;
+
+        &.two {
+          animation-delay: -0.7s;
+        }
+
+        &:nth-child(3) {
+          animation-delay: -0.6s;
+        }
+      }
+    }
+
+    .chat-input-button {
+      background-color: #333333;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      width: 4rem;
+      height: 3rem;
+
+      &.loading::after {
+        content: "";
+        display: inline-block;
+        width: 5px;
+        height: 5px;
+        margin-left: 5px;
+        background-color: #007bff;
+        border-radius: 50%;
+        animation: loading 1s infinite ease-in-out;
+      }
+    }
+  }
+
+  @keyframes wave {
+    0%,
+    60%,
+    100% {
+      transform: initial;
+    }
+    30% {
+      transform: translateY(-5px);
+    }
+  }
+
+  .chat-input-field.text-changed {
+    border-color: #007bff;
+  }
+
+  .chat-input {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-top: 1px solid #ececec;
+  }
+
+  @keyframes ellipsis {
+    to {
+      width: 3em;
+    }
+  }
+
+  .typing-dots {
+    display: flex;
+    align-items: center;
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      background-color: #333333;
+      border-radius: 50%;
+      margin-right: 2px;
+      opacity: 0;
+      animation: loading 1s infinite ease-in-out;
+    }
+
+    .one {
+      animation-delay: -0.4s;
+    }
+
+    .two {
+      animation-delay: -0.2s;
+    }
+
+    .three {
+      animation-delay: 0s;
+    }
+  }
+
+  @keyframes loading {
+    0%,
+    100% {
+      opacity: 0.8;
+    }
+    50% {
+      opacity: 0.4;
+    }
+  }
+}

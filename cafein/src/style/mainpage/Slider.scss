@@ -1,0 +1,39 @@
+
+.slider {
+  position: relative;
+  width: auto;
+  max-height: 300px; /* 슬라이더의 최대 높이 설정 */
+}
+
+.slider-image {
+  width: 100%;
+  height: 500px;
+  object-fit: cover; /* 이미지 비율 유지 및 부모 요소에 맞게 조절 */
+}
+
+
+.slider-button {
+  position: absolute;
+  bottom: -50px;
+  transform: translate(-50%, 50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  border-radius: 50%;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  border: none;
+}
+
+.slider-button:hover {
+  background-color: #333;
+}
+
+.slider-button:first-child {
+  left: calc(50% - 70px);
+}
+
+.slider-button:last-child {
+  right: calc(50% - 70px);
+}
