@@ -1,11 +1,12 @@
 import axios from "axios"
 
-export const getRecommendApi = async()=>{
-    try{
-        const response= await axios.get('http://localhost:3000/api/recommend')
-        return response
-    }
-    catch(error){
-        console.log(error)
-    }
+const backendUrl = process.env.REACT_APP_BACK_URL
+
+export const getRecommendApi = async () => {
+  try {
+    const response = await axios.get(`${backendUrl}/api/recommend`)
+    return response
+  } catch (error) {
+    console.log(error)
+  }
 }

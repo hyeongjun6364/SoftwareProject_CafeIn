@@ -50,3 +50,12 @@ export const getHollys = async () => {
     console.log(error)
   }
 }
+
+export const getAll = async () => {
+  try {
+    const response = await axios.get(`${backendUrl}/api/cafe/db_store_all_menu`)
+    return response
+  } catch (error) {
+    console.log(error)
+  }
+}

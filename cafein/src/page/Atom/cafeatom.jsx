@@ -1,36 +1,36 @@
-import { atom } from 'recoil';
+import { atom } from "recoil"
 
 export const starbucksState = atom({
-  key: 'starbucksState', 
-  default:[],
-});
+  key: "starbucksState",
+  default: [],
+})
 
 export const ediyaState = atom({
-  key: 'ediyaState',
+  key: "ediyaState",
   default: [],
-});
+})
 
 export const hollysState = atom({
-  key: 'hollysState',
+  key: "hollysState",
   default: [],
-});
+})
 
 export const megaState = atom({
-  key: 'megaState',
+  key: "megaState",
   default: [],
-});
+})
 
 export const paikState = atom({
-  key: 'paikState',
+  key: "paikState",
   default: [],
-});
+})
 
 export const allState = atom({
-    key:'allstate',
-    default:[],
+  key: "allstate",
+  default: [],
 })
 
 const detailDataState = atom({
-  key: 'detailDataState',
+  key: "detailDataState",
   default: {},
-});
+})
