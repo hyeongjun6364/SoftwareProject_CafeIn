@@ -26,39 +26,39 @@ import ImageSlider from "./imageSlider"
 import "../../style/mainpage/mainpage.scss"
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
-import Widget from "../../common/layout/widget"
+import Widget from '../../common/layout/widget'
 import { fetchCoffeeDetail } from "../API/coffeeDetail"
 
-function CoffeeDetail({ cafename, coffeeId }) {
-  const [coffeeDetailData, setCoffeeDetailData] = useState(null)
+function CoffeeDetail({ cafename, coffeeId,gotoDetail }) {
+  const [coffeeDetailData, setCoffeeDetailData] = useState(null);
 
   useEffect(() => {
     async function fetchnewRecommend() {
       try {
-        const response = await fetchCoffeeDetail(cafename, coffeeId)
+        const response = await fetchCoffeeDetail(cafename, coffeeId);
         // 응답 및 응답 데이터가 정의되어 있는지 확인
         if (response && response.data) {
-          setCoffeeDetailData(response.data)
+          setCoffeeDetailData(response.data);
         } else {
-          console.error("잘못된 응답 형식:", response)
+          console.error("잘못된 응답 형식:", response);
         }
       } catch (error) {
-        console.error("커피 상세정보를 가져오는 중 오류 발생:", error)
+        console.error("커피 상세정보를 가져오는 중 오류 발생:", error);
       }
     }
     fetchnewRecommend()
-  }, [cafename, coffeeId])
-
+  }, [cafename, coffeeId]);
+ 
   if (!coffeeDetailData) {
-    return <div>Loading coffee detail...</div>
+    return <div>Loading coffee detail...</div>;
   }
 
   return (
     <div>
-      <img src={coffeeDetailData.image} alt={coffeeDetailData.name} />
+      <img src={coffeeDetailData.image} alt={coffeeDetailData.name }onClick={gotoDetail} />
       <p>{coffeeDetailData.name}</p>
     </div>
-  )
+  );
 }
 
 function Mainpage() {
@@ -70,11 +70,9 @@ function Mainpage() {
   const [entireData, setEntireData] = useRecoilState(allState)
   const [allrecommend, setAllRecommend] = useRecoilState(recommendState)
   const [myTaste, setMyTaste] = useState([])
-  const [currentRecommend, setCurrentRecommend] = useRecoilState(
-    currentRecommendState
-  )
-  const [currentRecommendImg, setCurrentRecommendImg] = useState([])
-  const navigate = useNavigate()
+  const [currentRecommend,setCurrentRecommend] = useRecoilState(currentRecommendState)
+  const [currentRecommendImg,setCurrentRecommendImg] = useState([])
+  const navigate = useNavigate();
   //http://localhost:4000/api/reviews?beverageId=${cafeId}_${coffeeId}
   // 비동기통신을 하기위해 async, await를 useEffect 함수내에서 직접 썻지만
   //  경고 메시지가 나와서 함수를 정의하고 이 함수를 반환하는 식으로 바꿈
@@ -125,7 +123,9 @@ function Mainpage() {
       }
     }
 
-    fetchData()
+    };
+
+    fetchData();
     transformRecommend()
   }, [])
   console.log("myTaste", myTaste)
@@ -141,31 +141,31 @@ function Mainpage() {
     setCurrentRecommend(current)
     navigate(`/category/${cafename}/${cafeId}/${coffeeId}`)
   }
-
-  const transformRecommend = () => {
+  
+  const transformRecommend = ()=>{
     const updatedCurrentRecommend = currentRecommend.map((tag) => {
-      const cafename = getCafenameFromRecommend(tag.recommend)
-      return { ...tag, cafename }
-    })
+      const cafename = getCafenameFromRecommend(tag.recommend);
+      return { ...tag, cafename }; 
+    });
     setCurrentRecommend(updatedCurrentRecommend)
   }
   const getCafenameFromRecommend = (recommend) => {
-    const cafeId = recommend.split("_")[0]
+    const cafeId = recommend.split('_')[0];
     switch (cafeId) {
-      case "1":
-        return "starbucks"
-      case "2":
-        return "ediya"
-      case "3":
-        return "hollys"
-      case "4":
-        return "mega"
-      case "5":
-        return "paik"
+      case '1':
+        return 'starbucks';
+      case '2':
+        return 'ediya';
+      case '3':
+        return 'hollys';
+      case '4':
+        return 'mega';
+      case '5':
+        return 'paik';
       default:
-        return "unknown"
+        return 'unknown';
     }
-  }
+  };
   return (
     <div>
       <ImageSlider />
@@ -210,17 +210,20 @@ function Mainpage() {
         </div>
         <h1>맞춤추천음료</h1>
         <div className="image-container">
-          {currentRecommend.map((item, index) => (
-            <div className="image-item" key={index}>
-              {/* <p>{item.recommend}</p>
-               */}
-              <CoffeeDetail
-                cafename={item.cafename}
-                coffeeId={item.recommend.split("_")[1]}
-              />
-            </div>
-          ))}
-        </div>
+        {currentRecommend.map((item, index) => (
+          <div className="image-item" key={index}>
+            {/* <p>{item.recommend}</p>
+             */}
+             <CoffeeDetail
+              cafename={item.cafename}
+              coffeeId={item.recommend.split("_")[1]}
+              
+              gotoDetail={() => navigate(`/category/${item.cafename}/${item.recommend.split("_")[0]}/${item.recommend.split("_")[1]}`)
+              }
+            />
+          </div>
+        ))}
+      </div>
         <br />
         <br />
         <br />
