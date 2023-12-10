@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom"
 import Widget from '../../common/layout/widget'
 import { fetchCoffeeDetail } from "../API/coffeeDetail"
 
-function CoffeeDetail({ cafename, coffeeId }) {
+function CoffeeDetail({ cafename, coffeeId,gotoDetail }) {
   const [coffeeDetailData, setCoffeeDetailData] = useState(null);
 
   useEffect(() => {
@@ -42,7 +42,7 @@ function CoffeeDetail({ cafename, coffeeId }) {
 
   return (
     <div>
-      <img src={coffeeDetailData.image} alt={coffeeDetailData.name} />
+      <img src={coffeeDetailData.image} alt={coffeeDetailData.name }onClick={gotoDetail} />
       <p>{coffeeDetailData.name}</p>
     </div>
   );
@@ -183,6 +183,9 @@ function Mainpage() {
              <CoffeeDetail
               cafename={item.cafename}
               coffeeId={item.recommend.split("_")[1]}
+              
+              gotoDetail={() => navigate(`/category/${item.cafename}/${item.recommend.split("_")[0]}/${item.recommend.split("_")[1]}`)
+              }
             />
           </div>
         ))}
