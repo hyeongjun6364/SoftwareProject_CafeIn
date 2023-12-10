@@ -14,6 +14,39 @@ import "../../style/mainpage/mainpage.scss";
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
 import Widget from '../../common/layout/widget'
+import { fetchCoffeeDetail } from "../API/coffeeDetail"
+
+function CoffeeDetail({ cafename, coffeeId }) {
+  const [coffeeDetailData, setCoffeeDetailData] = useState(null);
+
+  useEffect(() => {
+    async function fetchnewRecommend() {
+      try {
+        const response = await fetchCoffeeDetail(cafename, coffeeId);
+        // 응답 및 응답 데이터가 정의되어 있는지 확인
+        if (response && response.data) {
+          setCoffeeDetailData(response.data);
+        } else {
+          console.error("잘못된 응답 형식:", response);
+        }
+      } catch (error) {
+        console.error("커피 상세정보를 가져오는 중 오류 발생:", error);
+      }
+    }
+    fetchnewRecommend()
+  }, [cafename, coffeeId]);
+ 
+  if (!coffeeDetailData) {
+    return <div>Loading coffee detail...</div>;
+  }
+
+  return (
+    <div>
+      <img src={coffeeDetailData.image} alt={coffeeDetailData.name} />
+      <p>{coffeeDetailData.name}</p>
+    </div>
+  );
+}
 
 function Mainpage() {
   const [starbucksData, setStarbucksData] = useRecoilState(starbucksState);
@@ -24,9 +57,8 @@ function Mainpage() {
   const [entireData, setEntireData] = useRecoilState(allState);
   const [allrecommend,setAllRecommend] = useRecoilState(recommendState);
   const [myTaste, setMyTaste] = useState([])
-  const [review, setReview] = useState([]);
   const [currentRecommend,setCurrentRecommend] = useRecoilState(currentRecommendState)
- 
+  const [currentRecommendImg,setCurrentRecommendImg] = useState([])
   const navigate = useNavigate();
   //http://localhost:4000/api/reviews?beverageId=${cafeId}_${coffeeId}
   // 비동기통신을 하기위해 async, await를 useEffect 함수내에서 직접 썻지만
@@ -73,7 +105,7 @@ function Mainpage() {
     };
 
     fetchData();
-
+    transformRecommend()
   }, [])
   console.log("myTaste", myTaste)
   console.log('recommend',allrecommend)
@@ -87,8 +119,31 @@ function Mainpage() {
     navigate(`/category/${cafename}/${cafeId}/${coffeeId}`)
     
   }
-
   
+  const transformRecommend = ()=>{
+    const updatedCurrentRecommend = currentRecommend.map((tag) => {
+      const cafename = getCafenameFromRecommend(tag.recommend);
+      return { ...tag, cafename }; 
+    });
+    setCurrentRecommend(updatedCurrentRecommend)
+  }
+  const getCafenameFromRecommend = (recommend) => {
+    const cafeId = recommend.split('_')[0];
+    switch (cafeId) {
+      case '1':
+        return 'starbucks';
+      case '2':
+        return 'ediya';
+      case '3':
+        return 'hollys';
+      case '4':
+        return 'mega';
+      case '5':
+        return 'paik';
+      default:
+        return 'unknown';
+    }
+  };
   return (
     <div>
       <ImageSlider />
@@ -123,7 +178,12 @@ function Mainpage() {
         <div className="image-container">
         {currentRecommend.map((item, index) => (
           <div className="image-item" key={index}>
-            <p>{item.recommend}</p>
+            {/* <p>{item.recommend}</p>
+             */}
+             <CoffeeDetail
+              cafename={item.cafename}
+              coffeeId={item.recommend.split("_")[1]}
+            />
           </div>
         ))}
       </div>
