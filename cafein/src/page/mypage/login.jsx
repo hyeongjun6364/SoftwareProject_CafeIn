@@ -504,12 +504,12 @@ const Login = () => {
             </div>
           </form>
           <ul className="login-li-group">
-            <li>
+            {/* <li>
               <span onClick={() => alert("아이디 찾기")}>아이디 찾기</span>
             </li>
             <li>
               <span onClick={() => alert("비밀번호 찾기")}>비밀번호 찾기</span>
-            </li>
+            </li> */}
             <li>
               <Link to="/signup">
                 <span className="bold">회원가입</span>

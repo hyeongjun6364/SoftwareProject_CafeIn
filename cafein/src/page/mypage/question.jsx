@@ -1,20 +1,25 @@
 // import { useState, useEffect } from "react"
 // import "../../style/mypage/question.scss"
 // import { useNavigate } from "react-router-dom"
+// import axios from "axios"
 
-// const Question = () => {
+// const Question = (props) => {
 //   const [questions, setQuestions] = useState([
-//     "나는 오늘 어떤 커피를 먹을까?",
+//     "나는 오늘 커피를 먹을까 음료를 먹을까?",
+//     "나의 최애의 커피, 음료 종류는?",
 //     "칼로리 신경 쓰는 나는?",
 //     "겨울에도 얼죽아? 감성진 뜨아?",
+//     "나는 달달한게..?",
 //     "내 지갑은 오늘?",
 //     "",
 //   ])
 
 //   const [answerOptions, setAnswerOptions] = useState([
-//     ["고소한 커피!", "산미가 있는 커피!"],
+//     ["피곤한데... 커피!", "맛있는 음료가 좋아"],
+//     ["아메리카노", "라떼", "에이드", "주스", "티"],
 //     ["콜라도 제로로 먹는데?", "그래도 칼로리는 칼로리지", "맛있으면 0칼로리!"],
 //     ["아이스", "핫"],
+//     ["아니 별로...", "적당한게 좋아", "단게 땡긴다!!"],
 //     ["텅장이다 ㅠ", "soso", "사치 좀 부려봐?"],
 //     [""],
 //   ])
@@ -46,6 +51,27 @@
 //       newAnswers[currentQuestionIndex - 1] = ""
 //       setAnswers(newAnswers)
 //     }
+//   }
+
+//   const handleFinalSubmit = () => {
+//     // 질문을 모두 선택했을 때 서버로 데이터를 보냄
+//     const data = {
+//       username: props.username,
+//       questions: questions.slice(0, questions.length - 1), // 마지막 빈 질문을 제외한 질문 배열
+//       answers: answers.slice(0, answers.length - 1), // 마지막 빈 답변을 제외한 답변 배열
+//     }
+
+//     // 서버로 데이터를 POST 요청
+//     axios
+//       .post("http://localhost:4000/api/auth/register/question", data)
+//       .then((response) => {
+//         console.log("서버 응답:", response.data)
+//         // 마이페이지로 이동
+//         navigate("/mypage")
+//       })
+//       .catch((error) => {
+//         console.error("데이터를 서버에 보내는 중 오류 발생:", error)
+//       })
 //   }
 
 //   useEffect(() => {
@@ -88,7 +114,7 @@
 //           {currentQuestionIndex === questions.length - 1 ? (
 //             <>
 //               <p>CafeIn에 로그인하면 추천 음료를 알려드릴게요!</p>
-//               <button onClick={() => navigate("/mypage")}>알겠습니다</button>
+//               <button onClick={handleFinalSubmit}>알겠습니다</button>
 //             </>
 //           ) : null}
 //         </div>
@@ -175,15 +201,41 @@ const Question = (props) => {
       })
   }
 
+  const updateFinalSubmit = () => {
+    // 질문을 모두 선택했을 때 서버로 데이터를 보냄
+    const data = {
+      username: props.username,
+      questions: questions.slice(0, questions.length - 1), // 마지막 빈 질문을 제외한 질문 배열
+      answers: answers.slice(0, answers.length - 1), // 마지막 빈 답변을 제외한 답변 배열
+    }
+
+    // 서버로 데이터를 PUT 요청
+    axios
+      .put("http://localhost:4000/api/auth/register/question", data)
+      .then((response) => {
+        console.log("서버 응답:", response.data)
+        // 마이페이지로 이동
+        navigate("/")
+      })
+      .catch((error) => {
+        console.error("데이터를 서버에 보내는 중 오류 발생:", error)
+      })
+  }
+
   useEffect(() => {
     console.log("전송된 답변:", answers)
   }, [answers])
 
   return (
     <div className="question-container">
-      <h2 className="question-main-text">
-        CafeIn은 유저분들의 취향을 파악해서 AI 추천 음료를 보여드려요!
-      </h2>
+      {props.mypage ? (
+        <h2 className="question-main-text">취향을 다시 선택해 보세요!</h2>
+      ) : (
+        <h2 className="question-main-text">
+          CafeIn은 유저분들의 취향을 파악해서 AI 추천 음료를 보여드려요!
+        </h2>
+      )}
+
       {currentQuestionIndex < questions.length - 1 ? (
         <div>
           <h2>
@@ -214,8 +266,17 @@ const Question = (props) => {
           {/* 모든 질문에 대한 답변이 있을 때 결과 메시지 표시 */}
           {currentQuestionIndex === questions.length - 1 ? (
             <>
-              <p>CafeIn에 로그인하면 추천 음료를 알려드릴게요!</p>
-              <button onClick={handleFinalSubmit}>알겠습니다</button>
+              {props.mypage ? (
+                <>
+                  <p>CafeIn 메인 페이지로 이동하시면 됩니다</p>
+                  <button onClick={updateFinalSubmit}>수정 완료</button>
+                </>
+              ) : (
+                <>
+                  <p>CafeIn에 로그인하면 추천 음료를 알려드릴게요!</p>
+                  <button onClick={handleFinalSubmit}>알겠습니다</button>
+                </>
+              )}
             </>
           ) : null}
         </div>

@@ -10,20 +10,23 @@ import { fetchCafeWishList } from "../API/myPageApi"
 import { fetchWishList } from "../API/coffeeDetail"
 import { coffeeAllReview } from "../API/mypage/coffeeReview"
 import { Navigate, useNavigate } from "react-router-dom"
-import { currentRecommendState ,recommendState} from "../Atom/recommend"
-import { useSetRecoilState,useRecoilValue } from "recoil"
+import { currentRecommendState, recommendState } from "../Atom/recommend"
+import { useSetRecoilState, useRecoilValue } from "recoil"
 import Plus from "../../asset/mypage/plus.png"
 import { useQuery, useMutation, useQueryClient, QueryClient } from "react-query"
+import Question from "./question"
 const MyPage = () => {
   const [isLogged, setIsLogged] = useRecoilState(loggedInState)
   const [taste, setTaste] = useState([]) // 취향 정보를 저장할 상태
   const [wishCafeInfo, setWishCafeInfo] = useState([])
   const [myReview, setMyreview] = useState([])
   const storedUsername = localStorage.getItem("LS_KEY_USERNAME")
-  const setCurrentRecommendState=useSetRecoilState(currentRecommendState)
-  const allRecommendData=useRecoilValue(recommendState)
+  const setCurrentRecommendState = useSetRecoilState(currentRecommendState)
+  const allRecommendData = useRecoilValue(recommendState)
   const navigate = useNavigate()
   const queryClient = useQueryClient()
+  const [isQuestionVisible, setIsQuestionVisible] = useState(false)
+
   useEffect(() => {
     const storedLoginStatus = localStorage.getItem("login")
     if (storedLoginStatus === "true") {
@@ -146,7 +149,9 @@ const MyPage = () => {
   }
 
   const handleDetail = (cafename, cafeId, coffeeId) => {
-    const current = allRecommendData.filter((tag)=> tag.Selected===`${cafeId}_${coffeeId}`)
+    const current = allRecommendData.filter(
+      (tag) => tag.Selected === `${cafeId}_${coffeeId}`
+    )
     setCurrentRecommendState(current)
     navigate(`/category/${cafename}/${cafeId}/${coffeeId}`)
   }
@@ -200,6 +205,10 @@ const MyPage = () => {
       default:
         return taste // 다른 경우 그대로 표시
     }
+  }
+
+  const handleSignUpPage = () => {
+    setIsQuestionVisible((prev) => !prev)
   }
 
   return (
@@ -291,6 +300,18 @@ const MyPage = () => {
             <h3>내가 쓴 음료 리뷰</h3>
             <img src={Plus} alt="plus" width={20} onClick={handleCommunity} />
           </div>
+          {isQuestionVisible ? (
+            <Question
+              username={storedUsername.replace(/"/g, "")}
+              mypage={true}
+            />
+          ) : (
+            <>
+              <button onClick={handleSignUpPage}>
+                {isQuestionVisible ? "취향 조사 완료" : "취향 다시 조사하기"}
+              </button>
+            </>
+          )}
         </div>
       ) : (
         <Login />
