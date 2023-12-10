@@ -68,7 +68,7 @@ const Menu = () => {
             className={selectedItem === "홈" ? "selected" : ""}
             onClick={() => handleItemClick("홈")}
           >
-            <Link to="/">홈</Link>
+            <Link to="/">home</Link>
             {/* <div className={`border-bottom ${
                 selectedItem === "홈" ? "selected" : ""
               }`}>
@@ -80,19 +80,19 @@ const Menu = () => {
             className={selectedItem === "카페목록" ? "selected" : ""}
             onClick={() => handleItemClick("카페목록")}
           >
-            <Link to="/category">카페목록</Link>
+            <Link to="/category">category</Link>
           </li>
           <li
             className={selectedItem === "마이페이지" ? "selected" : ""}
             onClick={() => handleItemClick("마이페이지")}
           >
-            <Link to="/women">목록3</Link>
+            <Link to="/map">map</Link>
           </li>
           <li
             className={selectedItem === "메뉴4" ? "selected" : ""}
             onClick={() => handleItemClick("메뉴4")}
           >
-            <Link to="/accessories">메뉴4</Link>
+            <Link to="/mypage">mypage</Link>
           </li>
         </ul>
       </nav>
